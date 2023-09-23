@@ -1,10 +1,13 @@
-package pl.coderslab.entity;
+package pl.coderslab.entity.user;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
-import lombok.Builder;
 import lombok.Data;
+import org.springframework.stereotype.Service;
+import pl.coderslab.entity.orders.Order;
+import pl.coderslab.entity.strategy.Strategy;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -23,4 +26,8 @@ public class User {
     @OneToMany
     @JoinColumn(name = "id_user")
     private List<UserSetting> userSetting;
+    @ManyToMany(mappedBy = "users")
+    private List<Strategy> strategies = new ArrayList<>();
+    @OneToMany(mappedBy = "user")
+    private List<Order> orders = new ArrayList<>();
 }

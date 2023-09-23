@@ -1,4 +1,4 @@
-package pl.coderslab.entity;
+package pl.coderslab.entity.user;
 
 import jakarta.persistence.*;
 import lombok.Data;
