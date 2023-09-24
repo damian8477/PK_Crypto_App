@@ -1,19 +1,19 @@
 package pl.coderslab.controller.user;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import pl.coderslab.entity.User;
 
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.net.http.HttpRequest;
 
 @Controller
 public class LoginController {
+
+
 
     @GetMapping("/login")
     public String prepareLoginPage(Model model) {
@@ -22,8 +22,14 @@ public class LoginController {
     }
 
     @GetMapping("/starter")
-    public String startPage(){
+    public String startPage(Model model){
+        System.out.println(model.getAttribute("username"));
         System.out.println("starter");
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userName = authentication.getName();
+        System.out.println(userName);
+        System.out.println(authentication.toString());
+        model.addAttribute("username", userName);
         return "/app/start";
     }
 
@@ -34,6 +40,10 @@ public class LoginController {
         cookie.setMaxAge(0);
         resp.addCookie(cookie);
         return "/unlogged/login";
+    }
+    @GetMapping("/admin/list")
+    public String logoutd(HttpServletResponse resp){
+        return "index";
     }
 
 }

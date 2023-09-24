@@ -32,6 +32,7 @@ public class RegistrationController {
                                           String password,
                                           String firstName,
                                           String lastName) {
+        System.out.println("password:" + password);
         User user = new User();
         String encodedPassword = passwordEncoder.encode(password);
         user.setPassword(encodedPassword);
@@ -39,6 +40,7 @@ public class RegistrationController {
         user.setFirstName(firstName);
         user.setLastName(lastName);
         user.setActive(true);
+        user.setRole("ROLE_USER");
 
         userRepository.save(user);
         return "redirect:/login";

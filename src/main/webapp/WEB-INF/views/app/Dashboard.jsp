@@ -24,14 +24,17 @@
             <i class="fas fa-angle-right"></i>
         </a>
     </li>
+    <c:if test="${userRole eq 'ROLE_ADMIN'}">
+        <li class="nav-item">
+            <a class="nav-link" href="/admin/user-list">
+                <span>Użytkownicy</span>
+                <i class="fas fa-angle-right"></i>
+            </a>
+        </li>
+    </c:if>
+
     <li class="nav-item">
-        <a class="nav-link" href="/app/users/list">
-            <span>Użytkownicy</span>
-            <i class="fas fa-angle-right"></i>
-        </a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href="/app/settings">
+        <a class="nav-link" href="/app/user/settings">
             <span>Ustawienia</span>
             <i class="fas fa-angle-right"></i>
         </a>
