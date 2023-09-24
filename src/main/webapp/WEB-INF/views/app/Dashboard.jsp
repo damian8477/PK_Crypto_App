@@ -1,38 +1,41 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <ul class="nav flex-column long-bg">
     <li class="nav-item">
-        <a class="nav-link" href="/app/dashboard">
-            <span>Pulpit</span>
+        <a class="nav-link" href="/app/orders/list">
+            <span>Aktywne zlecenia</span>
             <i class="fas fa-angle-right"></i>
         </a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" href="/app/recipe/list/">
-            <span>Przepisy</span>
+        <a class="nav-link" href="/app/history-orders/list">
+            <span>Historia zleceń</span>
             <i class="fas fa-angle-right"></i>
         </a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" href="/app/plan/list">
-            <span>Plany</span>
+        <a class="nav-link" href="/app/binance/symbol/list">
+            <span>Kryptowaluty</span>
             <i class="fas fa-angle-right"></i>
         </a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" href="/app/admin/edit">
-            <span>Edytuj dane</span>
+        <a class="nav-link" href="/app/strategy/list">
+            <span>Strategie</span>
             <i class="fas fa-angle-right"></i>
         </a>
     </li>
+    <c:if test="${userRole eq 'ROLE_ADMIN'}">
+        <li class="nav-item">
+            <a class="nav-link" href="/admin/user-list">
+                <span>Użytkownicy</span>
+                <i class="fas fa-angle-right"></i>
+            </a>
+        </li>
+    </c:if>
+
     <li class="nav-item">
-        <a class="nav-link disabled" href="/app/edit/pw">
-            <span>Zmień hasło</span>
-            <i class="fas fa-angle-right"></i>
-        </a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href="/super-admin-users.html">
-            <span>Użytkownicy</span>
+        <a class="nav-link" href="/app/user/settings">
+            <span>Ustawienia</span>
             <i class="fas fa-angle-right"></i>
         </a>
     </li>
