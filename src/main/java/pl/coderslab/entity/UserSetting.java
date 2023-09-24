@@ -1,8 +1,10 @@
 package pl.coderslab.entity;
 
-import jakarta.persistence.*;
+
 import lombok.Data;
 import pl.coderslab.configuration.DatabaseConverter;
+
+import javax.persistence.*;
 
 @Entity
 @Table(name = "user_settings")

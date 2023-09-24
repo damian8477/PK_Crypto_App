@@ -1,10 +1,9 @@
 package pl.coderslab.entity;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.Size;
-import lombok.Builder;
 import lombok.Data;
 
+import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.util.List;
 
 @Entity
@@ -16,10 +15,15 @@ public class User {
     private Long id;
     @Size(min = 5)
     @Column(nullable = false)
-    private String login;
+    private String username;
+    @Column(name = "first_name")
+    private String firstName;
+    @Column(name = "last_name")
+    private String lastName;
     @Size(min=4)
     @Column(nullable = false)
     private String password;
+    private boolean active;
     @OneToMany
     @JoinColumn(name = "id_user")
     private List<UserSetting> userSetting;
