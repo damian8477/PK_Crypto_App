@@ -24,6 +24,7 @@ public class User {
     @Column(nullable = false)
     private String password;
     private boolean active;
+    private String role;
     @OneToMany
     @JoinColumn(name = "id_user")
     private List<UserSetting> userSetting;

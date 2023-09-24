@@ -35,7 +35,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .dataSource(dataSource)
                 .passwordEncoder(passwordEncoder())
                 .usersByUsernameQuery("SELECT username, password, active FROM users WHERE username = ?")
-                .authoritiesByUsernameQuery("SELECT username, 'ROLE_USER' FROM users WHERE username = ?");
+                .authoritiesByUsernameQuery("SELECT username, role FROM users WHERE username = ?");
     }
 
     @Bean
@@ -54,11 +54,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http
                 .authorizeRequests()
                     .antMatchers("/login").permitAll() // Ścieżka dostępna publicznie
-                    .antMatchers("/starter").authenticated() // Ścieżka dostępna tylko dla zalogowanych
+                    .antMatchers("/admin/*").hasRole("ADMIN")
+                    .antMatchers("/starter").hasAnyRole("ADMIN", "USER")
                     .and()
                 .formLogin()
                     .loginPage("/login")
-                    .defaultSuccessUrl("/starter") // Po zalogowaniu przekieruj na /private
+                    .defaultSuccessUrl("/starter")// Po zalogowaniu przekieruj na /private
                     .permitAll()
                 .and()
                     .logout()
