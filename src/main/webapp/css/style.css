@@ -26,7 +26,7 @@ html {
 body {
   font-family: "Open Sans", sans-serif;
   font-weight: 400;
-  background: repeat url("../images/image.png");
+  /*background: repeat url("../images/image.png");*/
 }
 
 p {
@@ -278,10 +278,27 @@ margin: 0 auto !important;
 
 .footer-section{
   background: var(--background-color);
+  text-align: center;
+  padding: 10px;
+  position: sticky;
+  bottom: 0;
 }
 
 .footer-text-color {
   color: var(--link-color);
+  text-align: center;
+  padding: 10px;
+  position: sticky;
+  bottom: 0;
+}
+
+.footer {
+  background-color: #333;
+  color: white;
+  text-align: center;
+  padding: 10px;
+  position: sticky;
+  bottom: 0;
 }
 
 /*------------------------------*/
