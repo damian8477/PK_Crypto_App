@@ -5,7 +5,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import pl.coderslab.entity.User;
+import pl.coderslab.entity.user.User;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;

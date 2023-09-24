@@ -1,10 +1,10 @@
 package pl.coderslab.entity.orders;
 
-import jakarta.persistence.*;
 import lombok.Data;
 import pl.coderslab.entity.strategy.Strategy;
 import pl.coderslab.entity.user.User;
 
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 

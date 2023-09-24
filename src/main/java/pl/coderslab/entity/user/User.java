@@ -1,13 +1,13 @@
-package pl.coderslab.entity;
+package pl.coderslab.entity.user;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.Size;
 import lombok.Data;
 import org.springframework.stereotype.Service;
 import pl.coderslab.entity.orders.Order;
 import pl.coderslab.entity.strategy.Strategy;
 import pl.coderslab.entity.user.UserSetting;
 
+import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 

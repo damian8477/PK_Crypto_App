@@ -1,10 +1,10 @@
 package pl.coderslab.entity.strategy;
 
-import jakarta.persistence.*;
 import lombok.Data;
 import org.springframework.data.repository.cdi.Eager;
 import pl.coderslab.entity.user.User;
 
+import javax.persistence.*;
 import java.util.List;
 
 @Entity
