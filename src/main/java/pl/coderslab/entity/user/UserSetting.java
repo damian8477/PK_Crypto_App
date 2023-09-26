@@ -22,6 +22,9 @@ public class UserSetting {
     private boolean active;
     @Column(name = "active_signal")
     private boolean activeSignal;
+    @ManyToOne
+    private User user;
+
 
 
 }

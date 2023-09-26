@@ -30,9 +30,8 @@ public class User {
     private String password;
     private boolean active;
     private String role;
-    @OneToMany
-    @JoinColumn(name = "id_user")
-    private List<UserSetting> userSetting;
+    @OneToMany(mappedBy = "user")
+    private List<UserSetting> userSetting = new ArrayList<>();
     @ManyToMany(mappedBy = "users")
     private List<Strategy> strategies = new ArrayList<>();
     @OneToMany(mappedBy = "user")
