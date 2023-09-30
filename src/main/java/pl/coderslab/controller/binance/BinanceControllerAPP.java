@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import pl.coderslab.service.binance.BinanceService;
 
 @Controller
-@RequestMapping("/binance")
+@RequestMapping("/app/binance")
 @RequiredArgsConstructor
-public class BinanceController {
+public class BinanceControllerAPP {
     private final BinanceService binanceService;
 
     @GetMapping("/symbol-list")

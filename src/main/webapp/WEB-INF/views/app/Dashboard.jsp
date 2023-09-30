@@ -13,8 +13,14 @@
         </a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" href="/app/binance/symbol/list">
+        <a class="nav-link" href="/binance/symbol-list">
             <span>Kryptowaluty</span>
+            <i class="fas fa-angle-right"></i>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="/app/binance/symbol-list">
+            <span>Kryptowaluty /app/binance</span>
             <i class="fas fa-angle-right"></i>
         </a>
     </li>

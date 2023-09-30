@@ -30,7 +30,7 @@ public class User {
     private String password;
     private boolean active;
     private String role;
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user")//, fetch = FetchType.EAGER)
     private List<UserSetting> userSetting = new ArrayList<>();
     @ManyToMany(mappedBy = "users")
     private List<Strategy> strategies = new ArrayList<>();

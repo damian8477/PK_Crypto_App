@@ -474,3 +474,10 @@ margin: 0 auto !important;
 .schedules-content-header {
   margin-bottom: 50px;
 }
+
+.color-price-increase {
+  color: green;
+}
+.color-price-degrease {
+  color: red;
+}
