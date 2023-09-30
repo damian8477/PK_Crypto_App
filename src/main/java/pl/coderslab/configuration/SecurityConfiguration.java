@@ -54,7 +54,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http
                 .authorizeRequests()
                     .antMatchers("/login").permitAll() // Ścieżka dostępna publicznie
-                    .antMatchers("/admin/*").hasRole("ADMIN")
+                    .antMatchers("/*").hasRole("ADMIN")
                     .antMatchers("/starter").hasAnyRole("ADMIN", "USER")
                     .and()
                 .formLogin()

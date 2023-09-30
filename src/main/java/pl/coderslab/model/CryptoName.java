@@ -7,8 +7,13 @@ import java.math.BigDecimal;
 
 @Data
 @AllArgsConstructor
-public class Symbol {
+public class CryptoName {
+    private int id;
     private String symbol;
-    private String markPrice;
+    private BigDecimal markPrice;
     private boolean open;
+    private BigDecimal lowPrice;
+    private BigDecimal highPrice;
+    private BigDecimal dayChangePercent;
+
 }
