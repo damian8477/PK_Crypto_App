@@ -32,15 +32,6 @@ public class LoginController {
         model.addAttribute("username", userName);
         return "/app/start";
     }
-
-    @GetMapping("/logout")
-    public String logout(HttpServletResponse resp){
-        System.out.println("logout");
-        Cookie cookie = new Cookie("JSESSIONID", "/");
-        cookie.setMaxAge(0);
-        resp.addCookie(cookie);
-        return "/unlogged/login";
-    }
     @GetMapping("/admin/list")
     public String logoutd(HttpServletResponse resp){
         return "index";

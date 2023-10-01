@@ -11,7 +11,7 @@
 <%@include file="../head.jsp"%>
 <%@include file="../header.jsp"%>
 <body>
-<%@include file="Dashboard.jsp"%>
+<%@include file="dashboard.jsp"%>
 
 
 

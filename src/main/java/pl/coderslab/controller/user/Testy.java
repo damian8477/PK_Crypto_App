@@ -9,7 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class Testy {
     @GetMapping("/1")
     public String test1(){
-
+        System.out.println("clf59olo5MjQeQ8Qxe6RnPC4ePjxZsAeTdxZgdWedBtWt1f4Z7zohD2qEIYOgXdk".length());
+        System.out.println("NWtuZVbCa8esr4VG6usHzS0Ms1aMz7NwLBjPcUmU0SGRb6uXKvpiK77HM1ntHoMx".length());
         return "testsec";
     }
 }

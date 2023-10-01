@@ -2,8 +2,10 @@ package pl.coderslab.entity.orders;
 
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.Pattern;
 
 @Entity
 @Table(name = "symbols")
@@ -12,5 +14,8 @@ public class Symbol {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private String symbol;
+    @Pattern(regexp = ".*(usdt|USDT)$", message = "Nazwa powinna zawierać 'usdt'")
+    @Column(name = "symbol")
+    private String name;
+
 }

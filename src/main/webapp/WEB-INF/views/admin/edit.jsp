@@ -7,7 +7,7 @@
 <body>
 <section class="dashboard-section">
     <div class="row dashboard-nowrap">
-        <%@include file="../app/Dashboard.jsp" %>
+        <%@include file="../app/dashboard.jsp" %>
         <div class="m-4 p-3 width-medium text-color-darker">
             <div class="dashboard-content border-dashed p-3 m-4 view-height">
                 <div class="mt-4 ml-4 mr-4">
@@ -56,6 +56,7 @@
 <%--                            </tr>--%>
                             </tbody>
                         </table>
+                        <sec:csrfInput/>
                     </form:form>
                 </div>
 

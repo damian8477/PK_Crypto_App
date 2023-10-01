@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.coderslab.binance.client.model.enums.CandlestickInterval;
 import pl.coderslab.binance.client.model.market.Candlestick;
+import pl.coderslab.binance.client.model.trade.PositionRisk;
 import pl.coderslab.entity.orders.Symbol;
 import pl.coderslab.model.CryptoName;
 import pl.coderslab.repository.SymbolRepository;
@@ -12,6 +13,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -26,12 +28,12 @@ public class BinanceService {
         List<Symbol> symbolList = symbolRepository.findAll();
         if(symbolList != null){
             symbolList.forEach(s -> {
-                List<Candlestick> candlestick = syncService.syncRequestClient.getCandlestick(s.getSymbol(), CandlestickInterval.DAILY, null, null, 1);
+                List<Candlestick> candlestick = syncService.syncRequestClient.getCandlestick(s.getName(), CandlestickInterval.DAILY, null, null, 1);
                 if(candlestick.size() > 0){
                     Candlestick cd = candlestick.get(0);
                     cryptoNameList.add(new CryptoName(
                             s.getId(),
-                            s.getSymbol(),
+                            s.getName(),
                             cd.getClose(),
                             false, //todo
                             cd.getLow(),
@@ -42,5 +44,11 @@ public class BinanceService {
             });
         }
         return cryptoNameList;
+    }
+
+    public List<String> getSymbolNames(){
+        return syncService.syncRequestClient.getPositionRisk().stream()
+                .map(PositionRisk::getSymbol)
+                .toList();
     }
 }

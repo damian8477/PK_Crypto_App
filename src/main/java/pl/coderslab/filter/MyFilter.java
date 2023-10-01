@@ -15,10 +15,11 @@ public class MyFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-        String userName = SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream().findFirst().orElse(null).toString();
-        System.out.println(userName);
-        request.setAttribute("userRole", userName);
-        System.out.println("Filtr działa!");
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userRole = authentication.getAuthorities().stream().findFirst().orElse(null).toString();
+        String userName = authentication.getName();
+        request.setAttribute("userRole", userRole);
+        request.setAttribute("userName", userName);
         chain.doFilter(request, response);
     }
 

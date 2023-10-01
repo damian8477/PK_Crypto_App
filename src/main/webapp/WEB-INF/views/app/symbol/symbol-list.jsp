@@ -1,4 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%--
   Created by IntelliJ IDEA.
   User: damian
@@ -8,13 +10,13 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
-<%@include file="../head.jsp"%>
-<%@include file="../header.jsp"%>
+<%@include file="../../head.jsp"%>
+<%@include file="../../header.jsp"%>
 <body>
 
 <section class="dashboard-section">
     <div class="row dashboard-nowrap">
-        <%@include file="../app/Dashboard.jsp" %>
+        <%@include file="../dashboard.jsp" %>
 
         <div class="m-4 p-3 width-medium">
             <div class="dashboard-content border-dashed p-3 m-4 view-height">
@@ -23,7 +25,14 @@
                         <h3 class="color-header text-uppercase">LISTA KRYPTOWALUT</h3>
                     </div>
                     <div class="col d-flex justify-content-end mb-2 noPadding">
-                        <a href="/binance/add" class="btn btn-success rounded-0 pt-0 pb-0 pr-4 pl-4">Dodaj symbol</a>
+                        <form:form method="post" action="/app/binance/add-symbol" modelAttribute="symbol">
+                            <form:hidden path="id"/>
+                            Symbol: <form:input path="name"/>
+                            <form:button class="btn btn-success rounded-0 pt-0 pb-0 pr-4 pl-4">Dodaj symbol</form:button>
+                            <br>
+                            <form:errors path="name" cssStyle="color: red"/>
+                        </form:form>
+
                     </div>
                 </div>
 
@@ -58,17 +67,17 @@
                                 </c:if>
                                 <td class="col-2 d-flex align-items-center justify-content-center flex-wrap">
                                     <c:if test="${user.getRole() ne 'ROLE_ADMIN'}">
-                                        <a href="/binance/delete?symbolId=${symbol.getId()}"
+                                        <a href="/app/binance/delete-symbol?symbolId=${symbol.getId()}"
                                            class="btn btn-danger rounded-0 text-light m-1">Usuń</a>
                                     </c:if>
-                                    <a href="/binance/open?symbolId=${symbol.getId()}"
+                                    <a href="/app/binance/open?symbolId=${symbol.getId()}"
                                        class="btn btn-info rounded-0 text-light m-1">Otwórz</a>
-                                    <a href="/binance/alert?symbolId=${symbol.getId()}"
+                                    <a href="/app/binance/alert?symbolId=${symbol.getId()}"
                                        class="btn btn-info rounded-0 text-light m-1">Alert</a>
                                     <c:if test="${symbol.open == true}">
-                                        <a href="/binance/close?symbolId=${symbol.getId()}"
+                                        <a href="/app/binance/close?symbolId=${symbol.getId()}"
                                            class="btn btn-danger rounded-0 text-light m-1">Zamknij</a>
-                                        <a href="/binance/edit?symbolId=${symbol.getId()}"
+                                        <a href="/app/binance/edit?symbolId=${symbol.getId()}"
                                            class="btn btn-warning rounded-0 text-light m-1">Edytuj</a>
                                     </c:if>
 
@@ -86,4 +95,4 @@
 </body>
 
 </html>
-<%@include file="../footer.jsp"%>
+<%@include file="../../footer.jsp"%>

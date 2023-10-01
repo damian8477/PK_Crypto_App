@@ -1,10 +1,8 @@
 package pl.coderslab.entity.user;
 
 import lombok.Data;
-import org.springframework.stereotype.Service;
 import pl.coderslab.entity.orders.Order;
 import pl.coderslab.entity.strategy.Strategy;
-import pl.coderslab.entity.user.UserSetting;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
@@ -30,7 +28,7 @@ public class User {
     private String password;
     private boolean active;
     private String role;
-    @OneToMany(mappedBy = "user")//, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user")
     private List<UserSetting> userSetting = new ArrayList<>();
     @ManyToMany(mappedBy = "users")
     private List<Strategy> strategies = new ArrayList<>();

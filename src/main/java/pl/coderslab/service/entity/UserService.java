@@ -1,4 +1,4 @@
-package pl.coderslab.service;
+package pl.coderslab.service.entity;
 
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +18,28 @@ public class UserService {
     public User getUserWithUserSettings(Long userId) {
         User user = userRepository.findById(userId).orElse(null);
         if (user != null) {
-            // Inicjuj kolekcję userSetting
             Hibernate.initialize(user.getUserSetting());
             Hibernate.initialize(user.getStrategies());
             Hibernate.initialize(user.getOrders());
         }
         return user;
     }
+
+    @Transactional
+    public User getUserWithUserSettingsByUserName(String userName) {
+        User user = userRepository.findByUsername(userName);
+        fillUser(user);
+        return user;
+    }
+
+    public void fillUser(User user){
+        if (user != null) {
+            Hibernate.initialize(user.getUserSetting());
+            Hibernate.initialize(user.getStrategies());
+            Hibernate.initialize(user.getOrders());
+        }
+    }
+
+
+
 }

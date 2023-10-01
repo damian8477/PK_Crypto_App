@@ -7,9 +7,11 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 import javax.servlet.http.Cookie;
 import javax.sql.DataSource;
@@ -53,13 +55,20 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                    .antMatchers("/login").permitAll() // Ścieżka dostępna publicznie
-                    .antMatchers("/*").hasRole("ADMIN")
+                    .antMatchers("/login").permitAll()
+                .antMatchers("/logout").permitAll()
+                    .antMatchers("/logout").permitAll()// Ścieżka dostępna publicznie
+                    .antMatchers("/admin/*").hasRole("ADMIN")
                     .antMatchers("/starter").hasAnyRole("ADMIN", "USER")
-                    .and()
-                .formLogin()
+                    .antMatchers("/app/**").hasAnyRole("ADMIN", "USER")
+                .and()
+                    .formLogin()
                     .loginPage("/login")
                     .defaultSuccessUrl("/starter")// Po zalogowaniu przekieruj na /private
+                    .successHandler((request, response, authentication) -> {
+                        SecurityContextHolder.getContext().setAuthentication(authentication);
+                        response.sendRedirect("/starter"); // lub dowolny inny URL
+                         })
                     .permitAll()
                 .and()
                     .logout()
@@ -67,68 +76,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                     .logoutUrl("/logout") // Ścieżka wylogowania
                     .logoutSuccessUrl("/login") // Przekierowanie po wylogowaniu
                     .invalidateHttpSession(true) // Zakończ sesję użytkownika
-                    .deleteCookies("JSESSIONID"); // Usuń ciasteczko sesji
+                    .deleteCookies("JSESSIONID")//; // Usuń ciasteczko sesji
+                .and()
+                    .csrf()
+                    .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
+//                .and()
+//                .csrf().disable();
     }
 
-//    @Override
-//    protected void configure(HttpSecurity http) throws Exception {
-//        http
-//                .logout()
-//                    .logoutUrl("/logout")
-//                    .logoutSuccessUrl("/login?logout")
-//                    .invalidateHttpSession(true)
-//                    .addLogoutHandler(logoutHandler())
-//                    .deleteCookies("JSESSIONID")
-//                    .permitAll()
-//                    .and()
-//                .authorizeRequests()
-//                    .antMatchers("/starter").authenticated() // Strona dostępna tylko dla zalogowanych
-//                    .anyRequest().permitAll() // Pozwól na dostęp do innych stron
-//                    .and()
-//                .formLogin()
-//                    .loginPage("/login") // Strona logowania
-//                    .defaultSuccessUrl("/starter")
-//                    .permitAll();
-//
-////        http
-////                // ... Inne konfiguracje Spring Security ...
-////                .logout()
-////                .logoutUrl("/logout") // Ścieżka wylogowania
-////                .logoutSuccessUrl("/login?logout") // Przekierowanie po wylogowaniu
-////                .invalidateHttpSession(true) // Zakończ sesję użytkownika
-////                .deleteCookies("JSESSIONID") // Usuń ciasteczko sesji
-////                .and()
-////
-////                .authorizeRequests()
-////                .antMatchers("/starter").authenticated() // Strona dostępna tylko dla zalogowanych
-//////                    .anyRequest().permitAll() // Pozwól na dostęp do innych stron
-//////
-////                .antMatchers("/logout").permitAll();
-////        http
-////                .authorizeRequests()
-////                    .antMatchers("/login").permitAll()   // Dodajemy stronę główną, aby mógł wejść na nią każdy
-////                    .antMatchers("/register").anonymous()
-////                    .antMatchers("/starter").authenticated()
-////                    .anyRequest().authenticated()
-////                    .and()
-////                .formLogin()
-////                    .loginPage("/login")
-////                    .defaultSuccessUrl("/starter") // Usuwamy plik `index.html` i dajemy ścieżkę do kontrolera strony głównej
-////                    .and()
-////                .logout()
-////                    .logoutSuccessUrl("/login");  // j.w.
-////        http.authorizeRequests()
-////                    .antMatchers("/register").permitAll()
-////                    .antMatchers("/starter").authenticated()
-////                    .antMatchers("/login").anonymous()
-////                    .anyRequest().authenticated()
-////                .and()
-////                    .formLogin()
-////                    .loginPage("/login")
-////                    .defaultSuccessUrl("/starter")
-////                .and()
-////                    .logout()
-////                    .logoutUrl("/logout")
-////                    .logoutSuccessUrl("/login");
-//    }
 }

@@ -1,15 +1,12 @@
 package pl.coderslab.controller.user;
 
 import lombok.RequiredArgsConstructor;
-import org.hibernate.Hibernate;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import pl.coderslab.entity.user.User;
-import pl.coderslab.entity.user.UserSetting;
 import pl.coderslab.repository.UserRepository;
-import pl.coderslab.service.UserService;
+import pl.coderslab.service.entity.UserService;
 
 @Controller
 @RequiredArgsConstructor
@@ -21,7 +18,6 @@ public class AdminController {
     @GetMapping("/user-list")
     public String getUserList(Model model){
         model.addAttribute("users", userRepository.findAll());
-        System.out.println("kurwa");
         return "admin/userslist";
     }
 
@@ -45,21 +41,13 @@ public class AdminController {
 
     @PostMapping("/delete")
     public String postEditView(@RequestParam Long userId){
-        System.out.println("chujekKKKKKKKKKKKKKKKKKKkkkk");
         userRepository.deleteById(userId);
         return  "redirect:/admin/user-list";
     }
 
     @PostMapping("/deletet")
     public String postEditViedw(@RequestParam Long userId){
-        System.out.println("chujekKKKKKKKKKKKKKKKKKKkkkk");
         userRepository.deleteById(userId);
-        return  "redirect:/admin/user-list";
-    }
-    @PostMapping("/pizda")
-    @ResponseBody
-    public String pizda(@RequestParam Long userId){
-        System.out.println("chujekKKKKKKKKKKKKKKKKKKkkkk");
         return  "redirect:/admin/user-list";
     }
 }

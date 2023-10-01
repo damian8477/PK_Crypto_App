@@ -9,9 +9,10 @@
 
     </div>
     <div class="d-flex justify-content-around">
-      <li class="nav-item ml-4">
-        <a class="nav-link color-header" href="/logout">Wyloguj</a>
-      </li>
+        <form method="post" action="/logout">
+          <button type="submit" class="nav-link color-header">Wyloguj</button>
+          <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+        </form>
     </div>
 
   </nav>

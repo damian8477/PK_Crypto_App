@@ -1,7 +1,6 @@
 package pl.coderslab.entity.strategy;
 
 import lombok.Data;
-import org.springframework.data.repository.cdi.Eager;
 import pl.coderslab.entity.user.User;
 
 import javax.persistence.*;

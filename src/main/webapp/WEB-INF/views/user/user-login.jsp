@@ -10,7 +10,7 @@
 <%@include file="/WEB-INF/views/unlogged/head.jsp"%>
 <body>
 <%@include file="/WEB-INF/views/unlogged/header.jsp"%>
-<%@include file="/WEB-INF/views/app/Dashboard.jsp"%>
+<%@include file="/WEB-INF/views/app/dashboard.jsp"%>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <a class="navbar-brand" href="#">Moja Strona</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
