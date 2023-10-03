@@ -70,7 +70,7 @@
                                         <a href="/app/binance/delete-symbol?symbolId=${symbol.getId()}"
                                            class="btn btn-danger rounded-0 text-light m-1">Usuń</a>
                                     </c:if>
-                                    <a href="/app/binance/open?symbolId=${symbol.getId()}"
+                                    <a href="/app/binance/open-symbol?symbolId=${symbol.getId()}"
                                        class="btn btn-info rounded-0 text-light m-1">Otwórz</a>
                                     <a href="/app/binance/alert?symbolId=${symbol.getId()}"
                                        class="btn btn-info rounded-0 text-light m-1">Alert</a>

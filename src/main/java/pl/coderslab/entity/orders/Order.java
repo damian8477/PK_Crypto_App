@@ -18,6 +18,18 @@ public class Order {
     @Column(name = "symbol_name")
     private String symbolName;
     private BigDecimal price;
+    private BigDecimal tp;
+    private BigDecimal sl;
+    private String currentTakeProfit;
+    private String currentStopLoss;
+    private String currentEntryPrice;
+    private String lot;
+    private boolean isStrategy;
+    private Double profitProcent;
+    private String side;
+    private String amount;
+    private String startProfit;
+    private Integer leverage;
     @Column(updatable = false)
     private LocalDateTime created;
     private LocalDateTime updated;
@@ -26,6 +38,8 @@ public class Order {
     private Strategy strategy;
     @ManyToOne
     private User user;
+    @ManyToOne
+    private Signal signal;
 
     @PrePersist
     public void prePersis(){
