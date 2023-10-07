@@ -2,8 +2,8 @@ package pl.coderslab.enums;
 
 public enum CashType {
     LOT("Lot"),
-    VALUE2("$"),
-    VALUE3("% konta");
+    DOLAR("$"),
+    PERCENT("% konta");
 
     private final String label;
 

@@ -19,7 +19,7 @@ public class OwnSignal {
     private StrategySetting strategySetting;
     private String symbol;
     private OrderSide orderSide;
-    private OrderType typeOrder;//limit, market
+    private OrderType typeOrder;
     private BigDecimal entryPrice;
     private BigDecimal takeProfit;
     private boolean tpPercent;
