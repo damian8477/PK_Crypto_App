@@ -12,35 +12,30 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "orders")
+@Table(name = "history_orders")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Order {
+public class HistoryOrder {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "symbol_name")
-    private String symbolName;
-    private String tp;
-    private String sl;
+    private String symbol;
     private String entry;
+    private String close;
     private String lot;
-    @Column(name = "is_strategy")
-    private boolean isStrategy;
-    @Column(name = "profit_procent")
-    private Double profitProcent;
     private String side;
-    private String amount;
-    @Column(name = "start_profit")
-    private String startProfit;
+    private BigDecimal amount;
     private Integer leverage;
-    @Column(name = "app_order")
-    private boolean appOrder;
+    private BigDecimal commission;
+    @Column(name = "realized_pln")
+    private BigDecimal realizedPln;
+    @Column(name = "profit_procent")
+    private BigDecimal profitPercent;
     @Column(updatable = false)
     private LocalDateTime created;
-    private LocalDateTime updated;
     @ManyToOne
     private Strategy strategy;
     @ManyToOne
@@ -51,12 +46,5 @@ public class Order {
     @PrePersist
     public void prePersis() {
         created = LocalDateTime.now();
-        updated = created;
     }
-
-    @PreUpdate
-    public void preUpdate() {
-        updated = LocalDateTime.now();
-    }
-
 }

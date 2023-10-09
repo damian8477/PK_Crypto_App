@@ -16,7 +16,7 @@ public class UserSettingService {
     @Transactional
     public UserSetting getUserSetting(int id) {
         UserSetting userSetting = userSettingRepository.findById(id);
-        Hibernate.initialize(userSetting.getUser());
+        //Hibernate.initialize(userSetting.getUser());
         return userSetting;
     }
 }

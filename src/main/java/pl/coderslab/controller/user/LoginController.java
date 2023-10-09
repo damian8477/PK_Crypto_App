@@ -13,12 +13,10 @@ import javax.servlet.http.HttpServletResponse;
 @Controller
 public class LoginController {
 
-
-
     @GetMapping("/login")
     public String prepareLoginPage(Model model) {
         model.addAttribute("user", new User());
-        return "unlogged/login";
+        return "anonymous/login";
     }
 
     @GetMapping("/starter")
@@ -31,10 +29,6 @@ public class LoginController {
         System.out.println(authentication.toString());
         model.addAttribute("username", userName);
         return "/app/start";
-    }
-    @GetMapping("/admin/list")
-    public String logoutd(HttpServletResponse resp){
-        return "index";
     }
 
 }

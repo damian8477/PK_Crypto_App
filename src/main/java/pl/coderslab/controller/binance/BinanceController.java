@@ -7,17 +7,19 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import pl.coderslab.binance.client.SyncRequestClient;
 import pl.coderslab.binance.client.model.enums.OrderSide;
 import pl.coderslab.binance.client.model.enums.OrderType;
+import pl.coderslab.binance.client.model.enums.PositionSide;
 import pl.coderslab.entity.orders.Symbol;
-import pl.coderslab.entity.user.UserSetting;
+import pl.coderslab.entity.user.User;
 import pl.coderslab.enums.CashType;
+import pl.coderslab.model.CommonSignal;
 import pl.coderslab.model.CryptoName;
 import pl.coderslab.model.OwnSignal;
 import pl.coderslab.repository.SymbolRepository;
-import pl.coderslab.repository.UserRepository;
-import pl.coderslab.repository.UserSettingRepository;
 import pl.coderslab.service.binance.BinanceService;
+import pl.coderslab.service.binance.OwnSignalService;
 import pl.coderslab.service.entity.SymbolService;
 import pl.coderslab.service.entity.UserService;
 
@@ -31,6 +33,7 @@ public class BinanceController {
     private final SymbolRepository symbolRepository;
     private final SymbolService symbolService;
     private final UserService userService;
+    private final OwnSignalService ownSignalService;
 
     @GetMapping("/symbol-list")
     public String getSymbolList(Model model) {
@@ -91,7 +94,18 @@ public class BinanceController {
             model.addAttribute("ownSignal", ownSignal);
             return "/app/binance/open-symbol";
         }
-        System.out.println(ownSignal);
+        System.out.println("allt -------------" + ownSignal);
+        try{
+            User user = userService.getUserWithUserSettingsByUserName(authenticatedUser.getUsername());
+            SyncRequestClient syncRequestClient = binanceService.sync(ownSignal.getUserSetting());
+            ownSignalService.checkOwnSignal(ownSignal, syncRequestClient);
+            CommonSignal signal = ownSignalService.createCommonSignal(user, ownSignal, ownSignal.getStrategySetting(), ownSignal.getUserSetting(), syncRequestClient);
+            binanceService.createOrder(signal, user, ownSignal.getUserSetting(), syncRequestClient);
+        }catch (IllegalArgumentException e){
+            //todo komunikaty co jest nie tak
+        }
+
+        System.out.println("new -------------" + ownSignal);
         //todo sprawdzenie sygnalu, nastepnie wsystawienie i przeniesienie  na liste zlecen uzytkownika
         return "redirect:/app/binance/symbol-list";
     }
@@ -104,6 +118,11 @@ public class BinanceController {
     @ModelAttribute("orderSides")
     public OrderSide[] orderSides() {
         return OrderSide.values();
+    }
+
+    @ModelAttribute("positionSides")
+    public PositionSide[] positionSides() {
+        return PositionSide.values();
     }
 
     @ModelAttribute("cashTypes")

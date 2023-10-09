@@ -43,7 +43,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Bean
     public LogoutHandler logoutHandler() {
         return (request, response, authentication) -> {
-            // Usuń ciasteczko JSESSIONID ręcznie
             Cookie cookie = new Cookie("JSESSIONID", "");
             cookie.setMaxAge(0);
             cookie.setPath("/");
@@ -61,6 +60,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                     .antMatchers("/admin/*").hasRole("ADMIN")
                     .antMatchers("/starter").hasAnyRole("ADMIN", "USER")
                     .antMatchers("/app/**").hasAnyRole("ADMIN", "USER")
+                    .antMatchers("/css/style.css").permitAll()
+                    .anyRequest().authenticated()
                 .and()
                     .formLogin()
                     .loginPage("/login")

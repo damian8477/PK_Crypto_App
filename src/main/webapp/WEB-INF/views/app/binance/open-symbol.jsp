@@ -21,8 +21,8 @@
                     <div class="form-group row">
                         <label class="col-sm-2 label-size col-form-label">Wybór strony:</label>
                         <div class="col-sm-10">
-                            <form:select id="orderSide" path="orderSide" cssClass="col-sm-10 label-size col-form-label">
-                                <form:options items="${orderSides}" itemLabel="name"/>
+                            <form:select id="positionSide" path="positionSide" cssClass="col-sm-10 label-size col-form-label">
+                                <form:options items="${positionSides}" itemLabel="name"/>
                             </form:select>
                         </div>
                     </div>

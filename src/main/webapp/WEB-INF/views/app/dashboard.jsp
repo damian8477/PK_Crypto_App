@@ -24,15 +24,14 @@
             <i class="fas fa-angle-right"></i>
         </a>
     </li>
-    <c:if test="${userRole eq 'ROLE_ADMIN'}">
+    <sec:authorize access="hasRole('ROLE_ADMIN')">
         <li class="nav-item">
             <a class="nav-link" href="/admin/user-list">
                 <span>Użytkownicy</span>
                 <i class="fas fa-angle-right"></i>
             </a>
         </li>
-    </c:if>
-
+    </sec:authorize>
     <li class="nav-item">
         <a class="nav-link" href="/app/user/settings">
             <span>Ustawienia</span>

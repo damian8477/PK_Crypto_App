@@ -32,6 +32,17 @@ public class UserService {
         return user;
     }
 
+    @Transactional
+    public long getUserId(String userName) {
+        long userId = 0;
+        try{
+            userId = userRepository.getUserId(userName);
+        }catch (Exception e){
+            System.out.println(e);
+        }
+        return userId;
+    }
+
     public void fillUser(User user){
         if (user != null) {
             Hibernate.initialize(user.getUserSetting());

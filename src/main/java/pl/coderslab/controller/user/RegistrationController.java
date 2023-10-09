@@ -1,7 +1,9 @@
 package pl.coderslab.controller.user;
 
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,20 +14,17 @@ import pl.coderslab.repository.UserRepository;
 
 @Controller
 @RequestMapping("/register")
+@RequiredArgsConstructor
 public class RegistrationController {
+
+    private static final Logger logger = LoggerFactory.getLogger(RegistrationController.class);
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    public RegistrationController(UserRepository userRepository, PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
-
     @GetMapping
     public String preparepRegistrationPage() {
-        return "registration-page";
+        return "anonymous/registration-page";
     }
 
     @PostMapping
@@ -33,7 +32,6 @@ public class RegistrationController {
                                           String password,
                                           String firstName,
                                           String lastName) {
-        System.out.println("password:" + password);
         User user = new User();
         String encodedPassword = passwordEncoder.encode(password);
         user.setPassword(encodedPassword);
@@ -42,8 +40,11 @@ public class RegistrationController {
         user.setLastName(lastName);
         user.setActive(true);
         user.setRole("ROLE_USER");
-
         userRepository.save(user);
+
+        logger.info("New user register!");
+        logger.info(username + " " + firstName + " " + lastName);
+
         return "redirect:/login";
     }
 
