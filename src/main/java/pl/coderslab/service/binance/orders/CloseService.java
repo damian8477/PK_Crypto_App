@@ -50,8 +50,9 @@ public class CloseService {
                 //todo logger
                 //todo zapis historii
                 orderRepository.deleteById(order.getId());
-                BinanceConfirmOrder binanceConfirmOrder = binanceService.getBinanceConfirmOrder(syncRequestClient, positionRisk.getSymbol());
-                String marketPrice = binanceUserService.getMarketPriceString(syncRequestClient, positionRisk.getSymbol()); //todo z positionRisk mozna wziac
+                BinanceConfirmOrder binanceConfirmOrder = binanceService.getBinanceConfirmOrder(syncRequestClient, positionRisk);
+
+                 //todo z positionRisk mozna wziac
                 orderService.saveHistoryOrderToDB(user, order, binanceConfirmOrder);
                 //usuniecie orderu z bazy
                 return true;

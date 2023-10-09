@@ -73,6 +73,7 @@ public class OrderService {
                 HistoryOrder.builder()
                         .symbol(order.getSymbolName())
                         .entry(binanceConfirmOrder.getEntryPrice())
+                        .close(binanceConfirmOrder.getClosePrice())
                         .lot(binanceConfirmOrder.getLot())
                         .side(order.getSide())
                         .amount(getAmount(order.getLeverage(), binanceConfirmOrder.getEntryPrice(), binanceConfirmOrder.getLot()))

@@ -46,7 +46,7 @@
                         </thead>
                         <tbody class="text-color-lighter">
                         <c:forEach var="order" items="${orders}" varStatus="stat">
-                            <c:if test="${order.app_order == true}">
+                            <c:if test="${order.appOrder == true}">
                                 <tr class="d-flex">
                                     <td><c:out value="${stat.index  + 1}"/></td>
                                     <td class="col-1"><c:out value="${order.symbolName}"/></td>
@@ -89,7 +89,7 @@
                         </thead>
                         <tbody class="text-color-lighter">
                         <c:forEach var="order" items="${orders}" varStatus="stat">
-                            <c:if test="${order.app_order == false}">
+                            <c:if test="${order.appOrder == false}">
                                 <tr class="d-flex">
                                     <td><c:out value="${stat.index  + 1}"/></td>
                                     <td class="col-1"><c:out value="${order.symbolName}"/></td>

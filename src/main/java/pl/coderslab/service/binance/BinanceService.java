@@ -27,10 +27,13 @@ import pl.coderslab.repository.SymbolRepository;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.sql.Time;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -113,7 +116,7 @@ public class BinanceService {
         return false;
     }
 
-    public SyncRequestClient sync(UserSetting userSetting){
+    public SyncRequestClient sync(UserSetting userSetting) {
         return syncService.sync(userSetting);
     }
 
@@ -190,11 +193,11 @@ public class BinanceService {
         }
     }
 
-    public BinanceConfirmOrder getBinanceConfirmOrder(SyncRequestClient syncRequestClient, String symbol) {
+    public BinanceConfirmOrder getBinanceConfirmOrder(SyncRequestClient syncRequestClient, PositionRisk positionRisk) {
+        String symbol = positionRisk.getSymbol();
         double sumProfit = 0.0;
         double sumCommission = 0.0;
-        String closeTime = "";
-        double closePrice = 0.0;
+        Long closeTime = 0l;
         try {
             Timestamp timestamp = new Timestamp(System.currentTimeMillis());
             long time = timestamp.getTime();
@@ -209,8 +212,7 @@ public class BinanceService {
                 System.out.println(profitList);
             }
             for (Income income : profitList) {
-                closeTime = LocalDateTime.now().toString(); //todo pobrac czas z income, ale trzeba przekonwertowac timestamp na time
-                closePrice = 0.0;
+                closeTime = income.getTime(); //todo pobrac czas z income, ale trzeba przekonwertowac timestamp na time
                 sumProfit += income.getIncome().doubleValue();
             }
             for (Income commission : commissionList) {
@@ -219,14 +221,23 @@ public class BinanceService {
             sumCommission *= 2;
         } catch (Exception e) {
             logger.error(String.valueOf(e));
-            }
-
-        //todo w returnie sie cos jebie
+        }
         return BinanceConfirmOrder.builder()
                 .symbol(symbol)
                 .realizedPln(BigDecimal.valueOf(sumProfit).setScale(2, RoundingMode.HALF_UP))
                 .commission(BigDecimal.valueOf(sumCommission).setScale(2, RoundingMode.HALF_UP))
-                .time(closeTime)
+                .time(converTimestampToDate(closeTime))
+                .closePrice(positionRisk.getMarkPrice().toString())
+                .entryPrice(positionRisk.getEntryPrice().toString())
+                .lot(positionRisk.getPositionAmt().abs().toString())
                 .build();
     }
+
+
+    private String converTimestampToDate(Long timestamp) {
+        Date date = new Date(timestamp);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return dateFormat.format(date);
+    }
+
 }
