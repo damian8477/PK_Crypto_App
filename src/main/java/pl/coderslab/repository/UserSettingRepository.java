@@ -6,7 +6,10 @@ import pl.coderslab.entity.user.UserSetting;
 import java.util.List;
 
 public interface UserSettingRepository extends JpaRepository<UserSetting, Integer> {
-    public UserSetting findById(int id);
+    UserSetting findById(int id);
+    boolean existsByTelegramChatId(String chatId);
+
+    UserSetting findByTelegramChatId(String telegramChatId);
 
 
 }

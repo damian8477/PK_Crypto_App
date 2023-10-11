@@ -12,6 +12,7 @@ import pl.coderslab.repository.UserRepository;
 import pl.coderslab.repository.UserSettingRepository;
 import pl.coderslab.service.entity.UserService;
 import pl.coderslab.service.entity.UserSettingService;
+import pl.coderslab.service.telegram.TelegramCodeService;
 
 import javax.validation.Valid;
 
@@ -23,6 +24,7 @@ public class UsersController {
     private final UserService userService;
     private final UserSettingRepository userSettingRepository;
     private final UserSettingService userSettingService;
+    private final TelegramCodeService telegramCodeService;
 
     @PostMapping("/delete")
     public String getAdd(@RequestParam Long id){
@@ -55,11 +57,25 @@ public class UsersController {
         return "redirect:/app/user/settings";
     }
 
+
+
     @GetMapping("/edit-user-setting")
     public String getEditUserSettingView(@RequestParam Integer settingId,  Model model){
-        model.addAttribute("userSetting", userSettingService.getUserSetting(settingId));
+        UserSetting userSetting = userSettingService.getUserSetting(settingId);
+        model.addAttribute("userSetting", userSetting);
+        model.addAttribute("generatedCode", telegramCodeService.getCode(6, userSetting.getUser()));
+        //model.addAttribute("generatedCode", telegramCodeService.getCode(6, userSetting.getUser()));
         return "/app/settings/edit-user-setting";
     }
+
+//    @GetMapping("/edit-user-setting/generate")
+//    public String generateCode(Model model, @RequestParam Integer settingId){
+//        UserSetting userSetting = userSettingService.getUserSetting(settingId);
+//        model.addAttribute("userSetting", userSetting);
+//        model.addAttribute("generatedCode", telegramCodeService.getCode(6, userSetting.getUser()));
+//        model.addAttribute("isGenerate", false);
+//        return "/app/settings/edit-user-setting";
+//    }
     @PostMapping("/edit-user-setting")
     public String editUserSettingView(@Valid UserSetting userSetting, BindingResult bindingResult, Model model){
         if(bindingResult.hasErrors()){

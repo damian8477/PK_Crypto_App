@@ -29,6 +29,9 @@ public class UserSetting {
     @Column(name = "binance_secret")
     @Size(min = 64, max = 64, message = "Binance secret musi mieć 64 znaki")
     private String binanceSecret;
+    @Column(name = "telegram_chat_id")
+    @Convert(converter = DatabaseConverter.class)
+    private String telegramChatId;
     private boolean active;
     @Column(name = "active_signal")
     private boolean activeSignal;
