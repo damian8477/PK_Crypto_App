@@ -1,6 +1,7 @@
 package pl.coderslab.service.telegram;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import pl.coderslab.entity.user.User;
 import pl.coderslab.entity.user.UserSetting;
@@ -18,6 +19,12 @@ public class RequestTelegramService {
     private final UserService userService;
     private final TelegramCodeService telegramCodeService;
     private final UserRepository userRepository;
+
+    @Value("${telegram.token.var.token}")
+    public  String token;
+    @Value("${telegram.token.var.name}")
+    public String botName;
+
 
 
     public String newMessege(String chatId, String mess) throws IOException {

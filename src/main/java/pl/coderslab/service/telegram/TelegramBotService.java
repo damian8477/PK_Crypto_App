@@ -1,5 +1,6 @@
 package pl.coderslab.service.telegram;
 
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
@@ -15,12 +16,14 @@ public class TelegramBotService extends TelegramLongPollingBot {
 
     @Override
     public String getBotUsername() {
-        return "PkCryptoApp";
+//        return System.getenv("TELEGRAM_NAME").getBytes().toString();
+        return requestTelegramService.botName;
     }
 
     @Override
     public String getBotToken() {
-        return "6336483851:AAFl68m31VRElZaUVR4jHsj43l4vA3ZUIu8";
+//        return System.getenv("TELEGRAM_TOKEN").getBytes().toString();
+        return requestTelegramService.token;
     }
 
     @SneakyThrows
