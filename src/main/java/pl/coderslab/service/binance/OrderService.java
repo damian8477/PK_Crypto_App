@@ -30,6 +30,29 @@ public class OrderService {
     private final SyncService syncService;
     private final HistoryOrderRepository historyOrderRepository;
 
+    public Order getOrderBySymbol(User user, String symbol) {
+        SyncRequestClient syncRequestClient = syncService.sync(user.getUserSetting().get(0));
+        PositionRisk positionRisk = syncRequestClient.getPositionRisk().stream()
+                .filter((s -> s.getPositionAmt().doubleValue() != 0.0))
+                .filter(s -> s.getSymbol().equals(symbol)).findFirst().orElse(null);
+        if (positionRisk == null) {
+            return null;
+        }
+        return Order.builder()
+                .symbolName(positionRisk.getSymbol())
+                .appOrder(false)
+                .id(0L)
+                .isStrategy(false)
+                .sl("")//todo tutaj moze pobrac zlecenia do danego coina
+                .tp("")//todo
+                .user(user)
+                .side(positionRisk.getPositionSide())
+                .lot(positionRisk.getPositionAmt().toString())
+                .entry(positionRisk.getEntryPrice().toString())
+                .amount(String.valueOf(Math.round(100.0 * positionRisk.getEntryPrice().doubleValue() * positionRisk.getPositionAmt().doubleValue() / positionRisk.getLeverage().doubleValue()) / 100.0))
+                .profitProcent(positionRisk.getUnrealizedProfit().doubleValue())
+                .build();
+    }
 
     public List<Order> prepareOrderList(User user, List<Order> orders) {
         if (user.getUserSetting().get(0) == null && orders == null) {
@@ -108,13 +131,13 @@ public class OrderService {
 
     }
 
-    private BigDecimal getProfitPercent(String entry, String close, int  lev){
-        double percent = ((Math.abs(Double.parseDouble(entry) - Double.parseDouble(close))/Double.parseDouble(entry)) * 100.0) * lev;
+    private BigDecimal getProfitPercent(String entry, String close, int lev) {
+        double percent = ((Math.abs(Double.parseDouble(entry) - Double.parseDouble(close)) / Double.parseDouble(entry)) * 100.0) * lev;
         return BigDecimal.valueOf(percent).setScale(2, RoundingMode.HALF_UP);
     }
 
-    private BigDecimal getAmount(int lev, String entry, String lot){
-        double amount = (Double.parseDouble(entry) * Double.parseDouble(lot))/lev;
+    private BigDecimal getAmount(int lev, String entry, String lot) {
+        double amount = (Double.parseDouble(entry) * Double.parseDouble(lot)) / lev;
         return BigDecimal.valueOf(amount).setScale(2, RoundingMode.HALF_UP);
     }
 }

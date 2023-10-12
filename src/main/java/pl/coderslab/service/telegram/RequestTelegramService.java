@@ -27,13 +27,16 @@ public class RequestTelegramService {
 
 
 
-    public String newMessege(String chatId, String mess) throws IOException {
-        System.out.println(chatId);
+    public String newMessage(String chatId, String mess) {
         if(userSettingRepository.existsByTelegramChatId(chatId)){
             UserSetting userSetting = userSettingRepository.findByTelegramChatId(chatId);
-
+            if (mess.equals("/logout")) {
+                userSetting.setTelegramChatId("");
+                userSettingRepository.save(userSetting);
+                return "Wylogowano";
+            }
             // todo tutaj moze jakies menu z czyms tam zrobic , może z otwieraniem zlecen z palca, z tp i sl itd
-            return "Oczekuj na powiadomienia";
+            return "Oczekuj na powiadomienia, menu użytkownika, będzie nie długo dostępne.";
         } else {
             String[] split = mess.split(" ");
             if(split.length == 2){

@@ -79,6 +79,16 @@ public class BinanceUserService implements BinanceUserInterface {
     }
 
     @Override
+    public String getMarketPriceString(User user, String symbol) {
+        SyncRequestClient syncRequestClient = syncService.sync(user.getUserSetting().get(0));
+        if (isNull(syncRequestClient)) {
+            syncRequestClient = syncService.syncRequestClient;
+        }
+        List<MarkPrice> marketPrices = syncRequestClient.getMarkPrice(symbol);
+        return marketPrices.get(0).getMarkPrice().toString();
+    }
+
+    @Override
     public double getMarketPriceDouble(SyncRequestClient syncRequestClient, String symbol) {
         if (isNull(syncRequestClient)) {
             syncRequestClient = syncService.syncRequestClient;

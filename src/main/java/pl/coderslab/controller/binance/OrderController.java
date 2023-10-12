@@ -6,11 +6,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import pl.coderslab.entity.orders.Order;
 import pl.coderslab.entity.user.User;
 import pl.coderslab.repository.OrderRepository;
+import pl.coderslab.service.binance.BinanceUserService;
 import pl.coderslab.service.binance.OrderService;
 import pl.coderslab.service.binance.orders.CloseService;
 import pl.coderslab.service.entity.UserService;
@@ -28,6 +30,7 @@ public class OrderController {
     private final OrderService orderService;
     private final UserService userService;
     private final CloseService closeService;
+    private final BinanceUserService binanceUserService;
 
     @GetMapping("/list")
     public String getOrderList(Model model, @AuthenticationPrincipal UserDetails authenticatedUser) {
@@ -47,11 +50,22 @@ public class OrderController {
             Order order = orderRepository.findByUserId(user.getId()).stream()
                     .filter(s->s.getId() == orderId).findFirst().orElse(null);
             if(!isNull(order)){
-                closeService.closeOrderByUser(order, user);//todo
+                closeService.closeOrderByUser(order, user, null);//todo
             }
         } else if(!isNull(symbol)) {
-
+            Order order = orderService.getOrderBySymbol(user, symbol);
+            model.addAttribute("order", order);
+            model.addAttribute("marketPrice", binanceUserService.getMarketPriceString(user, symbol));
+            return "/app/binance/orders/close-symbol";
         }
+        return "redirect:/app/orders/list";
+    }
+
+    @PostMapping("/close-order")
+    public String closeSymbol(Order order, @AuthenticationPrincipal UserDetails authenticatedUser){
+        User user = userService.getUserWithUserSettingsByUserName(authenticatedUser.getUsername());
+        //todo sprawdzenie czy lot jest prawidłowy powyzej 5$ i w rozdzielczosci coina
+        closeService.closeOrderByUser(order, user, order.getLot());
         return "redirect:/app/orders/list";
     }
     //todo

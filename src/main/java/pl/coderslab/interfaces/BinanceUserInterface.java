@@ -17,6 +17,8 @@ public interface BinanceUserInterface {
     int setLeverage(SyncRequestClient syncRequestClient, int leverage, String symbol);
     String getMarketPriceString(SyncRequestClient syncRequestClient, String symbol);
 
+    String getMarketPriceString(User user, String symbol);
+
     double getMarketPriceDouble(SyncRequestClient syncRequestClient, String symbol);
 
     BigDecimal getMarketPriceBigDecimal(SyncRequestClient syncRequestClient, String symbol);

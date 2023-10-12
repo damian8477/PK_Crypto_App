@@ -70,6 +70,12 @@
                         </c:forEach>
                         </tbody>
                     </table>
+                    <br><br><br>
+                    <div class="row border-bottom border-3 p-1 m-1">
+                        <div class="col noPadding">
+                            <h3 class="color-header text-uppercase">LISTA OTWARTYCH ZLECEŃ PO ZA APLIKACJĄ</h3>
+                        </div>
+                    </div>
                     <table class="table border-bottom">
                         <thead>
                         <tr class="d-flex">

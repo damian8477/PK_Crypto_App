@@ -31,13 +31,15 @@ public class CloseService {
     private final OrderRepository orderRepository;
     private final OrderService orderService;
 
-    public boolean closeOrderByUser(Order order, User user) {
+    public boolean closeOrderByUser(Order order, User user, String lot) {
         SyncRequestClient syncRequestClient = syncService.sync(user.getUserSetting().get(0));
-        killOrder(syncRequestClient, order, user);
+        killOrder(syncRequestClient, order, user, lot);
         return true;//todo
     }
 
-    public boolean killOrder(SyncRequestClient syncRequestClient, Order order, User user) {
+
+
+    public boolean killOrder(SyncRequestClient syncRequestClient, Order order, User user, String lot) {
         PositionRisk positionRisk = syncRequestClient.getPositionRisk().stream()
                 .filter(s -> s.getSymbol().equals(order.getSymbolName()))
                 .filter(s -> s.getPositionSide().equals(order.getSide()))
@@ -45,26 +47,26 @@ public class CloseService {
                 .findFirst().orElse(null);
         if (!isNull(positionRisk)) {
             if (positionRisk.getPositionAmt().doubleValue() != 0.0) {
-                killSymbol(syncRequestClient, positionRisk);
+                killSymbol(syncRequestClient, positionRisk, lot);
                 //todo telegram , info ze zamknieto zlecenie
                 //todo logger
-                //todo zapis historii
-                orderRepository.deleteById(order.getId());
-                BinanceConfirmOrder binanceConfirmOrder = binanceService.getBinanceConfirmOrder(syncRequestClient, positionRisk);
-
-                 //todo z positionRisk mozna wziac
-                orderService.saveHistoryOrderToDB(user, order, binanceConfirmOrder);
-                //usuniecie orderu z bazy
+                if(order.isAppOrder()){
+                    orderRepository.deleteById(order.getId());
+                    BinanceConfirmOrder binanceConfirmOrder = binanceService.getBinanceConfirmOrder(syncRequestClient, positionRisk);
+                    orderService.saveHistoryOrderToDB(user, order, binanceConfirmOrder);
+                }
                 return true;
             }
-
-
         }
         return false;
     }
 
-    public void killSymbol(SyncRequestClient syncRequestClient, PositionRisk position) {
+    public void killSymbol(SyncRequestClient syncRequestClient, PositionRisk position, String lotSize) {
         String lot = String.valueOf(Math.abs(position.getPositionAmt().doubleValue()));
+        if(lotSize != null){
+            if(Double.parseDouble(lotSize) <= Double.parseDouble(lot))
+                lot = lotSize;
+        }
         PositionSide positionSide = PositionSide.valueOf(position.getPositionSide());
         OrderSide orderSide = binanceUserService.getOrderSideForClose(positionSide, 0.0);
         try {
@@ -78,7 +80,5 @@ public class CloseService {
         } catch (Exception e) {
 
         }
-
-
     }
 }

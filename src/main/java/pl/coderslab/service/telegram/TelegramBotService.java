@@ -26,7 +26,6 @@ public class TelegramBotService extends TelegramLongPollingBot {
         return requestTelegramService.token;
     }
 
-    @SneakyThrows
     @Override
     public void onUpdateReceived(Update update) {
         System.out.println(update.getMessage().getText()    );
@@ -34,10 +33,7 @@ public class TelegramBotService extends TelegramLongPollingBot {
         SendMessage response = new SendMessage();
         response.setChatId(update.getMessage().getChatId().toString());
         String chatId = update.getMessage().getChatId().toString();
-        String mess = requestTelegramService.newMessege(chatId, message);
-        //todo obsluzyc logowanie do telegrama, jakos,,,  może pin ustawiany dla uzytkownika i po podaniu loginu i pinu numer czasu zostanie dopisany
-        //do listy czatów uzytkownika (możliwość usuniecia czatu z poziomu telegrama, mozliwosc zalogowania sie na nowego telegrama, ale nadpisujac starego
-        //narazie tylko powiadomienia o otwieraniu i zamykaniu zlecen
+        String mess = requestTelegramService.newMessage(chatId, message);
         response.setText(mess);
         try{
             execute(response);
@@ -46,8 +42,7 @@ public class TelegramBotService extends TelegramLongPollingBot {
         }
     }
 
-    @SneakyThrows
-    public void sendMessage(String chatId, String message) {
+    public void sendMessage(String chatId, String message) throws TelegramApiException {
         SendMessage response = new SendMessage();
         response.setChatId(chatId);
         response.setText(message);

@@ -47,19 +47,6 @@
                     <form:button class="btn btn-color rounded-0 pt-0 pb-0 pr-4 pl-4">Dodaj</form:button>
                     </form:form>
                 </div>
-<%--                <form method="get" action="app/user/edit-user-setting/generate">--%>
-<%--                    <div class="form-group row">--%>
-<%--                        <label class="col-sm-2 label-size col-form-label">Telegram aktywacja</label>--%>
-<%--&lt;%&ndash;                        <c:if test="${isGenerate == true}">&ndash;%&gt;--%>
-<%--                            <div class="col-sm-10">--%>
-<%--                                <label class="col-sm-2 label-size col-form-label">${generatedCode}</label>--%>
-<%--                            </div>--%>
-<%--&lt;%&ndash;                        </c:if>&ndash;%&gt;--%>
-<%--                        <form hidden="hidden"  "${userSetting}"/>--%>
-<%--                        <form class="btn btn-color rounded-0 pt-0 pb-0 pr-4 pl-4">Generuj kod</form>--%>
-<%--                    </div>--%>
-
-<%--                </form>--%>
                     <br><br>
                         <div class="form-group row">
                             <label class="col-sm-2 label-size col-form-label">Telegram<br>Kod aktywacyjny<br>(ważny 15 min lub 3 próby autoryzacji)</label>
