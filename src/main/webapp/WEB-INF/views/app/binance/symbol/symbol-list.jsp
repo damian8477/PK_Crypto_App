@@ -10,13 +10,13 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
-<%@include file="../../head.jsp"%>
-<%@include file="../../header.jsp"%>
+<%@include file="../../../head.jsp"%>
+<%@include file="../../../header.jsp"%>
 <body>
 
 <section class="dashboard-section">
     <div class="row dashboard-nowrap">
-        <%@include file="../dashboard.jsp" %>
+        <%@include file="../../dashboard.jsp" %>
 
         <div class="m-4 p-3 width-medium">
             <div class="dashboard-content border-dashed p-3 m-4 view-height">
@@ -66,13 +66,14 @@
                                     <td class="col-1 color-price-degrease"><c:out value="${symbol.dayChangePercent}"/></td>
                                 </c:if>
                                 <td class="col-2 d-flex align-items-center justify-content-center flex-wrap">
-                                    <c:if test="${user.getRole() ne 'ROLE_ADMIN'}">
+
+                                    <sec:authorize access="hasRole('ROLE_ADMIN')">
                                         <a href="/app/binance/delete-symbol?symbolId=${symbol.getId()}"
                                            class="btn btn-danger rounded-0 text-light m-1">Usuń</a>
-                                    </c:if>
+                                    </sec:authorize>
                                     <a href="/app/binance/open-symbol?symbolId=${symbol.getId()}"
                                        class="btn btn-info rounded-0 text-light m-1">Otwórz</a>
-                                    <a href="/app/binance/alert?symbolId=${symbol.getId()}"
+                                    <a href="/app/alerts/alert?symbolId=${symbol.getId()}"
                                        class="btn btn-info rounded-0 text-light m-1">Alert</a>
                                     <c:if test="${symbol.open == true}">
                                         <a href="/app/binance/close?symbolId=${symbol.getId()}"
@@ -95,4 +96,4 @@
 </body>
 
 </html>
-<%@include file="../../footer.jsp"%>
+<%@include file="../../../footer.jsp"%>

@@ -1,6 +1,8 @@
 package pl.coderslab.service.entity;
 
 import org.hibernate.Hibernate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.coderslab.entity.user.User;
@@ -10,6 +12,8 @@ import javax.transaction.Transactional;
 
 @Service
 public class UserService {
+
+    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
     @Autowired
     private UserRepository userRepository;
@@ -21,6 +25,7 @@ public class UserService {
             Hibernate.initialize(user.getUserSetting());
             Hibernate.initialize(user.getStrategies());
             Hibernate.initialize(user.getOrders());
+            Hibernate.initialize(user.getAlerts());
         }
         return user;
     }
@@ -32,25 +37,29 @@ public class UserService {
         return user;
     }
 
+    public User getUserBasic(String username) {
+        return userRepository.findByUsername(username);
+    }
+
     @Transactional
     public long getUserId(String userName) {
         long userId = 0;
-        try{
+        try {
             userId = userRepository.getUserId(userName);
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println(e);
         }
         return userId;
     }
 
-    public void fillUser(User user){
+    public void fillUser(User user) {
         if (user != null) {
             Hibernate.initialize(user.getUserSetting());
             Hibernate.initialize(user.getStrategies());
             Hibernate.initialize(user.getOrders());
+            Hibernate.initialize(user.getAlerts());
         }
     }
-
 
 
 }

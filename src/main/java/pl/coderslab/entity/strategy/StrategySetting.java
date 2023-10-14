@@ -17,7 +17,7 @@ public class StrategySetting {
     private Integer id;
     @NotBlank
     private String name;
-    @Size(min=10)
+    @Size(min = 10)
     private String description;
     @Column(name = "admin_strategy")
     private boolean adminStrategy;

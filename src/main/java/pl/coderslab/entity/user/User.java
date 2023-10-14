@@ -1,8 +1,10 @@
 package pl.coderslab.entity.user;
 
 import lombok.Data;
+import pl.coderslab.entity.alert.Alert;
 import pl.coderslab.entity.orders.Order;
 import pl.coderslab.entity.strategy.Strategy;
+import pl.coderslab.model.AlertSetting;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
@@ -34,4 +36,6 @@ public class User {
     private List<Strategy> strategies = new ArrayList<>();
     @OneToMany(mappedBy = "user")
     private List<Order> orders = new ArrayList<>();
+    @OneToMany(mappedBy = "user")
+    private List<Alert> alerts = new ArrayList<>();
 }

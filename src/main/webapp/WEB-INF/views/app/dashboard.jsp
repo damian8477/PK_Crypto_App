@@ -19,6 +19,12 @@
         </a>
     </li>
     <li class="nav-item">
+        <a class="nav-link" href="/app/alerts/list">
+            <span>Alerty</span>
+            <i class="fas fa-angle-right"></i>
+        </a>
+    </li>
+    <li class="nav-item">
         <a class="nav-link" href="/app/strategy/list">
             <span>Strategie</span>
             <i class="fas fa-angle-right"></i>

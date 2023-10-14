@@ -1,12 +1,12 @@
 package pl.coderslab.service.entity;
 
 import lombok.RequiredArgsConstructor;
-import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
 import pl.coderslab.entity.user.UserSetting;
 import pl.coderslab.repository.UserSettingRepository;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -15,8 +15,11 @@ public class UserSettingService {
 
     @Transactional
     public UserSetting getUserSetting(int id) {
-        UserSetting userSetting = userSettingRepository.findById(id);
-        //Hibernate.initialize(userSetting.getUser());
-        return userSetting;
+        return userSettingRepository.findById(id);
+    }
+
+    @Transactional
+    public List<UserSetting> getUserSettingByUserId(Long userId) {
+        return userSettingRepository.findAllByUserId(userId);
     }
 }

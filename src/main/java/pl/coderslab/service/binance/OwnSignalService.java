@@ -1,8 +1,11 @@
 package pl.coderslab.service.binance;
 
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pl.coderslab.binance.client.SyncRequestClient;
+import pl.coderslab.controller.user.RegistrationController;
 import pl.coderslab.entity.strategy.StrategySetting;
 import pl.coderslab.entity.user.User;
 import pl.coderslab.entity.user.UserSetting;
@@ -24,12 +27,12 @@ import static java.util.Objects.isNull;
 @Service
 @RequiredArgsConstructor
 public class OwnSignalService {
-
-    private final BinanceService binanceService;
     private final BinanceUserInterface binanceSupport;
+    private static final Logger logger = LoggerFactory.getLogger(OwnSignalService.class);
 
-    public void checkOwnSignal(OwnSignal signal, SyncRequestClient syncRequestClient){
-        if(signal.getStrategySetting() == null){
+
+    public void checkOwnSignal(OwnSignal signal, SyncRequestClient syncRequestClient) {
+        if (signal.getStrategySetting() == null) {
             BigDecimal price = binanceSupport.getMarketPriceBigDecimal(syncRequestClient, signal.getSymbol());
 
             checkTpAndSl(signal, price);
@@ -42,33 +45,34 @@ public class OwnSignalService {
         }
     }
 
-    public  void checkTpAndSl(OwnSignal signal, BigDecimal mp){
+    public void checkTpAndSl(OwnSignal signal, BigDecimal mp) {
         BigDecimal tp = signal.getTakeProfit();
         BigDecimal sl = signal.getStopLoss();
-        if(signal.isTpPercent()) {
-            if(tp.compareTo(BigDecimal.valueOf(100.0)) > 0 || tp.compareTo(BigDecimal.valueOf(0)) <= 0){
+        if (signal.isTpPercent()) {
+            if (tp.compareTo(BigDecimal.valueOf(100.0)) > 0 || tp.compareTo(BigDecimal.valueOf(0)) <= 0) {
                 throw new IllegalArgumentException("% TakeProfit musi się zawierać w przedziale (0; 100>");
             }
         } else {
-             BigDecimal percent = ((tp.subtract(mp)).divide(mp, MathContext.DECIMAL32)).multiply(BigDecimal.valueOf(100)).abs();
-             if(percent.compareTo(BigDecimal.valueOf(50)) > 0){
-                 throw new IllegalArgumentException("TakeProfit musi być poniżej 50%");
-             }
+            BigDecimal percent = ((tp.subtract(mp)).divide(mp, MathContext.DECIMAL32)).multiply(BigDecimal.valueOf(100)).abs();
+            if (percent.compareTo(BigDecimal.valueOf(50)) > 0) {
+                throw new IllegalArgumentException("TakeProfit musi być poniżej 50%");
+            }
         }
-        if(signal.isSlPercent()) {
-            if(sl.compareTo(BigDecimal.valueOf(100.0)) > 0 || sl.compareTo(BigDecimal.valueOf(0)) <= 0){
+        if (signal.isSlPercent()) {
+            if (sl.compareTo(BigDecimal.valueOf(100.0)) > 0 || sl.compareTo(BigDecimal.valueOf(0)) <= 0) {
                 throw new IllegalArgumentException("% TakeProfit musi się zawierać w przedziale (0; 100>");
             }
         } else {
             BigDecimal percent = ((sl.subtract(mp)).divide(mp, MathContext.DECIMAL32)).multiply(BigDecimal.valueOf(100)).abs();
-            if(percent.compareTo(BigDecimal.valueOf(50)) > 0){
+            if (percent.compareTo(BigDecimal.valueOf(50)) > 0) {
                 throw new IllegalArgumentException("TakeProfit musi być poniżej 50%");
             }
         }
     }
-    public void checkCashType(OwnSignal signal, BigDecimal marketPrice){
+
+    public void checkCashType(OwnSignal signal, BigDecimal marketPrice) {
         CashType cashType = signal.getCashType();
-        switch (cashType){
+        switch (cashType) {
             case LOT -> {
 
                 break;
@@ -80,19 +84,22 @@ public class OwnSignalService {
             case PERCENT -> {
 
                 break;
-            }default -> {
+            }
+            default -> {
                 throw new IllegalArgumentException("Wybierz rodzaj płatnosci");
             }
         }
     }
-    public void checkOrderSide(OwnSignal signal, BigDecimal marketPrice){
-    }
-    public void checkTypeOrder(OwnSignal signal, BigDecimal marketPrice){
 
+    public void checkOrderSide(OwnSignal signal, BigDecimal marketPrice) {
     }
 
+    public void checkTypeOrder(OwnSignal signal, BigDecimal marketPrice) {
 
-    public CommonSignal createCommonSignal(User user, OwnSignal signal, StrategySetting strategySetting, UserSetting userSetting, SyncRequestClient syncRequestClient){
+    }
+
+
+    public CommonSignal createCommonSignal(User user, OwnSignal signal, StrategySetting strategySetting, UserSetting userSetting, SyncRequestClient syncRequestClient) {
         double marketPrice = binanceSupport.getMarketPriceDouble(syncRequestClient, signal.getSymbol());
         return CommonSignal.builder()
                 .symbol(signal.getSymbol())
@@ -108,15 +115,15 @@ public class OwnSignalService {
                 .build();
     }
 
-    private String getLot(User user, StrategySetting strategySetting, OwnSignal signal, double marketPrice, SyncRequestClient syncRequestClient){
-        switch (signal.getCashType()){
+    private String getLot(User user, StrategySetting strategySetting, OwnSignal signal, double marketPrice, SyncRequestClient syncRequestClient) {
+        switch (signal.getCashType()) {
             case LOT -> {
                 return signal.getLot().toString();
             }
-            case DOLAR ->{
+            case DOLAR -> {
                 return binanceSupport.calculateLotSizeQuantityMargin(signal.getSymbol(), signal.getAmount().doubleValue(), signal.getLever(), syncRequestClient, marketPrice).getLot();
             }
-            case PERCENT ->{
+            case PERCENT -> {
                 double balance = binanceSupport.getUserBalance(syncRequestClient, signal.getSymbol());
                 double amount = (signal.getPercentOfAccount().doubleValue() / 100.0) * balance;
                 return binanceSupport.calculateLotSizeQuantityMargin(signal.getSymbol(), amount, signal.getLever(), syncRequestClient, marketPrice).getLot();
@@ -125,10 +132,10 @@ public class OwnSignalService {
         throw new IllegalArgumentException("Zły rodzaj płatności (lot, dolar lub %)");
     }
 
-    private List<String> getTakeProfit(BigDecimal tp, StrategySetting strategySetting){
+    private List<String> getTakeProfit(BigDecimal tp, StrategySetting strategySetting) {
         List<String> takeProfits = new ArrayList<>();
-        if(!isNull(strategySetting)){
-            if(strategySetting.isActiveBasicTp() && tp == null){
+        if (!isNull(strategySetting)) {
+            if (strategySetting.isActiveBasicTp() && tp == null) {
                 //takeProfits.add()
             } else {
                 takeProfits.add(tp.toString());
@@ -139,10 +146,10 @@ public class OwnSignalService {
         return takeProfits;
     }
 
-    private List<String> getStopLoss(BigDecimal sl, StrategySetting strategySetting){
+    private List<String> getStopLoss(BigDecimal sl, StrategySetting strategySetting) {
         List<String> stopLossList = new ArrayList<>();
-        if(!isNull(strategySetting)){
-            if(strategySetting.isActiveBasicTp() && sl == null){
+        if (!isNull(strategySetting)) {
+            if (strategySetting.isActiveBasicTp() && sl == null) {
 
             } else {
                 stopLossList.add(sl.toString());

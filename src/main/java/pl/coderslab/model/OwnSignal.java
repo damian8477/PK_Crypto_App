@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import pl.coderslab.binance.client.model.enums.OrderSide;
 import pl.coderslab.binance.client.model.enums.OrderType;
 import pl.coderslab.binance.client.model.enums.PositionSide;
 import pl.coderslab.entity.strategy.StrategySetting;
@@ -19,7 +18,7 @@ import java.math.BigDecimal;
 @Builder
 public class OwnSignal {
     private StrategySetting strategySetting;
-    private UserSetting userSetting;//todo
+    private UserSetting userSetting;
     private String symbol;
     private PositionSide positionSide;
     private OrderType typeOrder;
@@ -34,7 +33,7 @@ public class OwnSignal {
     private BigDecimal percentOfAccount;
     private int lever = 10;
 
-    public OwnSignal(String symbol){
+    public OwnSignal(String symbol) {
         this.symbol = symbol;
     }
 }

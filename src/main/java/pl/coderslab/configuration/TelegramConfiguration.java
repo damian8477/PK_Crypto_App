@@ -13,6 +13,7 @@ import pl.coderslab.service.telegram.TelegramBotService;
 @RequiredArgsConstructor
 public class TelegramConfiguration {
     private final RequestTelegramService requestTelegramService;
+
     @Bean
     public void telegramBotsApi() throws TelegramApiException {
         TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);

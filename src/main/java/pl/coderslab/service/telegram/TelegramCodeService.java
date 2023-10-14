@@ -1,14 +1,15 @@
 package pl.coderslab.service.telegram;
 
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import pl.coderslab.controller.user.RegistrationController;
 import pl.coderslab.entity.user.TelegramCode;
 import pl.coderslab.entity.user.User;
 import pl.coderslab.entity.user.UserSetting;
 import pl.coderslab.repository.TelegramCodeRepository;
-import pl.coderslab.repository.UserRepository;
 import pl.coderslab.repository.UserSettingRepository;
-import pl.coderslab.service.entity.UserService;
 
 import java.util.Random;
 
@@ -16,8 +17,9 @@ import java.util.Random;
 @RequiredArgsConstructor
 public class TelegramCodeService {
     private final UserSettingRepository userSettingRepository;
-    private final UserRepository userRepository;
     private final TelegramCodeRepository telegramCodeRepository;
+
+    private static final Logger logger = LoggerFactory.getLogger(TelegramCodeService.class);
 
 
     public String checkCode(User user, String code, String chatId) {

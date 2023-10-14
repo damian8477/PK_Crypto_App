@@ -27,27 +27,27 @@ public class UsersController {
     private final TelegramCodeService telegramCodeService;
 
     @PostMapping("/delete")
-    public String getAdd(@RequestParam Long id){
+    public String getAdd(@RequestParam Long id) {
         userRepository.deleteById(id);
         return "redirect:/admin/user-list";
     }
 
     @GetMapping("/settings")
-    public String getSettings(Model model){
+    public String getSettings(Model model) {
         String userName = SecurityContextHolder.getContext().getAuthentication().getName();
         model.addAttribute("user", userService.getUserWithUserSettingsByUserName(userName));
         return "/app/settings/user-setting";
     }
 
     @GetMapping("/add-user-setting")
-    public String getAddUserSettingView(Model model){
+    public String getAddUserSettingView(Model model) {
         model.addAttribute("userSetting", new UserSetting());
         return "/app/settings/add-user-setting";
     }
 
     @PostMapping("/add-user-setting")
-    public String addUserSettingView(@Valid UserSetting userSetting, BindingResult bindingResult, Model model){
-        if(bindingResult.hasErrors()){
+    public String addUserSettingView(@Valid UserSetting userSetting, BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
             model.addAttribute("userSetting", userSetting);
             return "/app/settings/add-user-setting";
         }
@@ -58,9 +58,8 @@ public class UsersController {
     }
 
 
-
     @GetMapping("/edit-user-setting")
-    public String getEditUserSettingView(@RequestParam Integer settingId,  Model model){
+    public String getEditUserSettingView(@RequestParam Integer settingId, Model model) {
         UserSetting userSetting = userSettingService.getUserSetting(settingId);
         model.addAttribute("userSetting", userSetting);
         model.addAttribute("generatedCode", telegramCodeService.getCode(6, userSetting.getUser()));
@@ -68,7 +67,7 @@ public class UsersController {
         return "/app/settings/edit-user-setting";
     }
 
-//    @GetMapping("/edit-user-setting/generate")
+    //    @GetMapping("/edit-user-setting/generate")
 //    public String generateCode(Model model, @RequestParam Integer settingId){
 //        UserSetting userSetting = userSettingService.getUserSetting(settingId);
 //        model.addAttribute("userSetting", userSetting);
@@ -77,8 +76,8 @@ public class UsersController {
 //        return "/app/settings/edit-user-setting";
 //    }
     @PostMapping("/edit-user-setting")
-    public String editUserSettingView(@Valid UserSetting userSetting, BindingResult bindingResult, Model model){
-        if(bindingResult.hasErrors()){
+    public String editUserSettingView(@Valid UserSetting userSetting, BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
             model.addAttribute("userSetting", userSetting);
             return "/app/settings/edit-user-setting";
         }
@@ -90,13 +89,13 @@ public class UsersController {
 
 
     @GetMapping("/delete-user-setting")
-    public String getDeleteUserSetting(@RequestParam int settingId, Model model){
+    public String getDeleteUserSetting(@RequestParam int settingId, Model model) {
         model.addAttribute("settingId", settingId);
         return "/app/settings/delete-user-setting";
     }
 
     @PostMapping("/delete-user-setting")
-    public String deleteUserSetting(@RequestParam int settingId){
+    public String deleteUserSetting(@RequestParam int settingId) {
         userSettingRepository.deleteById(settingId);
         return "redirect:/app/user/settings";
     }

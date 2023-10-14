@@ -11,6 +11,7 @@ import pl.coderslab.configuration.DatabaseConverter;
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 
+
 @Entity
 @Table(name = "user_settings")
 @Data
@@ -37,7 +38,6 @@ public class UserSetting {
     private boolean activeSignal;
     @ManyToOne
     private User user;
-
 
 
 }

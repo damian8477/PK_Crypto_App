@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import pl.coderslab.entity.orders.Order;
 import pl.coderslab.entity.user.User;
 import pl.coderslab.repository.OrderRepository;
-import pl.coderslab.service.binance.BinanceUserService;
+import pl.coderslab.service.binance.BinanceBasicService;
 import pl.coderslab.service.binance.OrderService;
 import pl.coderslab.service.binance.orders.CloseService;
 import pl.coderslab.service.entity.UserService;
@@ -30,7 +30,7 @@ public class OrderController {
     private final OrderService orderService;
     private final UserService userService;
     private final CloseService closeService;
-    private final BinanceUserService binanceUserService;
+    private final BinanceBasicService binanceUserService;
 
     @GetMapping("/list")
     public String getOrderList(Model model, @AuthenticationPrincipal UserDetails authenticatedUser) {
@@ -40,19 +40,20 @@ public class OrderController {
         return "/app/binance/orders/order-list";
     }
 
-    @GetMapping("/close-order") //todo zrobic najpierw przekazanie widoku potwierdzajace, ale moze w sumie wyslac tez ile jest na koncie i pobrac ile z tego zamknac sprawdzajac czy jest to te 5$
+    @GetMapping("/close-order")
+    //todo zrobic najpierw przekazanie widoku potwierdzajace, ale moze w sumie wyslac tez ile jest na koncie i pobrac ile z tego zamknac sprawdzajac czy jest to te 5$
     public String getCloseOrder(Model model,
                                 @RequestParam(required = false) Long orderId,
                                 @RequestParam(required = false) String symbol,
-                                @AuthenticationPrincipal UserDetails authenticatedUser){
+                                @AuthenticationPrincipal UserDetails authenticatedUser) {
         User user = userService.getUserWithUserSettingsByUserName(authenticatedUser.getUsername());
-        if(!isNull(orderId)){
+        if (!isNull(orderId)) {
             Order order = orderRepository.findByUserId(user.getId()).stream()
-                    .filter(s->s.getId() == orderId).findFirst().orElse(null);
-            if(!isNull(order)){
+                    .filter(s -> s.getId() == orderId).findFirst().orElse(null);
+            if (!isNull(order)) {
                 closeService.closeOrderByUser(order, user, null);//todo
             }
-        } else if(!isNull(symbol)) {
+        } else if (!isNull(symbol)) {
             Order order = orderService.getOrderBySymbol(user, symbol);
             model.addAttribute("order", order);
             model.addAttribute("marketPrice", binanceUserService.getMarketPriceString(user, symbol));
@@ -62,7 +63,7 @@ public class OrderController {
     }
 
     @PostMapping("/close-order")
-    public String closeSymbol(Order order, @AuthenticationPrincipal UserDetails authenticatedUser){
+    public String closeSymbol(Order order, @AuthenticationPrincipal UserDetails authenticatedUser) {
         User user = userService.getUserWithUserSettingsByUserName(authenticatedUser.getUsername());
         //todo sprawdzenie czy lot jest prawidłowy powyzej 5$ i w rozdzielczosci coina
         closeService.closeOrderByUser(order, user, order.getLot());

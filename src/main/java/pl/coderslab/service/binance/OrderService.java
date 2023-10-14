@@ -22,6 +22,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.util.Objects.isNull;
+
 @Service
 @RequiredArgsConstructor
 public class OrderService {
@@ -68,26 +70,41 @@ public class OrderService {
         SyncRequestClient syncRequestClient = syncService.sync(user.getUserSetting().get(0));
         List<PositionRisk> positionRiskList = syncRequestClient.getPositionRisk().stream()
                 .filter((s -> s.getPositionAmt().doubleValue() != 0.0))
-                .filter(s -> !orderList.stream().anyMatch(order -> order.getSymbolName().equals(s.getSymbol())))
                 .toList();
-        positionRiskList.forEach(s -> {
-            orderList.add(Order.builder()
-                    .symbolName(s.getSymbol())
-                    .appOrder(false)
-                    .id(0L)
-                    .isStrategy(false)
-                    .sl("")//todo tutaj moze pobrac zlecenia do danego coina
-                    .tp("")//todo
-                    .user(user)
-                    .side(s.getPositionSide())
-                    .lot(s.getPositionAmt().toString())
-                    .entry(s.getEntryPrice().toString())
-                    .amount(String.valueOf(Math.round(100.0 * s.getEntryPrice().doubleValue() * s.getPositionAmt().doubleValue() / s.getLeverage().doubleValue()) / 100.0))
-                    .profitProcent(s.getUnrealizedProfit().doubleValue())
-
-                    .build());
-        });
+        fillProfit(orderList, positionRiskList);
+        positionRiskList.stream()
+                .filter(s -> !orderList.stream().anyMatch(order -> order.getSymbolName().equals(s.getSymbol())))
+                .forEach(s -> {
+                    orderList.add(Order.builder()
+                            .symbolName(s.getSymbol())
+                            .appOrder(false)
+                            .id(0L)
+                            .isStrategy(false)
+                            .sl("")//todo tutaj moze pobrac zlecenia do danego coina
+                            .tp("")//todo
+                            .user(user)
+                            .side(s.getPositionSide())
+                            .lot(s.getPositionAmt().toString())
+                            .entry(s.getEntryPrice().toString())
+                            .leverage(s.getLeverage().intValue())
+                            .amount(String.valueOf(Math.round(100.0 * s.getEntryPrice().doubleValue() * s.getPositionAmt().doubleValue() / s.getLeverage().doubleValue()) / 100.0))
+                            .profitProcent(s.getUnrealizedProfit().setScale(2, RoundingMode.HALF_UP).doubleValue())
+                            .build());
+                });
         return orderList;
+    }
+
+    private void fillProfit(List<Order> orderList, List<PositionRisk> positionRiskList) {
+        orderList.forEach(order -> {
+            PositionRisk position = positionRiskList.stream()
+                    .filter(s -> s.getSymbol().equals(order.getSymbolName())).findFirst().orElse(null);
+            if (!isNull(position)) {
+                order.setProfitProcent(position.getUnrealizedProfit().setScale(2, RoundingMode.HALF_UP).doubleValue());
+                order.setLeverage(position.getLeverage().intValue());
+                order.setAmount(String.valueOf(Math.round(100.0 * position.getEntryPrice().doubleValue() * position.getPositionAmt().doubleValue() / position.getLeverage().doubleValue()) / 100.0));
+
+            }
+        });
     }
 
 

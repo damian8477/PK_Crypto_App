@@ -3,41 +3,44 @@ package pl.coderslab.service.telegram;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import pl.coderslab.controller.user.RegistrationController;
 
 @Service
 @RequiredArgsConstructor
 public class TelegramBotService extends TelegramLongPollingBot {
     private final RequestTelegramService requestTelegramService;
+    private static final Logger logger = LoggerFactory.getLogger(TelegramBotService.class);
+
 
     @Override
     public String getBotUsername() {
-//        return System.getenv("TELEGRAM_NAME").getBytes().toString();
         return requestTelegramService.botName;
     }
 
     @Override
     public String getBotToken() {
-//        return System.getenv("TELEGRAM_TOKEN").getBytes().toString();
         return requestTelegramService.token;
     }
 
     @Override
     public void onUpdateReceived(Update update) {
-        System.out.println(update.getMessage().getText()    );
+        System.out.println(update.getMessage().getText());
         String message = update.getMessage().getText();
         SendMessage response = new SendMessage();
         response.setChatId(update.getMessage().getChatId().toString());
         String chatId = update.getMessage().getChatId().toString();
         String mess = requestTelegramService.newMessage(chatId, message);
         response.setText(mess);
-        try{
+        try {
             execute(response);
-        }catch (TelegramApiException e){
+        } catch (TelegramApiException e) {
             System.out.println(e);//todo logger
         }
     }
@@ -46,20 +49,20 @@ public class TelegramBotService extends TelegramLongPollingBot {
         SendMessage response = new SendMessage();
         response.setChatId(chatId);
         response.setText(message);
-        try{
+        try {
             execute(response);
-        }catch (TelegramApiException e){
-            try{
+        } catch (TelegramApiException e) {
+            try {
                 String[] messTab = message.toString().split("------");
-                for(String outPart : messTab){
+                for (String outPart : messTab) {
                     response.setText(outPart);
                     execute(response);
                 }
                 System.out.println(e);
-            } catch (Exception f){
+            } catch (Exception f) {
                 for (int i = 0; i < message.length(); i += 1500) {
                     int next = i + 1500;
-                    if(next > message.length()) next = message.length();
+                    if (next > message.length()) next = message.length();
                     String mess = message.substring(i, next);
                     response.setText(mess);
                     execute(response);

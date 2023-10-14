@@ -12,9 +12,13 @@ import java.util.Optional;
 
 public interface BinanceUserInterface {
     void setMarginType(SyncRequestClient syncRequestClient, MarginType marginType, String symbol);
+
     OrderSide getOrderSideForOpen(PositionSide orderSide);
+
     OrderSide getOrderSideForClose(PositionSide orderSide, double positionAmount);
+
     int setLeverage(SyncRequestClient syncRequestClient, int leverage, String symbol);
+
     String getMarketPriceString(SyncRequestClient syncRequestClient, String symbol);
 
     String getMarketPriceString(User user, String symbol);

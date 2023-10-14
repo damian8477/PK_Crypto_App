@@ -15,39 +15,40 @@ public class AdminController {
 
     private final UserRepository userRepository;
     private final UserService userService;
+
     @GetMapping("/user-list")
-    public String getUserList(Model model){
+    public String getUserList(Model model) {
         model.addAttribute("users", userRepository.findAll());
         return "admin/userslist";
     }
 
     @GetMapping("/edit")
-    public String getEditView(Model model, @RequestParam Long userId){
+    public String getEditView(Model model, @RequestParam Long userId) {
         model.addAttribute("user", userRepository.findById(userId));
         return "admin/edit";
     }
 
     @PostMapping("/edit")
-    public String postEditView(User user){
+    public String postEditView(User user) {
         userRepository.save(user);
         return "redirect:/admin/user-list";
     }
 
     @GetMapping("/delete")
-    public String getDeleteView(Model model, @RequestParam Long userId){
+    public String getDeleteView(Model model, @RequestParam Long userId) {
         model.addAttribute("user", userService.getUserWithUserSettings(userId));
         return "admin/delete";
     }
 
     @PostMapping("/delete")
-    public String postEditView(@RequestParam Long userId){
+    public String postEditView(@RequestParam Long userId) {
         userRepository.deleteById(userId);
-        return  "redirect:/admin/user-list";
+        return "redirect:/admin/user-list";
     }
 
     @PostMapping("/deletet")
-    public String postEditViedw(@RequestParam Long userId){
+    public String postEditViedw(@RequestParam Long userId) {
         userRepository.deleteById(userId);
-        return  "redirect:/admin/user-list";
+        return "redirect:/admin/user-list";
     }
 }

@@ -1,6 +1,8 @@
 package pl.coderslab.service.binance;
 
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pl.coderslab.binance.client.SyncRequestClient;
 import pl.coderslab.binance.client.model.enums.CandlestickInterval;
@@ -13,6 +15,7 @@ import pl.coderslab.binance.client.model.market.MarkPrice;
 import pl.coderslab.binance.client.model.trade.AccountBalance;
 import pl.coderslab.binance.client.model.trade.MarginLot;
 import pl.coderslab.binance.client.model.trade.Order;
+import pl.coderslab.controller.user.RegistrationController;
 import pl.coderslab.entity.user.User;
 import pl.coderslab.enums.MarginType;
 import pl.coderslab.interfaces.BinanceUserInterface;
@@ -28,9 +31,11 @@ import static java.util.Objects.isNull;
 
 @Service
 @RequiredArgsConstructor
-public class BinanceUserService implements BinanceUserInterface {
+public class BinanceBasicService implements BinanceUserInterface {
 
     private final SyncService syncService;
+    private static final Logger logger = LoggerFactory.getLogger(BinanceBasicService.class);
+
 
     public void setMarginType(SyncRequestClient syncRequestClient, MarginType marginType, String cryptoName) {
         try {
@@ -47,6 +52,7 @@ public class BinanceUserService implements BinanceUserInterface {
             return OrderSide.SELL;
         }
     }
+
     @Override
     public OrderSide getOrderSideForClose(PositionSide positionSide, double positionAmount) {
         if (positionSide.equals(PositionSide.LONG) || (positionAmount != 0 && positionAmount > 0)) {
@@ -71,18 +77,18 @@ public class BinanceUserService implements BinanceUserInterface {
 
     @Override
     public String getMarketPriceString(SyncRequestClient syncRequestClient, String symbol) {
-         if (isNull(syncRequestClient)) {
-             syncRequestClient = syncService.syncRequestClient;
-         }
-         List<MarkPrice> marketPrices = syncRequestClient.getMarkPrice(symbol);
-         return marketPrices.get(0).getMarkPrice().toString();
+        if (isNull(syncRequestClient)) {
+            syncRequestClient = syncService.sync(null);
+        }
+        List<MarkPrice> marketPrices = syncRequestClient.getMarkPrice(symbol);
+        return marketPrices.get(0).getMarkPrice().toString();
     }
 
     @Override
     public String getMarketPriceString(User user, String symbol) {
         SyncRequestClient syncRequestClient = syncService.sync(user.getUserSetting().get(0));
         if (isNull(syncRequestClient)) {
-            syncRequestClient = syncService.syncRequestClient;
+            syncRequestClient = syncService.sync(null);
         }
         List<MarkPrice> marketPrices = syncRequestClient.getMarkPrice(symbol);
         return marketPrices.get(0).getMarkPrice().toString();
@@ -91,19 +97,21 @@ public class BinanceUserService implements BinanceUserInterface {
     @Override
     public double getMarketPriceDouble(SyncRequestClient syncRequestClient, String symbol) {
         if (isNull(syncRequestClient)) {
-            syncRequestClient = syncService.syncRequestClient;
+            syncRequestClient = syncService.sync(null);
         }
         List<MarkPrice> marketPrices = syncRequestClient.getMarkPrice(symbol);
         return marketPrices.get(0).getMarkPrice().doubleValue();
     }
+
     @Override
     public BigDecimal getMarketPriceBigDecimal(SyncRequestClient syncRequestClient, String symbol) {
         if (isNull(syncRequestClient)) {
-            syncRequestClient = syncService.syncRequestClient;
+            syncRequestClient = syncService.sync(null);
         }
         List<MarkPrice> marketPrices = syncRequestClient.getMarkPrice(symbol);
         return marketPrices.get(0).getMarkPrice();
     }
+
     @Override
     public String aroundValueCryptoName(SyncRequestClient syncRequestClient, String cryptoName, String div) {
         List<Candlestick> candlestickList = syncRequestClient.getCandlestick(cryptoName, CandlestickInterval.FIVE_MINUTES, null, null, 2);
@@ -119,8 +127,9 @@ public class BinanceUserService implements BinanceUserInterface {
         }
         return div;
     }
+
     @Override
-    public void cancelOpenOrder(SyncRequestClient syncRequestClient, String symbol, OrderSide orderSide){
+    public void cancelOpenOrder(SyncRequestClient syncRequestClient, String symbol, OrderSide orderSide) {
         try {
             String side = orderSide.toString();
             List<Order> listOrder = syncRequestClient.getOpenOrders(symbol).stream()

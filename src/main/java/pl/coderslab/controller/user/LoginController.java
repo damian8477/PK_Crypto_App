@@ -20,7 +20,7 @@ public class LoginController {
     }
 
     @GetMapping("/starter")
-    public String startPage(Model model){
+    public String startPage(Model model) {
         System.out.println(model.getAttribute("username"));
         System.out.println("starter");
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

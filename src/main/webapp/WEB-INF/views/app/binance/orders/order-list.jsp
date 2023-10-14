@@ -56,9 +56,14 @@
                                     <td class="col-1"><c:out value="${order.lot}"/></td>
                                     <td class="col-1"><c:out value="${order.amount}"/></td>
                                     <td class="col-1"><c:out value="${order.side}"/></td>
-                                    <td class="col-1"><c:out value="${order.profitProcent}"/></td>
+                                    <c:if test="${order.profitProcent >= 0}">
+                                        <td class="col-1" style="color: green"><c:out value="${order.profitProcent}"/></td>
+                                    </c:if>
+                                    <c:if test="${order.profitProcent < 0}">
+                                        <td class="col-1" style="color: red"><c:out value="${order.profitProcent}"/></td>
+                                    </c:if>
                                     <td class="col-1"><c:out value="${order.leverage}"/></td>
-                                    <td class="col-1"><c:out value="${order.created}"/></td>
+                                    <td class="col-1 dateTime"><c:out value="${order.created}"/></td>
                                     <td class="col-2 d-flex align-items-center justify-content-center flex-wrap">
                                         <a href="/app/orders/close-order?orderId=${order.id}"
                                                class="btn btn-danger rounded-0 text-light m-1">Zamknij</a>
@@ -105,7 +110,12 @@
                                     <td class="col-1"><c:out value="${order.lot}"/></td>
                                     <td class="col-1"><c:out value="${order.amount}"/></td>
                                     <td class="col-1"><c:out value="${order.side}"/></td>
-                                    <td class="col-1"><c:out value="${order.profitProcent}"/></td>
+                                    <c:if test="${order.profitProcent >= 0}">
+                                        <td class="col-1" style="color: green"><c:out value="${order.profitProcent}"/></td>
+                                    </c:if>
+                                    <c:if test="${order.profitProcent < 0}">
+                                        <td class="col-1" style="color: red"><c:out value="${order.profitProcent}"/></td>
+                                    </c:if>
                                     <td class="col-1"><c:out value="${order.leverage}"/></td>
                                     <td class="col-1"><c:out value="${order.created}"/></td>
                                     <td class="col-2 d-flex align-items-center justify-content-center flex-wrap">
@@ -124,7 +134,27 @@
         </div>
     </div>
 </section>
+<script>
+    let dateTimeElement = document.getElementsByClassName('dateTime');
+    let dateFormatter = new Intl.DateTimeFormat('en-GB', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false
+    });
 
+    for (var i = 0; i < dateTimeElement.length; i++) {
+        var originalDateTimeString = dateTimeElement[i].innerText;
+        var originalDateTime = new Date(originalDateTimeString);
+        var formattedDateTime = dateFormatter.format(originalDateTime);
+        dateTimeElement[i].innerText = formattedDateTime;
+    }
+
+
+</script>
 </body>
 
 </html>

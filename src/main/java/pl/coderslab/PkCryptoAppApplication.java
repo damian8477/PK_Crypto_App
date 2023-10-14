@@ -11,9 +11,8 @@ import pl.coderslab.configuration.TokenConfigProperties;
 @EnableScheduling
 @EnableConfigurationProperties(TokenConfigProperties.class)
 public class PkCryptoAppApplication {
-
-	public static void main(String[] args) {
-		SpringApplication.run(PkCryptoAppApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(PkCryptoAppApplication.class, args);
+    }
 
 }

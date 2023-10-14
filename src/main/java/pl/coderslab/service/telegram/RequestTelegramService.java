@@ -1,8 +1,11 @@
 package pl.coderslab.service.telegram;
 
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import pl.coderslab.controller.user.RegistrationController;
 import pl.coderslab.entity.user.User;
 import pl.coderslab.entity.user.UserSetting;
 import pl.coderslab.repository.UserRepository;
@@ -20,15 +23,17 @@ public class RequestTelegramService {
     private final TelegramCodeService telegramCodeService;
     private final UserRepository userRepository;
 
+    private static final Logger logger = LoggerFactory.getLogger(RequestTelegramService.class);
+
+
     @Value("${telegram.token.var.token}")
-    public  String token;
+    public String token;
     @Value("${telegram.token.var.name}")
     public String botName;
 
 
-
     public String newMessage(String chatId, String mess) {
-        if(userSettingRepository.existsByTelegramChatId(chatId)){
+        if (userSettingRepository.existsByTelegramChatId(chatId)) {
             UserSetting userSetting = userSettingRepository.findByTelegramChatId(chatId);
             if (mess.equals("/logout")) {
                 userSetting.setTelegramChatId("");
@@ -39,10 +44,10 @@ public class RequestTelegramService {
             return "Oczekuj na powiadomienia, menu użytkownika, będzie nie długo dostępne.";
         } else {
             String[] split = mess.split(" ");
-            if(split.length == 2){
+            if (split.length == 2) {
                 String username = split[0];
                 String code = split[1];
-                if(userRepository.existsByUsername(username)){
+                if (userRepository.existsByUsername(username)) {
                     User user = userService.getUserWithUserSettingsByUserName(username);
                     return telegramCodeService.checkCode(user, code, chatId);
                 }

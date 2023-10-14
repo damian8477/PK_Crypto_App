@@ -19,24 +19,24 @@ public class StrategyController {
     private final StrategySettingRepository strategySettingRepository;
 
     @GetMapping("/list")
-    public String getStrategyList(Model model){
+    public String getStrategyList(Model model) {
         model.addAttribute("strategies", strategySettingRepository.findAll());
         return "/app/strategy/list";
     }
 
     @GetMapping("/add")
-    public String getAddStrategy(Model model){
+    public String getAddStrategy(Model model) {
         model.addAttribute("strategy", new StrategySetting());
         return "/app/strategy/add";
     }
 
     @PostMapping("/add")
-    public String addStrategy(@Valid @ModelAttribute("strategy") StrategySetting strategySetting, BindingResult bindingResult, Model model, @AuthenticationPrincipal UserDetails authenticatedUser){
-        if(bindingResult.hasErrors()){
+    public String addStrategy(@Valid @ModelAttribute("strategy") StrategySetting strategySetting, BindingResult bindingResult, Model model, @AuthenticationPrincipal UserDetails authenticatedUser) {
+        if (bindingResult.hasErrors()) {
             return "/app/strategy/add";
         }
-        if(authenticatedUser.getAuthorities().stream()
-                .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"))){
+        if (authenticatedUser.getAuthorities().stream()
+                .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"))) {
             strategySetting.setAdminStrategy(true);
         }
         strategySettingRepository.save(strategySetting);
@@ -44,13 +44,13 @@ public class StrategyController {
     }
 
     @GetMapping("/delete")
-    public String getDeleteStrategy(@RequestParam int strategyId, Model model){
+    public String getDeleteStrategy(@RequestParam int strategyId, Model model) {
         model.addAttribute("strategyId", strategyId);
         return "/app/strategy/delete";
     }
 
     @PostMapping("/delete")
-    public String deleteStrategy(@RequestParam int strategyId){
+    public String deleteStrategy(@RequestParam int strategyId) {
         strategySettingRepository.deleteById(strategyId); //todo zrobic widoki
         return "redirect:/app/strategy/list";
     }

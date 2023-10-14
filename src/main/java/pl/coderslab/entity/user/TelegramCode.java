@@ -12,7 +12,9 @@ import java.time.LocalDateTime;
 @Table(name = "telegram_key")
 @Entity
 @Data
-@NoArgsConstructor @AllArgsConstructor @Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class TelegramCode {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

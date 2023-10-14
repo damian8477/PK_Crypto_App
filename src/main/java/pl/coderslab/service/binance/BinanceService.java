@@ -1,42 +1,32 @@
 package pl.coderslab.service.binance;
 
 import lombok.RequiredArgsConstructor;
-import org.hibernate.validator.internal.util.Contracts;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pl.coderslab.binance.client.SyncRequestClient;
 import pl.coderslab.binance.client.model.enums.*;
 import pl.coderslab.binance.client.model.market.Candlestick;
-import pl.coderslab.binance.client.model.market.MarkPrice;
 import pl.coderslab.binance.client.model.trade.Income;
-import pl.coderslab.binance.client.model.trade.MarginLot;
 import pl.coderslab.binance.client.model.trade.Order;
 import pl.coderslab.binance.client.model.trade.PositionRisk;
-import pl.coderslab.controller.user.RegistrationController;
 import pl.coderslab.entity.orders.Symbol;
-import pl.coderslab.entity.strategy.StrategySetting;
 import pl.coderslab.entity.user.User;
 import pl.coderslab.entity.user.UserSetting;
 import pl.coderslab.interfaces.BinanceUserInterface;
 import pl.coderslab.model.BinanceConfirmOrder;
 import pl.coderslab.model.CommonSignal;
 import pl.coderslab.model.CryptoName;
-import pl.coderslab.model.OwnSignal;
 import pl.coderslab.repository.SymbolRepository;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -47,14 +37,15 @@ public class BinanceService {
     private final BinanceUserInterface binanceSupport;
     private final OrderService orderService;
 
-    private static final Logger logger = LoggerFactory.getLogger(RegistrationController.class);
+    private static final Logger logger = LoggerFactory.getLogger(BinanceService.class);
 
     public List<CryptoName> getSymbols() {
         List<CryptoName> cryptoNameList = new ArrayList<>();
         List<Symbol> symbolList = symbolRepository.findAll();
+        SyncRequestClient syncRequestClient = syncService.sync(null);
         if (symbolList != null) {
             symbolList.forEach(s -> {
-                List<Candlestick> candlestick = syncService.syncRequestClient.getCandlestick(s.getName(), CandlestickInterval.DAILY, null, null, 1);
+                List<Candlestick> candlestick = syncRequestClient.getCandlestick(s.getName(), CandlestickInterval.DAILY, null, null, 1);
                 if (candlestick.size() > 0) {
                     Candlestick cd = candlestick.get(0);
                     cryptoNameList.add(new CryptoName(
@@ -75,7 +66,7 @@ public class BinanceService {
     public CryptoName getSymbols(int symbolId) {
         Symbol symbol = symbolRepository.findById(symbolId).orElse(null);
         if (symbol != null) {
-            List<Candlestick> candlestick = syncService.syncRequestClient.getCandlestick(symbol.getName(), CandlestickInterval.DAILY, null, null, 1);
+            List<Candlestick> candlestick = syncService.sync(null).getCandlestick(symbol.getName(), CandlestickInterval.DAILY, null, null, 1);
             if (candlestick.size() > 0) {
                 Candlestick cd = candlestick.get(0);
                 return new CryptoName(
@@ -93,7 +84,7 @@ public class BinanceService {
     }
 
     public List<String> getSymbolNames() {
-        return syncService.syncRequestClient.getPositionRisk().stream()
+        return syncService.sync(null).getPositionRisk().stream()
                 .map(PositionRisk::getSymbol)
                 .toList();
     }
