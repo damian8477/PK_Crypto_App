@@ -1,7 +1,6 @@
 package pl.coderslab.entity.strategy;
 
 import lombok.Data;
-import org.springframework.data.repository.cdi.Eager;
 import pl.coderslab.entity.user.User;
 
 import javax.persistence.*;
@@ -20,8 +19,8 @@ public class Strategy {
     private boolean active;
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_strategy",
-    joinColumns = @JoinColumn(name = "user_id"),
-    inverseJoinColumns = @JoinColumn(name = "strategy_id"))
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "strategy_id"))
     private List<User> users;
 
 }

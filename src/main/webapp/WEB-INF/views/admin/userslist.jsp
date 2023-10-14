@@ -6,7 +6,7 @@
 <body>
 <section class="dashboard-section">
     <div class="row dashboard-nowrap">
-        <%@include file="../app/Dashboard.jsp" %>
+        <%@include file="../app/dashboard.jsp" %>
 
         <div class="m-4 p-3 width-medium">
             <div class="dashboard-content border-dashed p-3 m-4 view-height">

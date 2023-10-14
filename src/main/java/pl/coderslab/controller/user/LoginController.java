@@ -13,16 +13,14 @@ import javax.servlet.http.HttpServletResponse;
 @Controller
 public class LoginController {
 
-
-
     @GetMapping("/login")
     public String prepareLoginPage(Model model) {
         model.addAttribute("user", new User());
-        return "unlogged/login";
+        return "anonymous/login";
     }
 
     @GetMapping("/starter")
-    public String startPage(Model model){
+    public String startPage(Model model) {
         System.out.println(model.getAttribute("username"));
         System.out.println("starter");
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -31,19 +29,6 @@ public class LoginController {
         System.out.println(authentication.toString());
         model.addAttribute("username", userName);
         return "/app/start";
-    }
-
-    @GetMapping("/logout")
-    public String logout(HttpServletResponse resp){
-        System.out.println("logout");
-        Cookie cookie = new Cookie("JSESSIONID", "/");
-        cookie.setMaxAge(0);
-        resp.addCookie(cookie);
-        return "/unlogged/login";
-    }
-    @GetMapping("/admin/list")
-    public String logoutd(HttpServletResponse resp){
-        return "index";
     }
 
 }

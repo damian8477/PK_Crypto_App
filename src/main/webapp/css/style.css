@@ -481,3 +481,24 @@ margin: 0 auto !important;
 .color-price-degrease {
   color: red;
 }
+
+.alert-div {
+  /*width: 300px;*/
+  /*height: 150px;*/
+  background-color: white;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  padding: 20px;
+  margin: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* opcjonalny efekt cienia */
+}
+
+.bigger{
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.left{
+  text-align: left;
+}
+
