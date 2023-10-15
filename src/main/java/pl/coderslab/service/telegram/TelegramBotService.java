@@ -45,31 +45,36 @@ public class TelegramBotService extends TelegramLongPollingBot {
         }
     }
 
-    public void sendMessage(String chatId, String message) throws TelegramApiException {
-        SendMessage response = new SendMessage();
-        response.setChatId(chatId);
-        response.setText(message);
-        try {
-            execute(response);
-        } catch (TelegramApiException e) {
+    public void sendMessage(String chatId, String message){
+        try{
+            SendMessage response = new SendMessage();
+            response.setChatId(chatId);
+            response.setText(message);
             try {
-                String[] messTab = message.toString().split("------");
-                for (String outPart : messTab) {
-                    response.setText(outPart);
-                    execute(response);
+                execute(response);
+            } catch (TelegramApiException e) {
+                try {
+                    String[] messTab = message.toString().split("------");
+                    for (String outPart : messTab) {
+                        response.setText(outPart);
+                        execute(response);
+                    }
+                    System.out.println(e);
+                } catch (Exception f) {
+                    for (int i = 0; i < message.length(); i += 1500) {
+                        int next = i + 1500;
+                        if (next > message.length()) next = message.length();
+                        String mess = message.substring(i, next);
+                        response.setText(mess);
+                        execute(response);
+                    }
+                    System.out.println(f);
                 }
-                System.out.println(e);
-            } catch (Exception f) {
-                for (int i = 0; i < message.length(); i += 1500) {
-                    int next = i + 1500;
-                    if (next > message.length()) next = message.length();
-                    String mess = message.substring(i, next);
-                    response.setText(mess);
-                    execute(response);
-                }
-                System.out.println(f);
-            }
 
+            }
+        }catch (TelegramApiException e){
+            logger.error(e.toString());
         }
+
     }
 }

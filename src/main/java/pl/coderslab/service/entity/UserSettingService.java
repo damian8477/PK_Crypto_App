@@ -8,6 +8,8 @@ import pl.coderslab.repository.UserSettingRepository;
 import javax.transaction.Transactional;
 import java.util.List;
 
+import static java.util.Objects.isNull;
+
 @Service
 @RequiredArgsConstructor
 public class UserSettingService {
@@ -21,5 +23,14 @@ public class UserSettingService {
     @Transactional
     public List<UserSetting> getUserSettingByUserId(Long userId) {
         return userSettingRepository.findAllByUserId(userId);
+    }
+
+    public boolean userSettingExist(List<UserSetting> userSetting){
+        if(!isNull(userSetting)){
+            if(userSetting.size() > 0){
+                return true;
+            }
+        }
+        return false;
     }
 }

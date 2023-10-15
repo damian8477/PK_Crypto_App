@@ -2,18 +2,28 @@ package pl.coderslab.controller.user;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import pl.coderslab.entity.user.User;
 import pl.coderslab.entity.user.UserSetting;
+import pl.coderslab.enums.TokenType;
+import pl.coderslab.model.NewPassword;
 import pl.coderslab.repository.UserRepository;
 import pl.coderslab.repository.UserSettingRepository;
 import pl.coderslab.service.entity.UserService;
 import pl.coderslab.service.entity.UserSettingService;
+import pl.coderslab.service.entity.UserTokenService;
 import pl.coderslab.service.telegram.TelegramCodeService;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 @Controller
@@ -25,6 +35,66 @@ public class UsersController {
     private final UserSettingRepository userSettingRepository;
     private final UserSettingService userSettingService;
     private final TelegramCodeService telegramCodeService;
+    private final UserTokenService userTokenService;
+    private final PasswordEncoder passwordEncoder;
+
+    @GetMapping("/change-pass")
+    public String getChangePasswordView(Model model, @AuthenticationPrincipal UserDetails authenticatedUser) {
+        User user = userService.getUserBasic(authenticatedUser.getUsername());
+        if (userTokenService.generateUserToken(user, TokenType.PASSWORD)) {
+            model.addAttribute("newPassword", new NewPassword());
+            return "/app/settings/change-password";
+        }
+        //todo dorobic jakies info ze nie ma maila czy cos
+        return "redirect:/app/user/settings";
+    }
+
+    @PostMapping("/change-pass")
+    public String changePassword(@Valid NewPassword newPassword, BindingResult bindingResult, Model model, @AuthenticationPrincipal UserDetails authenticatedUser) {
+        if (bindingResult.hasErrors() || !newPassword.getPass1().equals(newPassword.getPass2())) {
+            if (!newPassword.getPass1().equals(newPassword.getPass2())) {
+                bindingResult.rejectValue("pass2", "Hasła nie pasują do siebie", "Hasła nie pasują do siebie");
+            }
+            model.addAttribute("newPassword", newPassword);
+            return "/app/settings/change-password";
+        }
+        User user = userService.getUserBasic(authenticatedUser.getUsername());
+        if (userTokenService.checkUserToken(user, newPassword.getToken())) {
+            String encodedPassword = passwordEncoder.encode(newPassword.getPass1());
+            user.setPassword(encodedPassword);
+            userRepository.save(user);
+        }
+        return "redirect:/app/user/settings";
+    }
+
+    @GetMapping("/edit")
+    public String getUserEditView(Model model, @AuthenticationPrincipal UserDetails authenticatedUser) {
+        User user = userService.getUserBasic(authenticatedUser.getUsername());
+        model.addAttribute("user", user);
+        return "/app/settings/edit-user";
+    }
+
+    @PostMapping("/edit")
+    public String getUserEditView(@Valid User user, BindingResult bindingResult, Model model, @AuthenticationPrincipal UserDetails authenticatedUser, HttpServletRequest request, HttpServletResponse response) {
+        User userDb = userService.getUserBasic(authenticatedUser.getUsername());
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("user", user);
+            return "/app/settings/edit-user";
+        }
+        userRepository.save(user);
+        if(userDb.getUsername().equals(user.getUsername())){
+            return "redirect:/app/user/settings";
+        } else {
+            if (authenticatedUser != null) {
+                Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+                if (auth != null) {
+                    new SecurityContextLogoutHandler().logout(request, response, auth);
+                }
+            }
+            return "redirect:/login";
+        }
+    }
+
 
     @PostMapping("/delete")
     public String getAdd(@RequestParam Long id) {
@@ -63,18 +133,9 @@ public class UsersController {
         UserSetting userSetting = userSettingService.getUserSetting(settingId);
         model.addAttribute("userSetting", userSetting);
         model.addAttribute("generatedCode", telegramCodeService.getCode(6, userSetting.getUser()));
-        //model.addAttribute("generatedCode", telegramCodeService.getCode(6, userSetting.getUser()));
         return "/app/settings/edit-user-setting";
     }
 
-    //    @GetMapping("/edit-user-setting/generate")
-//    public String generateCode(Model model, @RequestParam Integer settingId){
-//        UserSetting userSetting = userSettingService.getUserSetting(settingId);
-//        model.addAttribute("userSetting", userSetting);
-//        model.addAttribute("generatedCode", telegramCodeService.getCode(6, userSetting.getUser()));
-//        model.addAttribute("isGenerate", false);
-//        return "/app/settings/edit-user-setting";
-//    }
     @PostMapping("/edit-user-setting")
     public String editUserSettingView(@Valid UserSetting userSetting, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {

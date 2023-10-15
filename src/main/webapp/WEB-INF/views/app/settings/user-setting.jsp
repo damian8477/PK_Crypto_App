@@ -35,6 +35,14 @@
                         <h3 class="color-header text-uppercase">LISTA USTAWIEŃ</h3>
                     </div>
                     <div>
+                        <a href="/app/user/edit" class="btn btn-success button-setting rounded-0 pt-0 pb-0 pr-4 pl-4">Edytuj dane</a>
+                    </div>
+                    <div style="width: 10px"></div>
+                    <div>
+                        <a href="/app/user/change-pass" class="btn btn-success button-setting rounded-0 pt-0 pb-0 pr-4 pl-4">Zmień hasło</a>
+                    </div>
+                    <div style="width: 10px"></div>
+                    <div>
                         <a href="/app/user/add-user-setting" class="btn btn-success rounded-0 pt-0 pb-0 pr-4 pl-4">Dodaj konto</a>
                     </div>
                 </div>

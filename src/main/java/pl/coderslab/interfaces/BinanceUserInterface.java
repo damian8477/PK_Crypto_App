@@ -15,7 +15,7 @@ public interface BinanceUserInterface {
 
     OrderSide getOrderSideForOpen(PositionSide orderSide);
 
-    OrderSide getOrderSideForClose(PositionSide orderSide, double positionAmount);
+    OrderSide getOrderSideForClose(PositionSide positionSide);
 
     int setLeverage(SyncRequestClient syncRequestClient, int leverage, String symbol);
 

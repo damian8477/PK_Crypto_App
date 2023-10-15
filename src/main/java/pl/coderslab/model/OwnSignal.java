@@ -20,8 +20,8 @@ public class OwnSignal {
     private StrategySetting strategySetting;
     private UserSetting userSetting;
     private String symbol;
-    private PositionSide positionSide;
-    private OrderType typeOrder;
+    private PositionSide positionSide = PositionSide.LONG;
+    private OrderType typeOrder = OrderType.MARKET;
     private BigDecimal entryPrice;
     private BigDecimal takeProfit;
     private boolean tpPercent;

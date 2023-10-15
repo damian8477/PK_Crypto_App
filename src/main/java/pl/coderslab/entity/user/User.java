@@ -7,6 +7,7 @@ import pl.coderslab.entity.strategy.Strategy;
 import pl.coderslab.model.AlertSetting;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,8 +29,10 @@ public class User {
     @Size(min=4)
     @Column(nullable = false)
     private String password;
+    @Email
+    private String email;
     private boolean active;
-    private String role;
+    private String role = "ROLE_USER";
     @OneToMany(mappedBy = "user")
     private List<UserSetting> userSetting = new ArrayList<>();
     @ManyToMany(mappedBy = "users")

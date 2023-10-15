@@ -10,15 +10,16 @@ import pl.coderslab.binance.client.model.enums.OrderSide;
 import pl.coderslab.binance.client.model.enums.OrderType;
 import pl.coderslab.binance.client.model.enums.PositionSide;
 import pl.coderslab.binance.client.model.trade.PositionRisk;
-import pl.coderslab.controller.user.RegistrationController;
 import pl.coderslab.entity.orders.Order;
 import pl.coderslab.entity.user.User;
+import pl.coderslab.enums.Emoticon;
 import pl.coderslab.model.BinanceConfirmOrder;
 import pl.coderslab.repository.OrderRepository;
 import pl.coderslab.service.binance.BinanceService;
 import pl.coderslab.service.binance.BinanceBasicService;
 import pl.coderslab.service.binance.OrderService;
 import pl.coderslab.service.binance.SyncService;
+import pl.coderslab.service.telegram.TelegramBotService;
 
 import static java.util.Objects.isNull;
 
@@ -30,6 +31,7 @@ public class CloseService {
     private final BinanceService binanceService;
     private final OrderRepository orderRepository;
     private final OrderService orderService;
+    private final TelegramBotService telegramBotService;
     private static final Logger logger = LoggerFactory.getLogger(CloseService.class);
 
 
@@ -41,20 +43,20 @@ public class CloseService {
 
 
     public boolean killOrder(SyncRequestClient syncRequestClient, Order order, User user, String lot) {
-        PositionRisk positionRisk = syncRequestClient.getPositionRisk().stream()
+        PositionRisk position = syncRequestClient.getPositionRisk().stream()
                 .filter(s -> s.getSymbol().equals(order.getSymbolName()))
                 .filter(s -> s.getPositionSide().equals(order.getSide()))
                 .filter(s -> s.getPositionAmt().doubleValue() != 0.0)
                 .findFirst().orElse(null);
-        if (!isNull(positionRisk)) {
-            if (positionRisk.getPositionAmt().doubleValue() != 0.0) {
-                killSymbol(syncRequestClient, positionRisk, lot);
-                //todo telegram , info ze zamknieto zlecenie
+        if (!isNull(position)) {
+            if (position.getPositionAmt().doubleValue() != 0.0) {
+                killSymbol(syncRequestClient, position, lot);
                 //todo logger
                 if (order.isAppOrder()) {
                     orderRepository.deleteById(order.getId());
-                    BinanceConfirmOrder binanceConfirmOrder = binanceService.getBinanceConfirmOrder(syncRequestClient, positionRisk);
+                    BinanceConfirmOrder binanceConfirmOrder = binanceService.getBinanceConfirmOrder(syncRequestClient, position);
                     orderService.saveHistoryOrderToDB(user, order, binanceConfirmOrder);
+                    telegramBotService.sendMessage(user.getUserSetting().get(0).getTelegramChatId(), String.format("%s Zlecenie zamknięto w aplikacji! \n%s %s $%s %s $%s", Emoticon.CLOSE.getLabel(), order.getSymbolName(), order.getSide(), position.getMarkPrice(), Emoticon.getWinLoss(binanceConfirmOrder.getRealizedPln()), binanceConfirmOrder.getRealizedPln()));
                 }
                 return true;
             }
@@ -69,10 +71,10 @@ public class CloseService {
                 lot = lotSize;
         }
         PositionSide positionSide = PositionSide.valueOf(position.getPositionSide());
-        OrderSide orderSide = binanceUserService.getOrderSideForClose(positionSide, 0.0);
+        OrderSide orderSide = binanceUserService.getOrderSideForClose(positionSide);
         try {
-            if (!binanceService.sendOrderToBinance(syncRequestClient, position.getSymbol(), orderSide, lot, position.getMarkPrice().toString(), positionSide)) {
-                if (!binanceService.sendOrderToBinance(syncRequestClient, position.getSymbol(), orderSide, lot, position.getMarkPrice().toString(), positionSide)) {
+            if (!binanceService.sendOrderToBinance(syncRequestClient, position.getSymbol(), orderSide, lot, position.getMarkPrice().toString(), positionSide, OrderType.MARKET)) {
+                if (!binanceService.sendOrderToBinance(syncRequestClient, position.getSymbol(), orderSide, lot, position.getMarkPrice().toString(), positionSide,  OrderType.MARKET)) {
                     syncRequestClient.postOrder(position.getSymbol(), orderSide, positionSide, OrderType.MARKET, null,
                             lot, null, lot, null, null, null, NewOrderRespType.ACK);
                 }
