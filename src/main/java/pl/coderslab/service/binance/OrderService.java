@@ -6,7 +6,6 @@ import pl.coderslab.binance.client.SyncRequestClient;
 import pl.coderslab.binance.client.model.trade.PositionRisk;
 import pl.coderslab.entity.orders.HistoryOrder;
 import pl.coderslab.entity.orders.Order;
-import pl.coderslab.entity.orders.Signal;
 import pl.coderslab.entity.strategy.Strategy;
 import pl.coderslab.entity.user.User;
 import pl.coderslab.model.BinanceConfirmOrder;
@@ -15,11 +14,8 @@ import pl.coderslab.repository.HistoryOrderRepository;
 import pl.coderslab.repository.OrderRepository;
 import pl.coderslab.service.entity.UserSettingService;
 
-import javax.persistence.Column;
-import javax.persistence.ManyToOne;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -110,7 +106,7 @@ public class OrderService {
     }
 
 
-    public void saveHistoryOrderToDB(User user, Order order, BinanceConfirmOrder binanceConfirmOrder) {
+    public void saveHistoryOrderToDB(User user, Order order, BinanceConfirmOrder binanceConfirmOrder, boolean ownClosed) {
         historyOrderRepository.save(
                 HistoryOrder.builder()
                         .symbol(order.getSymbolName())
@@ -125,13 +121,14 @@ public class OrderService {
                         .profitPercent(getProfitPercent(binanceConfirmOrder.getEntryPrice(), binanceConfirmOrder.getClosePrice(), order.getLeverage()))
                         .strategy(order.getStrategy())
                         .user(user)
+                        .ownClosed(ownClosed)
                         .signal(order.getSignal())
                         .build());
 
     }
 
     public void save(User user, CommonSignal signal, String entryPrice, String lot,
-                              String amount, String startProfit, int lev, Strategy strategy, boolean isOpen) {
+                     String amount, String startProfit, int lev, Strategy strategy, boolean isOpen) {
         orderRepository.save(Order.builder()
                 .user(user)
                 .symbolName(signal.getSymbol())

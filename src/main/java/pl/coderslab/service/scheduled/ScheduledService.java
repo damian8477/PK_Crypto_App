@@ -7,9 +7,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import pl.coderslab.entity.user.TelegramCode;
 import pl.coderslab.entity.user.User;
-import pl.coderslab.entity.user.UserToken;
 import pl.coderslab.repository.TelegramCodeRepository;
-import pl.coderslab.repository.UserRepository;
 import pl.coderslab.repository.UserTokenRepository;
 import pl.coderslab.service.entity.UserService;
 import pl.coderslab.service.telegram.AlertService;
@@ -23,7 +21,6 @@ public class ScheduledService {
     private final TelegramCodeRepository telegramCodeRepository;
     private final AlertService alertService;
     private final CheckUserOrderService checkUserOrderService;
-    private final CheckBotOrderService checkInActiveOrder;
     private final UserService userService;
     private final UserTokenRepository userTokenRepository;
     private static final Logger logger = LoggerFactory.getLogger(ScheduledService.class);
@@ -36,7 +33,7 @@ public class ScheduledService {
     @Scheduled(fixedDelay = 60000, initialDelay = 1000)
     public void check() {
         List<User> users = userService.getActiveUsers();
-        System.out.println(count);
+        logger.info("Scheduled counter: " + count);
         if(count % 1 == 0) {
             checkUserOrderService.checkInActiveOrder(users);
         }

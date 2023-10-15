@@ -32,30 +32,7 @@ public class RegistrationController {
         return "anonymous/registration-page";
     }
 
-    //@PostMapping
-    public String processRegistrationPage(String username,
-                                          String password,
-                                          String firstName,
-                                          String lastName,
-                                          String email) {
-        User user = new User();
-        String encodedPassword = passwordEncoder.encode(password);
-        user.setPassword(encodedPassword);
-        user.setUsername(username);
-        user.setFirstName(firstName);
-        user.setLastName(lastName);
-        user.setActive(true);
-        user.setRole("ROLE_USER");
-        user.setEmail(email);
-        userRepository.save(user);
-
-        logger.info("New user register!");
-        logger.info(username + " " + firstName + " " + lastName);
-
-        return "redirect:/login";
-    }
-
-    @PostMapping//("/register2")
+    @PostMapping
     public String processRegistrationPage2(@Valid User user, BindingResult bindingResult, Model model) {
         if(bindingResult.hasErrors()){
             model.addAttribute("user", user);

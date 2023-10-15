@@ -4,7 +4,6 @@ import lombok.Data;
 import pl.coderslab.entity.alert.Alert;
 import pl.coderslab.entity.orders.Order;
 import pl.coderslab.entity.strategy.Strategy;
-import pl.coderslab.model.AlertSetting;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -26,7 +25,7 @@ public class User {
     private String firstName;
     @Column(name = "last_name")
     private String lastName;
-    @Size(min=4)
+    @Size(min = 4)
     @Column(nullable = false)
     private String password;
     @Email

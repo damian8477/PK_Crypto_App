@@ -31,7 +31,7 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-sm-2 label-size col-form-label" >Niezrealizowany PLN:
+                        <label class="col-sm-2 label-size col-form-label">Niezrealizowany PLN:
                             <c:if test="${order.profitProcent >= 0}">
                                 <p style="color: green">${order.profitProcent}</p>
                             </c:if>

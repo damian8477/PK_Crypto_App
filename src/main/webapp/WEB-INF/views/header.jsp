@@ -1,22 +1,22 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <header class="page-header">
-  <nav class="navbar navbar-expand-lg justify-content-between">
-    <a href="/" class="navbar-brand main-logo">
-      Crypto
-    </a>
-    <div class="d-flex justify-content-around">
-      <h4 class="text-light mr-3"><sec:authentication property="name"/></h4>
-      <div class="circle-div text-center"><i class="fas fa-user icon-user"></i></div>
+    <nav class="navbar navbar-expand-lg justify-content-between">
+        <a href="/" class="navbar-brand main-logo">
+            Crypto
+        </a>
+        <div class="d-flex justify-content-around">
+            <h4 class="text-light mr-3"><sec:authentication property="name"/></h4>
+            <div class="circle-div text-center"><i class="fas fa-user icon-user"></i></div>
 
-    </div>
-    <div class="d-flex justify-content-around">
-        <form method="post" action="/logout">
-          <button type="submit" class="nav-link color-header">Wyloguj</button>
-          <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-        </form>
-    </div>
+        </div>
+        <div class="d-flex justify-content-around">
+            <form method="post" action="/logout">
+                <button type="submit" class="nav-link color-header">Wyloguj</button>
+                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+            </form>
+        </div>
 
-  </nav>
+    </nav>
 </header>
 
 

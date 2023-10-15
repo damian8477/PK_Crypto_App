@@ -40,9 +40,7 @@ abstract class RestApiInvoker {
     static <T> T callSync(RestApiRequest<T> request) {
         try {
             String str;
-            //log.debug("Request URL " + request.request.url());
             Response response = client.newCall(request.request).execute();
-            // System.out.println(response.body().string());
             if (response != null && response.body() != null) {
                 str = response.body().string();
                 response.close();
@@ -50,15 +48,11 @@ abstract class RestApiInvoker {
                 throw new BinanceApiException(BinanceApiException.ENV_ERROR,
                         "[Invoking] Cannot get the response from server");
             }
-            //log.debug("Response =====> " + str);
             JsonWrapper jsonWrapper = JsonWrapper.parseFromString(str);
-            //checkResponse(jsonWrapper);
             return request.jsonParser.parseJson(jsonWrapper);
         } catch (BinanceApiException e) {
-            System.out.println(e);
             throw e;
         } catch (Exception e) {
-            System.out.println(e);
             throw new BinanceApiException(BinanceApiException.ENV_ERROR,
                     "[Invoking] Unexpected error: " + e.getMessage());
         }

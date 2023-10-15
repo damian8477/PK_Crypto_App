@@ -55,7 +55,7 @@ public class CloseService {
                 if (order.isAppOrder()) {
                     orderRepository.deleteById(order.getId());
                     BinanceConfirmOrder binanceConfirmOrder = binanceService.getBinanceConfirmOrder(syncRequestClient, position);
-                    orderService.saveHistoryOrderToDB(user, order, binanceConfirmOrder);
+                    orderService.saveHistoryOrderToDB(user, order, binanceConfirmOrder, false);
                     telegramBotService.sendMessage(user.getUserSetting().get(0).getTelegramChatId(), String.format("%s Zlecenie zamknięto w aplikacji! \n%s %s $%s %s $%s", Emoticon.CLOSE.getLabel(), order.getSymbolName(), order.getSide(), position.getMarkPrice(), Emoticon.getWinLoss(binanceConfirmOrder.getRealizedPln()), binanceConfirmOrder.getRealizedPln()));
                 }
                 return true;
@@ -74,7 +74,7 @@ public class CloseService {
         OrderSide orderSide = binanceUserService.getOrderSideForClose(positionSide);
         try {
             if (!binanceService.sendOrderToBinance(syncRequestClient, position.getSymbol(), orderSide, lot, position.getMarkPrice().toString(), positionSide, OrderType.MARKET)) {
-                if (!binanceService.sendOrderToBinance(syncRequestClient, position.getSymbol(), orderSide, lot, position.getMarkPrice().toString(), positionSide,  OrderType.MARKET)) {
+                if (!binanceService.sendOrderToBinance(syncRequestClient, position.getSymbol(), orderSide, lot, position.getMarkPrice().toString(), positionSide, OrderType.MARKET)) {
                     syncRequestClient.postOrder(position.getSymbol(), orderSide, positionSide, OrderType.MARKET, null,
                             lot, null, lot, null, null, null, NewOrderRespType.ACK);
                 }

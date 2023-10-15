@@ -2,7 +2,6 @@ package pl.coderslab.entity.orders;
 
 
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;

@@ -13,8 +13,6 @@ public interface TelegramCodeRepository extends JpaRepository<TelegramCode, Long
 
     boolean existsByUser(User user);
 
-    void deleteByUser(User user);
-
     @Query("select t from TelegramCode t where t.created < ?1")
     List<TelegramCode> findAllByExpiredCode(LocalDateTime time);
 

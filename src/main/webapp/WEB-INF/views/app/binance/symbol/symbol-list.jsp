@@ -1,17 +1,10 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
-<%--
-  Created by IntelliJ IDEA.
-  User: damian
-  Date: 20.09.2023
-  Time: 22:50
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
-<%@include file="../../../head.jsp"%>
-<%@include file="../../../header.jsp"%>
+<%@include file="../../../head.jsp" %>
+<%@include file="../../../header.jsp" %>
 <body>
 
 <section class="dashboard-section">
@@ -28,7 +21,8 @@
                         <form:form method="post" action="/app/binance/add-symbol" modelAttribute="symbol">
                             <form:hidden path="id"/>
                             Symbol: <form:input path="name"/>
-                            <form:button class="btn btn-success rounded-0 pt-0 pb-0 pr-4 pl-4">Dodaj symbol</form:button>
+                            <form:button
+                                    class="btn btn-success rounded-0 pt-0 pb-0 pr-4 pl-4">Dodaj symbol</form:button>
                             <br>
                             <form:errors path="name" cssStyle="color: red"/>
                         </form:form>
@@ -60,10 +54,12 @@
                                 <td class="col-2"><c:out value="${symbol.lowPrice}"/></td>
                                 <td class="col-2"><c:out value="${symbol.highPrice}"/></td>
                                 <c:if test="${symbol.dayChangePercent >= 0}">
-                                    <td class="col-1 color-price-increase"><c:out value="${symbol.dayChangePercent}"/></td>
+                                    <td class="col-1 color-price-increase"><c:out
+                                            value="${symbol.dayChangePercent}"/></td>
                                 </c:if>
                                 <c:if test="${symbol.dayChangePercent < 0}">
-                                    <td class="col-1 color-price-degrease"><c:out value="${symbol.dayChangePercent}"/></td>
+                                    <td class="col-1 color-price-degrease"><c:out
+                                            value="${symbol.dayChangePercent}"/></td>
                                 </c:if>
                                 <td class="col-2 d-flex align-items-center justify-content-center flex-wrap">
 
@@ -96,4 +92,4 @@
 </body>
 
 </html>
-<%@include file="../../../footer.jsp"%>
+<%@include file="../../../footer.jsp" %>

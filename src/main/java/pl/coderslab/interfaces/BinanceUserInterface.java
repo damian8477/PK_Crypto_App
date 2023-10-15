@@ -8,7 +8,6 @@ import pl.coderslab.entity.user.User;
 import pl.coderslab.enums.MarginType;
 
 import java.math.BigDecimal;
-import java.util.Optional;
 
 public interface BinanceUserInterface {
     void setMarginType(SyncRequestClient syncRequestClient, MarginType marginType, String symbol);

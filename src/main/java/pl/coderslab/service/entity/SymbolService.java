@@ -20,7 +20,7 @@ public class SymbolService {
     private static final Logger logger = LoggerFactory.getLogger(SymbolService.class);
 
     public Symbol findById(Integer symbolId) {
-        return symbolRepository.findById(symbolId).get();
+        return symbolRepository.findById(symbolId).orElse(null);
     }
 
     public void checkSymbol(Symbol symbol) {

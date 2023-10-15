@@ -39,14 +39,14 @@ public class UserService {
     }
 
     @Transactional
-    public List<User> getUserList(){
+    public List<User> getUserList() {
         List<User> users = userRepository.findAll();
         users.forEach(this::fillUser);
         return users;
     }
 
     @Transactional
-    public List<User> getActiveUsers(){
+    public List<User> getActiveUsers() {
         List<User> users = userRepository.findAllByActive(true);
         users.forEach(this::fillUser);
         return users;
@@ -54,17 +54,6 @@ public class UserService {
 
     public User getUserBasic(String username) {
         return userRepository.findByUsername(username);
-    }
-
-    @Transactional
-    public long getUserId(String userName) {
-        long userId = 0;
-        try {
-            userId = userRepository.getUserId(userName);
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-        return userId;
     }
 
     public void fillUser(User user) {

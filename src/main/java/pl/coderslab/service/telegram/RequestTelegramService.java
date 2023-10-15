@@ -5,15 +5,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import pl.coderslab.controller.user.RegistrationController;
 import pl.coderslab.entity.user.User;
 import pl.coderslab.entity.user.UserSetting;
 import pl.coderslab.repository.UserRepository;
 import pl.coderslab.repository.UserSettingRepository;
 import pl.coderslab.service.entity.UserService;
 
-import java.io.IOException;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor

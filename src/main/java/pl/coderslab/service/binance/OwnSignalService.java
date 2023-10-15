@@ -5,7 +5,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pl.coderslab.binance.client.SyncRequestClient;
-import pl.coderslab.controller.user.RegistrationController;
 import pl.coderslab.entity.strategy.StrategySetting;
 import pl.coderslab.entity.user.User;
 import pl.coderslab.entity.user.UserSetting;
@@ -14,7 +13,6 @@ import pl.coderslab.enums.CashType;
 import pl.coderslab.enums.MarginType;
 import pl.coderslab.interfaces.BinanceUserInterface;
 import pl.coderslab.model.CommonSignal;
-import pl.coderslab.model.CryptoName;
 import pl.coderslab.model.OwnSignal;
 
 import java.math.BigDecimal;

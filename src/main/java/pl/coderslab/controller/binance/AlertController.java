@@ -13,7 +13,6 @@ import pl.coderslab.entity.orders.Symbol;
 import pl.coderslab.entity.user.User;
 import pl.coderslab.model.AlertSetting;
 import pl.coderslab.repository.AlertRepository;
-import pl.coderslab.repository.SymbolRepository;
 import pl.coderslab.service.entity.SymbolService;
 import pl.coderslab.service.entity.UserService;
 import pl.coderslab.service.telegram.AlertService;
@@ -23,7 +22,6 @@ import javax.validation.Valid;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import static java.util.Objects.isNull;
 
@@ -41,17 +39,6 @@ public class AlertController {
         User user = userService.getUserWithUserSettingsByUserName(authenticatedUser.getUsername());
         List<Map<String, List<Alert>>> alertList = alertService.getAlertList(user.getAlerts());
         model.addAttribute("alerts", alertList);
-        for (Map<String, List<Alert>> symbolAlerts : alertList) {
-            for (Map.Entry<String, List<Alert>> entry : symbolAlerts.entrySet()) {
-                String symbol = entry.getKey();
-                List<Alert> alerts = entry.getValue();
-                System.out.println("Symbol: " + symbol);
-                for (Alert alert : alerts) {
-                    System.out.println(" - Cena: " + alert.getPrice());
-                    // Dodatkowe informacje...
-                }
-            }
-        }
         return "/app/binance/alert/alert-list";
     }
 
