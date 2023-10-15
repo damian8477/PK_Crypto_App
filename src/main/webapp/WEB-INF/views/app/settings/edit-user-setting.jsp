@@ -47,14 +47,15 @@
                     <form:button class="btn btn-color rounded-0 pt-0 pb-0 pr-4 pl-4">Dodaj</form:button>
                     </form:form>
                 </div>
-                    <br><br>
-                        <div class="form-group row">
-                            <label class="col-sm-2 label-size col-form-label">Telegram<br>Kod aktywacyjny<br>(ważny 15 min lub 3 próby autoryzacji)</label>
+                <br><br>
+                <div class="form-group row">
+                    <label class="col-sm-2 label-size col-form-label">Telegram<br>Kod aktywacyjny<br>(ważny 15 min lub 3
+                        próby autoryzacji)</label>
 
-                            <div class="col-sm-10">
-                                <label class="col-sm-2 label-size col-form-label">${generatedCode} </label>
-                            </div>
-                        </div>
+                    <div class="col-sm-10">
+                        <label class="col-sm-2 label-size col-form-label">${generatedCode} </label>
+                    </div>
+                </div>
 
             </div>
         </div>

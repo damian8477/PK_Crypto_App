@@ -7,8 +7,10 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import pl.coderslab.entity.user.TelegramCode;
 import pl.coderslab.entity.user.User;
+import pl.coderslab.entity.user.UserToken;
 import pl.coderslab.repository.TelegramCodeRepository;
 import pl.coderslab.repository.UserRepository;
+import pl.coderslab.repository.UserTokenRepository;
 import pl.coderslab.service.entity.UserService;
 import pl.coderslab.service.telegram.AlertService;
 
@@ -23,6 +25,7 @@ public class ScheduledService {
     private final CheckUserOrderService checkUserOrderService;
     private final CheckBotOrderService checkInActiveOrder;
     private final UserService userService;
+    private final UserTokenRepository userTokenRepository;
     private static final Logger logger = LoggerFactory.getLogger(ScheduledService.class);
     private static int count = 0;
 
@@ -38,7 +41,7 @@ public class ScheduledService {
             checkUserOrderService.checkInActiveOrder(users);
         }
         if (count % 2 == 0) {
-            checkTelegramExpirationTime();
+            checkTokensExpirationTime();
         }
         if (count % 4 == 0) {
 //            checkBotOrder();//todo co 3 minuty, trzeba sprawdzać świeczki 3 lub 5 minutowe
@@ -52,8 +55,10 @@ public class ScheduledService {
         }
     }
 
-    private void checkTelegramExpirationTime() {
+    private void checkTokensExpirationTime() {
         List<TelegramCode> telegramCodes = telegramCodeRepository.findAllByExpiredCode(LocalDateTime.now().minusMinutes(15L));
         telegramCodeRepository.deleteAll(telegramCodes);
+        userTokenRepository.deleteAllByExpiredCode(LocalDateTime.now().minusMinutes(15L));
+
     }
 }
