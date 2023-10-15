@@ -62,7 +62,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                     .antMatchers("/app/**").hasAnyRole("ADMIN", "USER")
                     .antMatchers("/css/style.css").permitAll()
                     .antMatchers("/register").permitAll()
-                                                                        .antMatchers("/email").permitAll()//todo wywalic
                     .anyRequest().authenticated()
                 .and()
                     .formLogin()
