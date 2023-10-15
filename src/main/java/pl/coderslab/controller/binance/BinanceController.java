@@ -95,20 +95,17 @@ public class BinanceController {
             model.addAttribute("ownSignal", ownSignal);
             return "app/binance/symbol/open-symbol";
         }
-        System.out.println("allt -------------" + ownSignal);
         try {
             User user = userService.getUserWithUserSettingsByUserName(authenticatedUser.getUsername());
             SyncRequestClient syncRequestClient = binanceService.sync(ownSignal.getUserSetting());
             ownSignalService.checkOwnSignal(ownSignal, syncRequestClient);
             CommonSignal signal = ownSignalService.createCommonSignal(user, ownSignal, ownSignal.getStrategySetting(), ownSignal.getUserSetting(), syncRequestClient);
-            binanceService.createOrder(signal, user, ownSignal.getUserSetting(), syncRequestClient);
+            binanceService.createOrder(signal, user, syncRequestClient);
         } catch (IllegalArgumentException e) {
             //todo komunikaty co jest nie tak
         }
-
-        System.out.println("new -------------" + ownSignal);
         //todo sprawdzenie sygnalu, nastepnie wsystawienie i przeniesienie  na liste zlecen uzytkownika
-        return "redirect:/app/binance/symbol/symbol-list";
+        return "redirect:/app/binance/symbol-list";
     }
 
 

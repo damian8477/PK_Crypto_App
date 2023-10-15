@@ -30,6 +30,8 @@ public class HistoryOrder {
     private BigDecimal amount;
     private Integer leverage;
     private BigDecimal commission;
+    @Column(name = "own_close")
+    private boolean ownClosed = false;
     @Column(name = "realized_pln")
     private BigDecimal realizedPln;
     @Column(name = "profit_procent")

@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" isELIgnored="false" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 
 <html>
 <head>
@@ -33,31 +34,36 @@
                     <div class="row">
                         <div class="col-1"></div>
                         <div class="col-6">
-                            <form method="post" action="/register">
+                            <form:form method="post" action="/register" modelAttribute="user">
                                 <div class="form-group">
                                     <label for="username">Nazwa użytkownika</label>
-                                    <input type="text" required name="username" id="username" class="form-control"
-                                           placeholder="Podaj nazwę użytkownika"/>
+                                    <form:input path="username" class="form-control"
+                                           placeholder="Podaj nazwę użytkownika"/><form:errors path="username"/>
+                                </div>
+                                <div class="form-group">
+                                    <label for="email">Email</label>
+                                    <form:input path="email" class="form-control"
+                                           placeholder="Podaj email"/><form:errors path="email"/>
                                 </div>
                                 <div class="form-group">
                                     <label for="firstName">Imię</label>
-                                    <input type="text" required name="firstName" id="firstName" class="form-control"
-                                           placeholder="Podaj imię"/>
+                                    <form:input path="firstName" class="form-control"
+                                                placeholder="Podaj imię"/><form:errors path="firstName"/>
                                 </div>
                                 <div class="form-group">
                                     <label for="lastName">Nazwisko</label>
-                                    <input type="text" required name="lastName" id="lastName" class="form-control"
-                                           placeholder="Podaj nazwisko"/>
+                                    <form:input path="lastName" class="form-control"
+                                                placeholder="Podaj nazwisko"/><form:errors path="lastName"/>
                                 </div>
                                 <div class="form-group">
                                     <label for="password">Hasło</label>
-                                    <input type="password" required name="password" id="password" class="form-control"
-                                           placeholder="Podaj hasło"/>
+                                    <form:password path="password" class="form-control"
+                                                placeholder="Podaj hasło"/><form:errors path="password"/>
                                 </div>
-                                <button class="btn btn-primary" type="submit">Zarejestruj</button>
-                                <button class="btn btn-secondary" type="reset">Wyczyść dane</button>
+                                <form:button class="btn btn-primary" type="submit">Zarejestruj</form:button>
+                                <form:button class="btn btn-secondary" type="reset">Wyczyść dane</form:button>
                                 <sec:csrfInput/>
-                            </form>
+                            </form:form>
                         </div>
                         <div class="col-5"></div>
                     </div>

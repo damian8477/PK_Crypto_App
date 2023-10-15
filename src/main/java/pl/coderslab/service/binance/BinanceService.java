@@ -13,11 +13,13 @@ import pl.coderslab.binance.client.model.trade.PositionRisk;
 import pl.coderslab.entity.orders.Symbol;
 import pl.coderslab.entity.user.User;
 import pl.coderslab.entity.user.UserSetting;
+import pl.coderslab.enums.Emoticon;
 import pl.coderslab.interfaces.BinanceUserInterface;
 import pl.coderslab.model.BinanceConfirmOrder;
 import pl.coderslab.model.CommonSignal;
 import pl.coderslab.model.CryptoName;
 import pl.coderslab.repository.SymbolRepository;
+import pl.coderslab.service.telegram.TelegramBotService;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -36,6 +38,7 @@ public class BinanceService {
     private final SymbolRepository symbolRepository;
     private final BinanceUserInterface binanceSupport;
     private final OrderService orderService;
+    private final TelegramBotService telegramBotService;
 
     private static final Logger logger = LoggerFactory.getLogger(BinanceService.class);
 
@@ -89,7 +92,7 @@ public class BinanceService {
                 .toList();
     }
 
-    public boolean createOrder(CommonSignal signal, User user, UserSetting userSetting, SyncRequestClient syncRequestClient) {
+    public boolean createOrder(CommonSignal signal, User user, SyncRequestClient syncRequestClient) {
         //todo sprawdzenie czy sygnal jest otwarty
         OrderSide orderSide = binanceSupport.getOrderSideForOpen(signal.getPositionSide());
         PositionSide positionSide = signal.getPositionSide();
@@ -98,10 +101,15 @@ public class BinanceService {
         String marketPrice = binanceSupport.getMarketPriceString(syncRequestClient, signal.getSymbol());
         String lot = signal.getLot();
         System.out.println(syncRequestClient.getBalance());
-        if (sendOrderToBinance(syncRequestClient, signal.getSymbol(), orderSide, lot, marketPrice, positionSide)) {
-            sendSlAndTpToAccount(syncRequestClient, signal.getSymbol(), orderSide, positionSide, signal.getStopLoss().get(0), signal.getTakeProfit().get(0));
-            orderService.saveOrderToDB(user, signal, marketPrice, lot, "", "", lever, null);
-            //todo logger i status na telegramana np.
+        boolean isOpen = false;
+        if(signal.getOrderType().equals(OrderType.MARKET)) isOpen = true;
+        if (sendOrderToBinance(syncRequestClient, signal.getSymbol(), orderSide, lot, marketPrice, positionSide, signal.getOrderType())) {
+            if(isOpen){
+                sendSlAndTpToAccount(syncRequestClient, signal.getSymbol(), orderSide, positionSide, signal.getStopLoss().get(0), signal.getTakeProfit().get(0));
+            }
+            orderService.save(user, signal, marketPrice, lot, "", "", lever, null, isOpen);
+            telegramBotService.sendMessage(user.getUserSetting().get(0).getTelegramChatId(), String.format("%s Zlecenie otwarte! \n%s %s $%s LOT: $%s", Emoticon.OPEN.getLabel(), signal.getSymbol(), Emoticon.valueOf(signal.getPositionSide().toString()), marketPrice, signal.getLot()));
+            logger.info(String.format("Username: %s\n%s Zlecenie otwarte! \n%s %s $%s LOT: $%s", user.getUsername(), Emoticon.OPEN.getLabel(), signal.getSymbol(), Emoticon.valueOf(signal.getPositionSide().toString()), marketPrice, signal.getLot()));
             return true;
         }
         return false;
@@ -145,13 +153,13 @@ public class BinanceService {
     }
 
 
-    public boolean sendOrderToBinance(SyncRequestClient syncRequestClient, String cryptoName, OrderSide orderSide, String lot, String marketPrice, PositionSide positionSide) {
+    public boolean sendOrderToBinance(SyncRequestClient syncRequestClient, String cryptoName, OrderSide orderSide, String lot, String marketPrice, PositionSide positionSide, OrderType orderType) {
         int count = 0;
         while (true) {
             count++;
             if (count > 2) break;
             try {
-                syncRequestClient.postOrder(cryptoName, orderSide, positionSide, OrderType.MARKET, null,
+                syncRequestClient.postOrder(cryptoName, orderSide, positionSide, orderType, null,
                         lot, null, null, null, null, null, NewOrderRespType.ACK);
                 return true;
             } catch (Exception e) {
@@ -165,7 +173,7 @@ public class BinanceService {
 //                requestService.saveOrderStatus(OrdersStatus.builder().owner(user.getLogin()).message(getInstanceIp() + " " + getTimeStamp() + " Error open position count: " + count + e).build());
             }
         }
-        syncRequestClient.postOrder(cryptoName, orderSide, PositionSide.BOTH, OrderType.MARKET, null,
+        syncRequestClient.postOrder(cryptoName, orderSide, PositionSide.BOTH, orderType, null,
                 lot, null, null, null, null, null, NewOrderRespType.ACK);
         return true;
     }

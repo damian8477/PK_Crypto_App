@@ -13,6 +13,7 @@ import pl.coderslab.model.BinanceConfirmOrder;
 import pl.coderslab.model.CommonSignal;
 import pl.coderslab.repository.HistoryOrderRepository;
 import pl.coderslab.repository.OrderRepository;
+import pl.coderslab.service.entity.UserSettingService;
 
 import javax.persistence.Column;
 import javax.persistence.ManyToOne;
@@ -31,6 +32,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final SyncService syncService;
     private final HistoryOrderRepository historyOrderRepository;
+    private final UserSettingService userSettingService;
 
     public Order getOrderBySymbol(User user, String symbol) {
         SyncRequestClient syncRequestClient = syncService.sync(user.getUserSetting().get(0));
@@ -57,9 +59,9 @@ public class OrderService {
     }
 
     public List<Order> prepareOrderList(User user, List<Order> orders) {
-        if (user.getUserSetting().get(0) == null && orders == null) {
+        if (userSettingService.userSettingExist(user.getUserSetting()) && isNull(orders)) {
             return new ArrayList<>();
-        } else if (user.getUserSetting().get(0) == null) {
+        } else if (!userSettingService.userSettingExist(user.getUserSetting())) {
             return orders;
         } else {
             return addOwnOrder(user, orders);
@@ -128,8 +130,8 @@ public class OrderService {
 
     }
 
-    public void saveOrderToDB(User user, CommonSignal signal, String entryPrice, String lot,
-                              String amount, String startProfit, int lev, Strategy strategy) {
+    public void save(User user, CommonSignal signal, String entryPrice, String lot,
+                              String amount, String startProfit, int lev, Strategy strategy, boolean isOpen) {
         orderRepository.save(Order.builder()
                 .user(user)
                 .symbolName(signal.getSymbol())
@@ -143,6 +145,7 @@ public class OrderService {
                 .amount(amount)
                 .startProfit(startProfit)
                 .leverage(lev)
+                .open(isOpen)
                 .appOrder(true)
                 .build());
 

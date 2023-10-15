@@ -6,11 +6,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import pl.coderslab.entity.user.User;
 import pl.coderslab.repository.UserRepository;
+
+import javax.validation.Valid;
 
 @Controller
 @RequestMapping("/register")
@@ -23,15 +27,17 @@ public class RegistrationController {
     private final PasswordEncoder passwordEncoder;
 
     @GetMapping
-    public String preparepRegistrationPage() {
+    public String prepareRegistrationPage(Model model) {
+        model.addAttribute("user", new User());
         return "anonymous/registration-page";
     }
 
-    @PostMapping
+    //@PostMapping
     public String processRegistrationPage(String username,
                                           String password,
                                           String firstName,
-                                          String lastName) {
+                                          String lastName,
+                                          String email) {
         User user = new User();
         String encodedPassword = passwordEncoder.encode(password);
         user.setPassword(encodedPassword);
@@ -40,10 +46,29 @@ public class RegistrationController {
         user.setLastName(lastName);
         user.setActive(true);
         user.setRole("ROLE_USER");
+        user.setEmail(email);
         userRepository.save(user);
 
         logger.info("New user register!");
         logger.info(username + " " + firstName + " " + lastName);
+
+        return "redirect:/login";
+    }
+
+    @PostMapping//("/register2")
+    public String processRegistrationPage2(@Valid User user, BindingResult bindingResult, Model model) {
+        if(bindingResult.hasErrors()){
+            model.addAttribute("user", user);
+            return "anonymous/registration-page";
+        }
+        String encodedPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(encodedPassword);
+        user.setActive(true);
+        user.setRole("ROLE_USER");
+        userRepository.save(user);
+
+        logger.info("New user register!");
+        logger.info(user.getUsername() + " " + user.getFirstName() + " " + user.getLastName() + " " + user.getEmail());
 
         return "redirect:/login";
     }

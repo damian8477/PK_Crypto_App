@@ -9,6 +9,7 @@ import pl.coderslab.entity.user.User;
 import pl.coderslab.repository.UserRepository;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Service
 public class UserService {
@@ -35,6 +36,20 @@ public class UserService {
         User user = userRepository.findByUsername(userName);
         fillUser(user);
         return user;
+    }
+
+    @Transactional
+    public List<User> getUserList(){
+        List<User> users = userRepository.findAll();
+        users.forEach(this::fillUser);
+        return users;
+    }
+
+    @Transactional
+    public List<User> getActiveUsers(){
+        List<User> users = userRepository.findAllByActive(true);
+        users.forEach(this::fillUser);
+        return users;
     }
 
     public User getUserBasic(String username) {

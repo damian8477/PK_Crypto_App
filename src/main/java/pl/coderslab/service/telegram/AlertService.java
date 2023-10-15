@@ -13,6 +13,7 @@ import pl.coderslab.entity.alert.Alert;
 import pl.coderslab.entity.user.User;
 import pl.coderslab.entity.user.UserSetting;
 import pl.coderslab.enums.Direction;
+import pl.coderslab.enums.Emoticon;
 import pl.coderslab.model.AlertSetting;
 import pl.coderslab.repository.AlertRepository;
 import pl.coderslab.repository.UserSettingRepository;
@@ -93,25 +94,21 @@ public class AlertService {
         switch (alert.getDirection()) {
             case UP -> {
                 if (price.compareTo(alert.getPrice()) > 0) {
-                    emoticon = "\uD83D\uDCC8";
+                    emoticon = Emoticon.LONG.getLabel();
                 }
             }
             case DOWN -> {
                 if (price.compareTo(alert.getPrice()) < 0) {
-                    emoticon = "\uD83D\uDCC9";
+                    emoticon = Emoticon.SHORT.getLabel();
                 }
             }
         }
         if (!isNull(emoticon)) {
             String message = String.format("Alert! %s %s $%s", emoticon, alert.getSymbolName(), alert.getPrice());
-            try {
-                List<UserSetting> userSettingList = userSettingService.getUserSettingByUserId(alert.getUser().getId());
-                if (!isNull(userSettingList)) {
-                    telegramBotService.sendMessage(userSettingList.get(0).getTelegramChatId(), message);
-                    alertRepository.deleteById(alert.getId());
-                }
-            } catch (TelegramApiException e) {
-                logger.error(e.toString());
+            List<UserSetting> userSettingList = userSettingService.getUserSettingByUserId(alert.getUser().getId());
+            if (!isNull(userSettingList)) {
+                telegramBotService.sendMessage(userSettingList.get(0).getTelegramChatId(), message);
+                alertRepository.deleteById(alert.getId());
             }
         }
     }

@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import pl.coderslab.binance.client.model.enums.OrderSide;
+import pl.coderslab.binance.client.model.enums.OrderType;
 import pl.coderslab.binance.client.model.enums.PositionSide;
 import pl.coderslab.enums.Action;
 import pl.coderslab.enums.MarginType;
@@ -27,5 +28,6 @@ public class CommonSignal {
     private int lever;
     private boolean isStrategy;
     private MarginType marginType;
+    private OrderType orderType;
 }
 

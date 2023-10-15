@@ -112,6 +112,7 @@ public class OwnSignalService {
                 .lever(signal.getLever())
                 .isStrategy(false)
                 .marginType(MarginType.CROSSED)
+                .orderType(signal.getTypeOrder())
                 .build();
     }
 

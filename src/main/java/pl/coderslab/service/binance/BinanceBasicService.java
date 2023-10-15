@@ -15,7 +15,6 @@ import pl.coderslab.binance.client.model.market.MarkPrice;
 import pl.coderslab.binance.client.model.trade.AccountBalance;
 import pl.coderslab.binance.client.model.trade.MarginLot;
 import pl.coderslab.binance.client.model.trade.Order;
-import pl.coderslab.controller.user.RegistrationController;
 import pl.coderslab.entity.user.User;
 import pl.coderslab.enums.MarginType;
 import pl.coderslab.interfaces.BinanceUserInterface;
@@ -54,8 +53,8 @@ public class BinanceBasicService implements BinanceUserInterface {
     }
 
     @Override
-    public OrderSide getOrderSideForClose(PositionSide positionSide, double positionAmount) {
-        if (positionSide.equals(PositionSide.LONG) || (positionAmount != 0 && positionAmount > 0)) {
+    public OrderSide getOrderSideForClose(PositionSide positionSide) {
+        if (positionSide.equals(PositionSide.LONG)) {
             return OrderSide.SELL;
         } else {
             return OrderSide.BUY;

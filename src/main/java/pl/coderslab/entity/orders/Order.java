@@ -37,6 +37,7 @@ public class Order {
     @Column(name = "start_profit")
     private String startProfit;
     private Integer leverage;
+    private boolean open;
     @Column(name = "app_order")
     private boolean appOrder;
     @Column(updatable = false)
