@@ -1,17 +1,10 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
-<%--
-  Created by IntelliJ IDEA.
-  User: damian
-  Date: 20.09.2023
-  Time: 22:50
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
-<%@include file="../../../head.jsp"%>
-<%@include file="../../../header.jsp"%>
+<%@include file="../../../head.jsp" %>
+<%@include file="../../../header.jsp" %>
 <body>
 
 <section class="dashboard-section">
@@ -57,16 +50,18 @@
                                     <td class="col-1"><c:out value="${order.amount}"/></td>
                                     <td class="col-1"><c:out value="${order.side}"/></td>
                                     <c:if test="${order.profitProcent >= 0}">
-                                        <td class="col-1" style="color: green"><c:out value="${order.profitProcent}"/></td>
+                                        <td class="col-1" style="color: green"><c:out
+                                                value="${order.profitProcent}"/></td>
                                     </c:if>
                                     <c:if test="${order.profitProcent < 0}">
-                                        <td class="col-1" style="color: red"><c:out value="${order.profitProcent}"/></td>
+                                        <td class="col-1" style="color: red"><c:out
+                                                value="${order.profitProcent}"/></td>
                                     </c:if>
                                     <td class="col-1"><c:out value="${order.leverage}"/></td>
                                     <td class="col-1 dateTime"><c:out value="${order.created}"/></td>
                                     <td class="col-2 d-flex align-items-center justify-content-center flex-wrap">
                                         <a href="/app/orders/close-order?orderId=${order.id}"
-                                               class="btn btn-danger rounded-0 text-light m-1">Zamknij</a>
+                                           class="btn btn-danger rounded-0 text-light m-1">Zamknij</a>
                                         <a href="/app/orders/edit-order?orderId=${order.id}"
                                            class="btn btn-info rounded-0 text-light m-1">Edytuj</a>
                                     </td>
@@ -111,10 +106,12 @@
                                     <td class="col-1"><c:out value="${order.amount}"/></td>
                                     <td class="col-1"><c:out value="${order.side}"/></td>
                                     <c:if test="${order.profitProcent >= 0}">
-                                        <td class="col-1" style="color: green"><c:out value="${order.profitProcent}"/></td>
+                                        <td class="col-1" style="color: green"><c:out
+                                                value="${order.profitProcent}"/></td>
                                     </c:if>
                                     <c:if test="${order.profitProcent < 0}">
-                                        <td class="col-1" style="color: red"><c:out value="${order.profitProcent}"/></td>
+                                        <td class="col-1" style="color: red"><c:out
+                                                value="${order.profitProcent}"/></td>
                                     </c:if>
                                     <td class="col-1"><c:out value="${order.leverage}"/></td>
                                     <td class="col-1"><c:out value="${order.created}"/></td>
@@ -158,4 +155,4 @@
 </body>
 
 </html>
-<%@include file="../../../footer.jsp"%>
+<%@include file="../../../footer.jsp" %>

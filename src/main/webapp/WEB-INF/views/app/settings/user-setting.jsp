@@ -1,13 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
-<%--
-  Created by IntelliJ IDEA.
-  User: damian
-  Date: 20.09.2023
-  Time: 22:50
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <%@include file="../../head.jsp" %>
@@ -18,7 +11,7 @@
     $(document).ready(function () {
         $(".key-column, .secret-column").each(function () {
             var text = $(this).text();
-            $(this).text('*'.repeat(5)+text.slice(-4));
+            $(this).text('*'.repeat(5) + text.slice(-4));
         });
     });
 </script>
@@ -35,15 +28,18 @@
                         <h3 class="color-header text-uppercase">LISTA USTAWIEŃ</h3>
                     </div>
                     <div>
-                        <a href="/app/user/edit" class="btn btn-success button-setting rounded-0 pt-0 pb-0 pr-4 pl-4">Edytuj dane</a>
+                        <a href="/app/user/edit" class="btn btn-success button-setting rounded-0 pt-0 pb-0 pr-4 pl-4">Edytuj
+                            dane</a>
                     </div>
                     <div style="width: 10px"></div>
                     <div>
-                        <a href="/app/user/change-pass" class="btn btn-success button-setting rounded-0 pt-0 pb-0 pr-4 pl-4">Zmień hasło</a>
+                        <a href="/app/user/change-pass"
+                           class="btn btn-success button-setting rounded-0 pt-0 pb-0 pr-4 pl-4">Zmień hasło</a>
                     </div>
                     <div style="width: 10px"></div>
                     <div>
-                        <a href="/app/user/add-user-setting" class="btn btn-success rounded-0 pt-0 pb-0 pr-4 pl-4">Dodaj konto</a>
+                        <a href="/app/user/add-user-setting" class="btn btn-success rounded-0 pt-0 pb-0 pr-4 pl-4">Dodaj
+                            konto</a>
                     </div>
                 </div>
 

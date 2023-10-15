@@ -38,12 +38,12 @@
                                 <div class="form-group">
                                     <label for="username">Nazwa użytkownika</label>
                                     <form:input path="username" class="form-control"
-                                           placeholder="Podaj nazwę użytkownika"/><form:errors path="username"/>
+                                                placeholder="Podaj nazwę użytkownika"/><form:errors path="username"/>
                                 </div>
                                 <div class="form-group">
                                     <label for="email">Email</label>
                                     <form:input path="email" class="form-control"
-                                           placeholder="Podaj email"/><form:errors path="email"/>
+                                                placeholder="Podaj email"/><form:errors path="email"/>
                                 </div>
                                 <div class="form-group">
                                     <label for="firstName">Imię</label>
@@ -58,7 +58,7 @@
                                 <div class="form-group">
                                     <label for="password">Hasło</label>
                                     <form:password path="password" class="form-control"
-                                                placeholder="Podaj hasło"/><form:errors path="password"/>
+                                                   placeholder="Podaj hasło"/><form:errors path="password"/>
                                 </div>
                                 <form:button class="btn btn-primary" type="submit">Zarejestruj</form:button>
                                 <form:button class="btn btn-secondary" type="reset">Wyczyść dane</form:button>

@@ -7,11 +7,14 @@ import org.springframework.data.jpa.repository.Query;
 import pl.coderslab.entity.user.UserToken;
 
 import java.time.LocalDateTime;
+
 import org.springframework.transaction.annotation.Transactional;
 
 public interface UserTokenRepository extends JpaRepository<UserToken, Long> {
     UserToken findByUserId(Long userId);
+
     void deleteAllByUserId(Long userId);
+
     @Transactional
     @Modifying
     @Query("delete from UserToken t where t.created < ?1")

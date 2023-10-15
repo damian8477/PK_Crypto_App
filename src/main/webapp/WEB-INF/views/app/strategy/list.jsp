@@ -27,7 +27,8 @@
                         <h3 class="color-header text-uppercase">LISTA STRATEGII</h3>
                     </div>
                     <div>
-                        <a href="/app/strategy/add" class="btn btn-success rounded-0 pt-0 pb-0 pr-4 pl-4">Dodaj strategie</a>
+                        <a href="/app/strategy/add" class="btn btn-success rounded-0 pt-0 pb-0 pr-4 pl-4">Dodaj
+                            strategie</a>
                     </div>
                 </div>
 

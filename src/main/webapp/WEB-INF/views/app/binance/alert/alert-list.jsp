@@ -1,13 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
-<%--
-  Created by IntelliJ IDEA.
-  User: damian
-  Date: 20.09.2023
-  Time: 22:50
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <%@include file="../../../head.jsp" %>
@@ -27,7 +20,7 @@
                 </div>
                 <div class="schedules-content">
                     <table class="table border-bottom">
-<%--                        <thead>--%>
+                        <%--                        <thead>--%>
                         <tr class="d-flex">
                             <th>Lp</th>
                             <th class="col-1 center">Cena</th>
@@ -38,7 +31,7 @@
                         <tbody class="text-color-lighter">
                         <c:forEach var="symbolAlerts" items="${alerts}" varStatus="stat">
                             <c:forEach var="key" items="${symbolAlerts.keySet()}">
-                                <tr  class="d-flex">
+                                <tr class="d-flex">
                                     <td class="col-4 bigger center"><c:out value="${key}"/></td>
                                 </tr>
                             </c:forEach>

@@ -23,15 +23,18 @@
                             <form:form method="post" modelAttribute="newPassword">
                                 <div class="form-group">
                                     <label for="pass1">Nowe hasło</label>
-                                    <form:password path="pass1" class="form-control"/><form:errors path="pass1"  cssClass="error"/>
+                                    <form:password path="pass1" class="form-control"/><form:errors path="pass1"
+                                                                                                   cssClass="error"/>
                                 </div>
                                 <div class="form-group">
                                     <label for="pass2">Powtórz hasło</label>
-                                    <form:password path="pass2" class="form-control"/><form:errors path="pass2" cssClass="error"/>
+                                    <form:password path="pass2" class="form-control"/><form:errors path="pass2"
+                                                                                                   cssClass="error"/>
                                 </div>
                                 <div class="form-group">
                                     <label for="pass2">Token wysłany w wiadomości email</label>
-                                    <form:input path="token" class="form-control"/><form:errors path="token"  cssClass="error"/>
+                                    <form:input path="token" class="form-control"/><form:errors path="token"
+                                                                                                cssClass="error"/>
                                 </div>
                                 <form:button class="btn btn-primary" type="submit">Zmień hasło</form:button>
                                 <form:button class="btn btn-secondary" type="reset">Wyczyść dane</form:button>

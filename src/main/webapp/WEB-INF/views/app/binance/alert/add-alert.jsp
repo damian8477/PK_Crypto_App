@@ -3,8 +3,8 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
-<%@include file="../../../head.jsp"%>
-<%@include file="../../../header.jsp"%>
+<%@include file="../../../head.jsp" %>
+<%@include file="../../../header.jsp" %>
 <body>
 <section class="dashboard-section">
     <div class="row dashboard-nowrap">
@@ -24,8 +24,10 @@
                         <div class="form-group row">
                             <label class="col-sm-2 label-size col-form-label">Wybór strony:</label>
                             <div class="col-sm-10">
-                                <form:select id="positionSide" path="positionSide1" cssClass="col-sm-10 label-size col-form-label">
-                                    <form:options items="${positionSides}" itemLabel="name"/><form:errors path="positionSide1"/>
+                                <form:select id="positionSide" path="positionSide1"
+                                             cssClass="col-sm-10 label-size col-form-label">
+                                    <form:options items="${positionSides}" itemLabel="name"/><form:errors
+                                        path="positionSide1"/>
                                 </form:select>
                             </div>
                         </div>
@@ -42,8 +44,10 @@
                         <div class="form-group row">
                             <label class="col-sm-2 label-size col-form-label">Wybór strony:</label>
                             <div class="col-sm-10">
-                                <form:select id="positionSide" path="positionSide2" cssClass="col-sm-10 label-size col-form-label">
-                                    <form:options items="${positionSides}" itemLabel="name"/><form:errors path="positionSide1"/>
+                                <form:select id="positionSide" path="positionSide2"
+                                             cssClass="col-sm-10 label-size col-form-label">
+                                    <form:options items="${positionSides}" itemLabel="name"/><form:errors
+                                        path="positionSide1"/>
                                 </form:select>
                             </div>
                         </div>
@@ -60,8 +64,10 @@
                         <div class="form-group row">
                             <label class="col-sm-2 label-size col-form-label">Wybór strony:</label>
                             <div class="col-sm-10">
-                                <form:select id="positionSide" path="positionSide3" cssClass="col-sm-10 label-size col-form-label">
-                                    <form:options items="${positionSides}" itemLabel="name"/><form:errors path="positionSide1"/>
+                                <form:select id="positionSide" path="positionSide3"
+                                             cssClass="col-sm-10 label-size col-form-label">
+                                    <form:options items="${positionSides}" itemLabel="name"/><form:errors
+                                        path="positionSide1"/>
                                 </form:select>
                             </div>
                         </div>
@@ -79,8 +85,10 @@
                         <div class="form-group row">
                             <label class="col-sm-2 label-size col-form-label">Wybór strony:</label>
                             <div class="col-sm-10">
-                                <form:select id="positionSide" path="positionSide4" cssClass="col-sm-10 label-size col-form-label">
-                                    <form:options items="${positionSides}" itemLabel="name"/><form:errors path="positionSide1"/>
+                                <form:select id="positionSide" path="positionSide4"
+                                             cssClass="col-sm-10 label-size col-form-label">
+                                    <form:options items="${positionSides}" itemLabel="name"/><form:errors
+                                        path="positionSide1"/>
                                 </form:select>
                             </div>
                         </div>
@@ -97,8 +105,10 @@
                         <div class="form-group row">
                             <label class="col-sm-2 label-size col-form-label">Wybór strony:</label>
                             <div class="col-sm-10">
-                                <form:select id="positionSide" path="positionSide5" cssClass="col-sm-10 label-size col-form-label">
-                                    <form:options items="${positionSides}" itemLabel="name"/><form:errors path="positionSide1"/>
+                                <form:select id="positionSide" path="positionSide5"
+                                             cssClass="col-sm-10 label-size col-form-label">
+                                    <form:options items="${positionSides}" itemLabel="name"/><form:errors
+                                        path="positionSide1"/>
                                 </form:select>
                             </div>
                         </div>
@@ -120,4 +130,4 @@
 </body>
 
 </html>
-<%@include file="../../../footer.jsp"%>
+<%@include file="../../../footer.jsp" %>

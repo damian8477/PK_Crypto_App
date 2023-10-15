@@ -51,7 +51,7 @@ public class StrategyController {
 
     @PostMapping("/delete")
     public String deleteStrategy(@RequestParam int strategyId) {
-        strategySettingRepository.deleteById(strategyId); //todo zrobic widoki
+        strategySettingRepository.deleteById(strategyId);
         return "redirect:/app/strategy/list";
     }
 }

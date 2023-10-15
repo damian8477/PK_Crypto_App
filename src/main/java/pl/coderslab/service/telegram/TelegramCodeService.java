@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import pl.coderslab.controller.user.RegistrationController;
 import pl.coderslab.entity.user.TelegramCode;
 import pl.coderslab.entity.user.User;
 import pl.coderslab.entity.user.UserSetting;
@@ -47,7 +46,6 @@ public class TelegramCodeService {
     public String getCode(int length, User user) {
         if (telegramCodeRepository.existsByUser(user)) {
             return telegramCodeRepository.getByUser(user).getNumberCode();
-            //telegramCodeRepository.deleteByUser(user);
         } else {
             TelegramCode telegramCode = TelegramCode.builder()
                     .numberCode(generateRandomCode(length))
@@ -65,7 +63,7 @@ public class TelegramCodeService {
         StringBuilder code = new StringBuilder();
 
         for (int i = 0; i < length; i++) {
-            int digit = random.nextInt(10); // Losujemy cyfrę od 0 do 9
+            int digit = random.nextInt(10);
             code.append(digit);
         }
 

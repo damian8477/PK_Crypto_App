@@ -3,8 +3,8 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
-<%@include file="../../../head.jsp"%>
-<%@include file="../../../header.jsp"%>
+<%@include file="../../../head.jsp" %>
+<%@include file="../../../header.jsp" %>
 <body>
 <body>
 <section class="dashboard-section">

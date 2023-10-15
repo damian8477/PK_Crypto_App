@@ -7,9 +7,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import pl.coderslab.entity.user.User;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
-
 @Controller
 public class LoginController {
 
@@ -21,12 +18,8 @@ public class LoginController {
 
     @GetMapping("/starter")
     public String startPage(Model model) {
-        System.out.println(model.getAttribute("username"));
-        System.out.println("starter");
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userName = authentication.getName();
-        System.out.println(userName);
-        System.out.println(authentication.toString());
         model.addAttribute("username", userName);
         return "/app/start";
     }

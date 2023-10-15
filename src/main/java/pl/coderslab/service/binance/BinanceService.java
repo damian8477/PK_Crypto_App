@@ -100,11 +100,10 @@ public class BinanceService {
         int lever = binanceSupport.setLeverage(syncRequestClient, signal.getLever(), signal.getSymbol());
         String marketPrice = binanceSupport.getMarketPriceString(syncRequestClient, signal.getSymbol());
         String lot = signal.getLot();
-        System.out.println(syncRequestClient.getBalance());
         boolean isOpen = false;
-        if(signal.getOrderType().equals(OrderType.MARKET)) isOpen = true;
+        if (signal.getOrderType().equals(OrderType.MARKET)) isOpen = true;
         if (sendOrderToBinance(syncRequestClient, signal.getSymbol(), orderSide, lot, marketPrice, positionSide, signal.getOrderType())) {
-            if(isOpen){
+            if (isOpen) {
                 sendSlAndTpToAccount(syncRequestClient, signal.getSymbol(), orderSide, positionSide, signal.getStopLoss().get(0), signal.getTakeProfit().get(0));
             }
             orderService.save(user, signal, marketPrice, lot, "", "", lever, null, isOpen);
@@ -163,14 +162,12 @@ public class BinanceService {
                         lot, null, null, null, null, null, NewOrderRespType.ACK);
                 return true;
             } catch (Exception e) {
-                System.out.println(e);
                 if (e.toString().contains("position side does not match")) {
                     throw new IllegalArgumentException("position side does not match");
                 }
                 if (Double.parseDouble(lot) * Double.parseDouble(marketPrice) < 5.0) {
                     throw new IllegalArgumentException("zlecenie poniżej 5$");
                 }
-//                requestService.saveOrderStatus(OrdersStatus.builder().owner(user.getLogin()).message(getInstanceIp() + " " + getTimeStamp() + " Error open position count: " + count + e).build());
             }
         }
         syncRequestClient.postOrder(cryptoName, orderSide, PositionSide.BOTH, orderType, null,
@@ -208,7 +205,6 @@ public class BinanceService {
                 TimeUnit.SECONDS.sleep(2);
                 profitList = syncRequestClient.getIncomeHistory(symbol, IncomeType.REALIZED_PNL, diff, null, 50);
                 commissionList = syncRequestClient.getIncomeHistory(symbol, IncomeType.COMMISSION, diff, null, 50);
-                System.out.println(profitList);
             }
             for (Income income : profitList) {
                 closeTime = income.getTime(); //todo pobrac czas z income, ale trzeba przekonwertowac timestamp na time
@@ -225,7 +221,7 @@ public class BinanceService {
                 .symbol(symbol)
                 .realizedPln(BigDecimal.valueOf(sumProfit).setScale(2, RoundingMode.HALF_UP))
                 .commission(BigDecimal.valueOf(sumCommission).setScale(2, RoundingMode.HALF_UP))
-                .time(converTimestampToDate(closeTime))
+                .time(convertTimestampToDate(closeTime))
                 .closePrice(positionRisk.getMarkPrice().toString())
                 .entryPrice(positionRisk.getEntryPrice().toString())
                 .lot(positionRisk.getPositionAmt().abs().toString())
@@ -233,7 +229,7 @@ public class BinanceService {
     }
 
 
-    private String converTimestampToDate(Long timestamp) {
+    private String convertTimestampToDate(Long timestamp) {
         Date date = new Date(timestamp);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return dateFormat.format(date);

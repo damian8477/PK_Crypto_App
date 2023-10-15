@@ -82,7 +82,7 @@ public class UsersController {
             return "/app/settings/edit-user";
         }
         userRepository.save(user);
-        if(userDb.getUsername().equals(user.getUsername())){
+        if (userDb.getUsername().equals(user.getUsername())) {
             return "redirect:/app/user/settings";
         } else {
             if (authenticatedUser != null) {

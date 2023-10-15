@@ -3,8 +3,8 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
-<%@include file="../../../head.jsp"%>
-<%@include file="../../../header.jsp"%>
+<%@include file="../../../head.jsp" %>
+<%@include file="../../../header.jsp" %>
 <body>
 <section class="dashboard-section">
     <div class="row dashboard-nowrap">
@@ -12,7 +12,7 @@
 
         <div class="m-4 p-3 width-medium">
             <div class="dashboard-content border-dashed p-3 m-4 view-height">
-                    <label class="col-sm-2 label-size col-form-label">${ownSignal.symbol}</label>
+                <label class="col-sm-2 label-size col-form-label">${ownSignal.symbol}</label>
 
 
                 <form:form method="post" modelAttribute="ownSignal">
@@ -21,7 +21,8 @@
                     <div class="form-group row">
                         <label class="col-sm-2 label-size col-form-label">Wybór strony:</label>
                         <div class="col-sm-10">
-                            <form:select id="positionSide" path="positionSide" cssClass="col-sm-10 label-size col-form-label">
+                            <form:select id="positionSide" path="positionSide"
+                                         cssClass="col-sm-10 label-size col-form-label">
                                 <form:options items="${positionSides}" itemLabel="name"/>
                             </form:select>
                         </div>
@@ -29,7 +30,8 @@
                     <div class="form-group row">
                         <label class="col-sm-2 label-size col-form-label">Strategia</label>
                         <div class="col-sm-10">
-                            <form:select id="strategySetting" path="strategySetting" cssClass="col-sm-10 label-size col-form-label">
+                            <form:select id="strategySetting" path="strategySetting"
+                                         cssClass="col-sm-10 label-size col-form-label">
                                 <form:options items="${user.strategies}" itemLabel="name"/>
                             </form:select>
                         </div>
@@ -104,4 +106,4 @@
 </body>
 
 </html>
-<%@include file="../../../footer.jsp"%>
+<%@include file="../../../footer.jsp" %>

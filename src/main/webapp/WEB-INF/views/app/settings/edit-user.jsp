@@ -14,7 +14,10 @@
                     <form:form method="post" modelAttribute="user">
                         <div class="row border-bottom border-3">
                             <div class="col"><h3 class="color-header text-uppercase">Edytuj dane</h3></div>
-                            <div class="col d-flex justify-content-end mb-2"><button type="submit" class="btn btn-color rounded-0 pt-0 pb-0 pr-4 pl-4">Zapisz</button></div>
+                            <div class="col d-flex justify-content-end mb-2">
+                                <button type="submit" class="btn btn-color rounded-0 pt-0 pb-0 pr-4 pl-4">Zapisz
+                                </button>
+                            </div>
                         </div>
 
                         <table class="table borderless">
@@ -22,31 +25,35 @@
                             <tr class="d-flex">
                                 <th scope="row" class="col-2">Login</th>
                                 <td class="col-7">
-                                    <form:input class="w-100 p-1" path="username"/><form:errors path="username"  cssClass="error"/>
+                                    <form:input class="w-100 p-1" path="username"/><form:errors path="username"
+                                                                                                cssClass="error"/>
                                 </td>
                             </tr>
                             <tr class="d-flex">
                                 <th scope="row" class="col-2">Imię</th>
                                 <td class="col-7">
-                                    <form:input class="w-100 p-1" path="firstName"/><form:errors path="firstName"  cssClass="error"/>
+                                    <form:input class="w-100 p-1" path="firstName"/><form:errors path="firstName"
+                                                                                                 cssClass="error"/>
                                 </td>
                             </tr>
                             <tr class="d-flex">
                                 <th scope="row" class="col-2">Nazwisko</th>
                                 <td class="col-7">
-                                    <form:input class="w-100 p-1" path="lastName"/><form:errors path="lastName"  cssClass="error"/>
+                                    <form:input class="w-100 p-1" path="lastName"/><form:errors path="lastName"
+                                                                                                cssClass="error"/>
                                 </td>
                             </tr>
                             <tr class="d-flex">
                                 <th scope="row" class="col-2">Email</th>
                                 <td class="col-7">
-                                    <form:input class="w-100 p-1" path="email"/><form:errors path="email"  cssClass="error"/>
+                                    <form:input class="w-100 p-1" path="email"/><form:errors path="email"
+                                                                                             cssClass="error"/>
                                 </td>
                             </tr>
-                                    <form:hidden path="password"/>
-                                    <form:hidden path="active"/>
-                                    <form:hidden path="role"/>
-                                    <form:hidden path="id"/>
+                            <form:hidden path="password"/>
+                            <form:hidden path="active"/>
+                            <form:hidden path="role"/>
+                            <form:hidden path="id"/>
                             </tbody>
                         </table>
                         <sec:csrfInput/>

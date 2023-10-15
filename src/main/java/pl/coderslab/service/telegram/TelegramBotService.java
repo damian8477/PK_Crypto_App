@@ -10,7 +10,6 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import pl.coderslab.controller.user.RegistrationController;
 
 @Service
 @RequiredArgsConstructor
@@ -31,7 +30,6 @@ public class TelegramBotService extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        System.out.println(update.getMessage().getText());
         String message = update.getMessage().getText();
         SendMessage response = new SendMessage();
         response.setChatId(update.getMessage().getChatId().toString());
@@ -41,7 +39,7 @@ public class TelegramBotService extends TelegramLongPollingBot {
         try {
             execute(response);
         } catch (TelegramApiException e) {
-            System.out.println(e);//todo logger
+            logger.info(e.toString());
         }
     }
 
@@ -59,7 +57,6 @@ public class TelegramBotService extends TelegramLongPollingBot {
                         response.setText(outPart);
                         execute(response);
                     }
-                    System.out.println(e);
                 } catch (Exception f) {
                     for (int i = 0; i < message.length(); i += 1500) {
                         int next = i + 1500;
@@ -68,7 +65,6 @@ public class TelegramBotService extends TelegramLongPollingBot {
                         response.setText(mess);
                         execute(response);
                     }
-                    System.out.println(f);
                 }
 
             }

@@ -14,7 +14,6 @@ import pl.coderslab.binance.client.model.enums.PositionSide;
 import pl.coderslab.entity.orders.Symbol;
 import pl.coderslab.entity.user.User;
 import pl.coderslab.enums.CashType;
-import pl.coderslab.model.AlertSetting;
 import pl.coderslab.model.CommonSignal;
 import pl.coderslab.model.CryptoName;
 import pl.coderslab.model.OwnSignal;
@@ -23,13 +22,10 @@ import pl.coderslab.service.binance.BinanceService;
 import pl.coderslab.service.binance.OwnSignalService;
 import pl.coderslab.service.entity.SymbolService;
 import pl.coderslab.service.entity.UserService;
-import pl.coderslab.service.telegram.AlertService;
 
 import javax.validation.Valid;
 
 import java.util.Arrays;
-
-import static java.util.Objects.isNull;
 
 @Controller
 @RequestMapping("/app/binance")
