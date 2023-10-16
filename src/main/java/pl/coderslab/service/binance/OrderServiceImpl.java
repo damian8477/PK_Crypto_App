@@ -8,11 +8,13 @@ import pl.coderslab.entity.orders.HistoryOrder;
 import pl.coderslab.entity.orders.Order;
 import pl.coderslab.entity.strategy.Strategy;
 import pl.coderslab.entity.user.User;
+import pl.coderslab.interfaces.OrderService;
+import pl.coderslab.interfaces.SyncService;
+import pl.coderslab.interfaces.UserSettingService;
 import pl.coderslab.model.BinanceConfirmOrder;
 import pl.coderslab.model.CommonSignal;
 import pl.coderslab.repository.HistoryOrderRepository;
 import pl.coderslab.repository.OrderRepository;
-import pl.coderslab.service.entity.UserSettingService;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -23,13 +25,13 @@ import static java.util.Objects.isNull;
 
 @Service
 @RequiredArgsConstructor
-public class OrderService {
+public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
     private final SyncService syncService;
     private final HistoryOrderRepository historyOrderRepository;
     private final UserSettingService userSettingService;
-
+    @Override
     public Order getOrderBySymbol(User user, String symbol) {
         SyncRequestClient syncRequestClient = syncService.sync(user.getUserSetting().get(0));
         PositionRisk positionRisk = syncRequestClient.getPositionRisk().stream()
@@ -53,7 +55,7 @@ public class OrderService {
                 .profitProcent(positionRisk.getUnrealizedProfit().doubleValue())
                 .build();
     }
-
+    @Override
     public List<Order> prepareOrderList(User user, List<Order> orders) {
         if (userSettingService.userSettingExist(user.getUserSetting()) && isNull(orders)) {
             return new ArrayList<>();
@@ -63,7 +65,6 @@ public class OrderService {
             return addOwnOrder(user, orders);
         }
     }
-
     private List<Order> addOwnOrder(User user, List<Order> orderList) {
         SyncRequestClient syncRequestClient = syncService.sync(user.getUserSetting().get(0));
         List<PositionRisk> positionRiskList = syncRequestClient.getPositionRisk().stream()
@@ -105,7 +106,7 @@ public class OrderService {
         });
     }
 
-
+    @Override
     public void saveHistoryOrderToDB(User user, Order order, BinanceConfirmOrder binanceConfirmOrder, boolean ownClosed) {
         historyOrderRepository.save(
                 HistoryOrder.builder()
@@ -126,7 +127,7 @@ public class OrderService {
                         .build());
 
     }
-
+    @Override
     public void save(User user, CommonSignal signal, String entryPrice, String lot,
                      String amount, String startProfit, int lev, Strategy strategy, boolean isOpen) {
         orderRepository.save(Order.builder()

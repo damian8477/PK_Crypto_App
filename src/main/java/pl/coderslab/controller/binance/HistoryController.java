@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import pl.coderslab.entity.orders.HistoryOrder;
 import pl.coderslab.entity.user.User;
+import pl.coderslab.interfaces.UserService;
 import pl.coderslab.repository.HistoryOrderRepository;
-import pl.coderslab.service.entity.UserService;
 
 import java.util.List;
 

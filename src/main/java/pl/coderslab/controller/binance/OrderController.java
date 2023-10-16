@@ -11,11 +11,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import pl.coderslab.entity.orders.Order;
 import pl.coderslab.entity.user.User;
+import pl.coderslab.interfaces.BinanceBasicService;
+import pl.coderslab.interfaces.CloseService;
+import pl.coderslab.interfaces.OrderService;
+import pl.coderslab.interfaces.UserService;
 import pl.coderslab.repository.OrderRepository;
-import pl.coderslab.service.binance.BinanceBasicService;
-import pl.coderslab.service.binance.OrderService;
-import pl.coderslab.service.binance.orders.CloseService;
-import pl.coderslab.service.entity.UserService;
 
 import java.util.List;
 

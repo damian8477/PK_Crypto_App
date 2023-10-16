@@ -11,7 +11,8 @@ import pl.coderslab.entity.user.UserSetting;
 import pl.coderslab.enums.Action;
 import pl.coderslab.enums.CashType;
 import pl.coderslab.enums.MarginType;
-import pl.coderslab.interfaces.BinanceUserInterface;
+import pl.coderslab.interfaces.BinanceBasicService;
+import pl.coderslab.interfaces.OwnSignalService;
 import pl.coderslab.model.CommonSignal;
 import pl.coderslab.model.OwnSignal;
 
@@ -24,11 +25,11 @@ import static java.util.Objects.isNull;
 
 @Service
 @RequiredArgsConstructor
-public class OwnSignalService {
-    private final BinanceUserInterface binanceSupport;
-    private static final Logger logger = LoggerFactory.getLogger(OwnSignalService.class);
+public class OwnSignalServiceImpl implements OwnSignalService {
+    private final BinanceBasicService binanceSupport;
+    private static final Logger logger = LoggerFactory.getLogger(OwnSignalServiceImpl.class);
 
-
+    @Override
     public void checkOwnSignal(OwnSignal signal, SyncRequestClient syncRequestClient) {
         if (signal.getStrategySetting() == null) {
             BigDecimal price = binanceSupport.getMarketPriceBigDecimal(syncRequestClient, signal.getSymbol());
@@ -42,7 +43,7 @@ public class OwnSignalService {
             //todo
         }
     }
-
+    @Override
     public void checkTpAndSl(OwnSignal signal, BigDecimal mp) {
         BigDecimal tp = signal.getTakeProfit();
         BigDecimal sl = signal.getStopLoss();
@@ -67,7 +68,7 @@ public class OwnSignalService {
             }
         }
     }
-
+    @Override
     public void checkCashType(OwnSignal signal, BigDecimal marketPrice) {
         CashType cashType = signal.getCashType();
         switch (cashType) {
@@ -88,15 +89,15 @@ public class OwnSignalService {
             }
         }
     }
-
+    @Override
     public void checkOrderSide(OwnSignal signal, BigDecimal marketPrice) {
     }
-
+    @Override
     public void checkTypeOrder(OwnSignal signal, BigDecimal marketPrice) {
 
     }
 
-
+    @Override
     public CommonSignal createCommonSignal(User user, OwnSignal signal, StrategySetting strategySetting, UserSetting userSetting, SyncRequestClient syncRequestClient) {
         double marketPrice = binanceSupport.getMarketPriceDouble(syncRequestClient, signal.getSymbol());
         return CommonSignal.builder()
@@ -113,8 +114,8 @@ public class OwnSignalService {
                 .orderType(signal.getTypeOrder())
                 .build();
     }
-
-    private String getLot(User user, StrategySetting strategySetting, OwnSignal signal, double marketPrice, SyncRequestClient syncRequestClient) {
+    @Override
+    public String getLot(User user, StrategySetting strategySetting, OwnSignal signal, double marketPrice, SyncRequestClient syncRequestClient) {
         switch (signal.getCashType()) {
             case LOT -> {
                 return signal.getLot().toString();
@@ -130,8 +131,8 @@ public class OwnSignalService {
         }
         throw new IllegalArgumentException("Zły rodzaj płatności (lot, dolar lub %)");
     }
-
-    private List<String> getTakeProfit(BigDecimal tp, StrategySetting strategySetting) {
+    @Override
+    public List<String> getTakeProfit(BigDecimal tp, StrategySetting strategySetting) {
         List<String> takeProfits = new ArrayList<>();
         if (!isNull(strategySetting)) {
             if (strategySetting.isActiveBasicTp() && tp == null) {
@@ -144,8 +145,8 @@ public class OwnSignalService {
         }
         return takeProfits;
     }
-
-    private List<String> getStopLoss(BigDecimal sl, StrategySetting strategySetting) {
+    @Override
+    public List<String> getStopLoss(BigDecimal sl, StrategySetting strategySetting) {
         List<String> stopLossList = new ArrayList<>();
         if (!isNull(strategySetting)) {
             if (strategySetting.isActiveBasicTp() && sl == null) {

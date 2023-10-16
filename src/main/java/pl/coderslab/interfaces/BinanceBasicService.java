@@ -9,7 +9,7 @@ import pl.coderslab.enums.MarginType;
 
 import java.math.BigDecimal;
 
-public interface BinanceUserInterface {
+public interface BinanceBasicService {
     void setMarginType(SyncRequestClient syncRequestClient, MarginType marginType, String symbol);
 
     OrderSide getOrderSideForOpen(PositionSide orderSide);

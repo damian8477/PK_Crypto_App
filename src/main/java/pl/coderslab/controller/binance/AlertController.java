@@ -11,11 +11,11 @@ import pl.coderslab.binance.client.model.enums.PositionSide;
 import pl.coderslab.entity.alert.Alert;
 import pl.coderslab.entity.orders.Symbol;
 import pl.coderslab.entity.user.User;
+import pl.coderslab.interfaces.AlertService;
+import pl.coderslab.interfaces.SymbolService;
+import pl.coderslab.interfaces.UserService;
 import pl.coderslab.model.AlertSetting;
 import pl.coderslab.repository.AlertRepository;
-import pl.coderslab.service.entity.SymbolService;
-import pl.coderslab.service.entity.UserService;
-import pl.coderslab.service.telegram.AlertService;
 
 import javax.validation.Valid;
 

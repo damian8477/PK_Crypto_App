@@ -12,10 +12,12 @@ import pl.coderslab.entity.user.User;
 import pl.coderslab.entity.user.UserSetting;
 import pl.coderslab.enums.Direction;
 import pl.coderslab.enums.Emoticon;
+import pl.coderslab.interfaces.AlertService;
+import pl.coderslab.interfaces.SyncService;
+import pl.coderslab.interfaces.TelegramBotService;
+import pl.coderslab.interfaces.UserSettingService;
 import pl.coderslab.model.AlertSetting;
 import pl.coderslab.repository.AlertRepository;
-import pl.coderslab.service.binance.SyncService;
-import pl.coderslab.service.entity.UserSettingService;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -27,15 +29,15 @@ import static java.util.Objects.isNull;
 
 @Service
 @RequiredArgsConstructor
-public class AlertService {
+public class AlertServiceImpl implements AlertService {
     private final AlertRepository alertRepository;
     private final SyncService syncService;
     private final TelegramBotService telegramBotService;
     private final UserSettingService userSettingService;
 
-    private static final Logger logger = LoggerFactory.getLogger(AlertService.class);
+    private static final Logger logger = LoggerFactory.getLogger(AlertServiceImpl.class);
 
-
+    @Override
     public List<Map<String, List<Alert>>> getAlertList(List<Alert> alerts) {
         return alerts.stream()
                 .collect(Collectors.groupingBy(Alert::getSymbolName))
@@ -49,7 +51,7 @@ public class AlertService {
                 .toList();
     }
 
-
+    @Override
     public void addAlert(User user, AlertSetting alert) {
         for (int i = 1; i <= 5; i++) {
             BigDecimal alertPrice = getAlertPrice(alert, i);
@@ -60,7 +62,7 @@ public class AlertService {
             }
         }
     }
-
+    @Override
     public Direction getDirection(BigDecimal price, BigDecimal marketPrice) {
         if (marketPrice.compareTo(price) < 0) {
             return Direction.UP;
@@ -68,7 +70,7 @@ public class AlertService {
             return Direction.DOWN;
         }
     }
-
+    @Override
     public void checkAlerts() {
         List<Alert> alerts = alertRepository.findAll();
         SyncRequestClient sync = syncService.sync(null);
@@ -85,7 +87,7 @@ public class AlertService {
         });
     }
 
-
+    @Override
     public void checkAlert(BigDecimal price, Alert alert) {
         String emoticon = null;
         switch (alert.getDirection()) {
@@ -109,7 +111,6 @@ public class AlertService {
             }
         }
     }
-
     private BigDecimal getAlertPrice(AlertSetting alert, int index) {
         return switch (index) {
             case 1 -> alert.getAlertPrice1();

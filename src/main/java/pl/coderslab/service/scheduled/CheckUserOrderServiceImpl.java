@@ -9,14 +9,9 @@ import pl.coderslab.binance.client.model.trade.Order;
 import pl.coderslab.binance.client.model.trade.PositionRisk;
 import pl.coderslab.entity.user.User;
 import pl.coderslab.enums.Emoticon;
+import pl.coderslab.interfaces.*;
 import pl.coderslab.model.BinanceConfirmOrder;
 import pl.coderslab.repository.OrderRepository;
-import pl.coderslab.service.binance.BinanceBasicService;
-import pl.coderslab.service.binance.BinanceService;
-import pl.coderslab.service.binance.OrderService;
-import pl.coderslab.service.binance.SyncService;
-import pl.coderslab.service.entity.UserSettingService;
-import pl.coderslab.service.telegram.TelegramBotService;
 
 import java.util.List;
 import java.util.Objects;
@@ -25,15 +20,15 @@ import static java.util.Objects.isNull;
 
 @Service
 @RequiredArgsConstructor
-public class CheckUserOrderService {
+public class CheckUserOrderServiceImpl implements CheckUserOrderService {
     private final SyncService syncService;
     private final BinanceService binanceService;
     private final TelegramBotService telegramBotService;
     private final OrderRepository orderRepository;
     private final OrderService orderService;
     private final UserSettingService userSettingService;
-    private static final Logger logger = LoggerFactory.getLogger(CheckUserOrderService.class);
-
+    private static final Logger logger = LoggerFactory.getLogger(CheckUserOrderServiceImpl.class);
+    @Override
     public void checkInActiveOrder(List<User> users) {
         users.forEach(user -> {
             if (!isNull(user.getOrders()) && userSettingService.userSettingExist(user.getUserSetting())) {
@@ -63,7 +58,7 @@ public class CheckUserOrderService {
             }
         });
     }
-
+    @Override
     public void cancelAllOpenOrders(SyncRequestClient syncRequestClient, String symbol, String side) {
         try {
             List<Order> listOrder = syncRequestClient.getOpenOrders(symbol).stream()

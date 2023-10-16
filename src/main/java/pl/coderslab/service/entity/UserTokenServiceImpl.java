@@ -7,8 +7,9 @@ import org.springframework.stereotype.Service;
 import pl.coderslab.entity.user.User;
 import pl.coderslab.entity.user.UserToken;
 import pl.coderslab.enums.TokenType;
+import pl.coderslab.interfaces.EmailService;
+import pl.coderslab.interfaces.UserTokenService;
 import pl.coderslab.repository.UserTokenRepository;
-import pl.coderslab.service.email.EmailService;
 
 import javax.transaction.Transactional;
 import java.util.Random;
@@ -17,12 +18,13 @@ import static java.util.Objects.isNull;
 
 @Service
 @RequiredArgsConstructor
-public class UserTokenService {
+public class UserTokenServiceImpl implements UserTokenService {
     private final UserTokenRepository userTokenRepository;
     private final EmailService emailService;
 
-    private static final Logger logger = LoggerFactory.getLogger(UserTokenService.class);
+    private static final Logger logger = LoggerFactory.getLogger(UserTokenServiceImpl.class);
 
+    @Override
     @Transactional
     public boolean generateUserToken(User user, TokenType tokenType) {
         if (!isNull(user.getEmail())) {
@@ -40,6 +42,7 @@ public class UserTokenService {
         return false;
     }
 
+    @Override
     public boolean checkUserToken(User user, String token){
         UserToken userToken = userTokenRepository.findByUserId(user.getId());
         if(userToken.getTokenType().equals(TokenType.PASSWORD) && (userToken.getToken().equals(token))){
@@ -50,17 +53,14 @@ public class UserTokenService {
         return false;
     }
 
-
-
-    public String generateRandomCode(int length) {
+    private String generateRandomCode(int length) {
         Random random = new Random();
         StringBuilder code = new StringBuilder();
 
         for (int i = 0; i < length; i++) {
-            int digit = random.nextInt(10); // Losujemy cyfrę od 0 do 9
+            int digit = random.nextInt(10);
             code.append(digit);
         }
-
         return code.toString();
     }
 

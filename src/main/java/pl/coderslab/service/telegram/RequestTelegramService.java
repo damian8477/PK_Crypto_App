@@ -7,9 +7,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import pl.coderslab.entity.user.User;
 import pl.coderslab.entity.user.UserSetting;
+import pl.coderslab.interfaces.TelegramCodeService;
+import pl.coderslab.interfaces.UserService;
 import pl.coderslab.repository.UserRepository;
 import pl.coderslab.repository.UserSettingRepository;
-import pl.coderslab.service.entity.UserService;
 
 
 @Service

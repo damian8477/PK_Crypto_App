@@ -5,8 +5,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import pl.coderslab.entity.user.User;
+import pl.coderslab.interfaces.UserService;
 import pl.coderslab.repository.UserRepository;
-import pl.coderslab.service.entity.UserService;
 
 @Controller
 @RequiredArgsConstructor

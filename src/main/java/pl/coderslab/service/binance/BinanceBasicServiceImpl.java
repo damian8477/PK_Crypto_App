@@ -17,7 +17,8 @@ import pl.coderslab.binance.client.model.trade.MarginLot;
 import pl.coderslab.binance.client.model.trade.Order;
 import pl.coderslab.entity.user.User;
 import pl.coderslab.enums.MarginType;
-import pl.coderslab.interfaces.BinanceUserInterface;
+import pl.coderslab.interfaces.BinanceBasicService;
+import pl.coderslab.interfaces.SyncService;
 
 import java.math.BigDecimal;
 import java.util.Collection;
@@ -30,10 +31,10 @@ import static java.util.Objects.isNull;
 
 @Service
 @RequiredArgsConstructor
-public class BinanceBasicService implements BinanceUserInterface {
+public class BinanceBasicServiceImpl implements BinanceBasicService {
 
     private final SyncService syncService;
-    private static final Logger logger = LoggerFactory.getLogger(BinanceBasicService.class);
+    private static final Logger logger = LoggerFactory.getLogger(BinanceBasicServiceImpl.class);
 
 
     public void setMarginType(SyncRequestClient syncRequestClient, MarginType marginType, String cryptoName) {

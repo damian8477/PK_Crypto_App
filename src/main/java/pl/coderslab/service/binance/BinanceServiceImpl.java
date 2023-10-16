@@ -14,12 +14,11 @@ import pl.coderslab.entity.orders.Symbol;
 import pl.coderslab.entity.user.User;
 import pl.coderslab.entity.user.UserSetting;
 import pl.coderslab.enums.Emoticon;
-import pl.coderslab.interfaces.BinanceUserInterface;
+import pl.coderslab.interfaces.*;
 import pl.coderslab.model.BinanceConfirmOrder;
 import pl.coderslab.model.CommonSignal;
 import pl.coderslab.model.CryptoName;
 import pl.coderslab.repository.SymbolRepository;
-import pl.coderslab.service.telegram.TelegramBotService;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -32,16 +31,16 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
-public class BinanceService {
+public class BinanceServiceImpl implements BinanceService {
 
     private final SyncService syncService;
     private final SymbolRepository symbolRepository;
-    private final BinanceUserInterface binanceSupport;
+    private final BinanceBasicService binanceSupport;
     private final OrderService orderService;
     private final TelegramBotService telegramBotService;
 
-    private static final Logger logger = LoggerFactory.getLogger(BinanceService.class);
-
+    private static final Logger logger = LoggerFactory.getLogger(BinanceServiceImpl.class);
+    @Override
     public List<CryptoName> getSymbols() {
         List<CryptoName> cryptoNameList = new ArrayList<>();
         List<Symbol> symbolList = symbolRepository.findAll();
@@ -65,7 +64,7 @@ public class BinanceService {
         }
         return cryptoNameList;
     }
-
+    @Override
     public CryptoName getSymbols(int symbolId) {
         Symbol symbol = symbolRepository.findById(symbolId).orElse(null);
         if (symbol != null) {
@@ -85,13 +84,13 @@ public class BinanceService {
         }
         return new CryptoName();
     }
-
+    @Override
     public List<String> getSymbolNames() {
         return syncService.sync(null).getPositionRisk().stream()
                 .map(PositionRisk::getSymbol)
                 .toList();
     }
-
+    @Override
     public boolean createOrder(CommonSignal signal, User user, SyncRequestClient syncRequestClient) {
         //todo sprawdzenie czy sygnal jest otwarty
         OrderSide orderSide = binanceSupport.getOrderSideForOpen(signal.getPositionSide());
@@ -113,12 +112,12 @@ public class BinanceService {
         }
         return false;
     }
-
+    @Override
     public SyncRequestClient sync(UserSetting userSetting) {
         return syncService.sync(userSetting);
     }
-
-    private boolean sendSlAndTpToAccount(SyncRequestClient syncRequestClient, String cryptoName, OrderSide orderSide, PositionSide positionSide, String stopLoss, String takeProfit) {
+    @Override
+    public boolean sendSlAndTpToAccount(SyncRequestClient syncRequestClient, String cryptoName, OrderSide orderSide, PositionSide positionSide, String stopLoss, String takeProfit) {
         try {
             OrderSide orderCloseSide = OrderSide.BUY;
             if (orderSide.equals(OrderSide.BUY)) orderCloseSide = OrderSide.SELL;
@@ -151,7 +150,7 @@ public class BinanceService {
         return true;
     }
 
-
+    @Override
     public boolean sendOrderToBinance(SyncRequestClient syncRequestClient, String cryptoName, OrderSide orderSide, String lot, String marketPrice, PositionSide positionSide, OrderType orderType) {
         int count = 0;
         while (true) {
@@ -174,7 +173,7 @@ public class BinanceService {
                 lot, null, null, null, null, null, NewOrderRespType.ACK);
         return true;
     }
-
+    @Override
     public void cancelAllOpenOrders(SyncRequestClient syncRequestClient, String symbol, String side) {
         String sideCancelFinal = side;
         try {
@@ -188,7 +187,7 @@ public class BinanceService {
             syncRequestClient.cancelAllOpenOrder(symbol);
         }
     }
-
+    @Override
     public BinanceConfirmOrder getBinanceConfirmOrder(SyncRequestClient syncRequestClient, PositionRisk positionRisk) {
         String symbol = positionRisk.getSymbol();
         double sumProfit = 0.0;
@@ -228,8 +227,8 @@ public class BinanceService {
                 .build();
     }
 
-
-    private String convertTimestampToDate(Long timestamp) {
+    @Override
+    public String convertTimestampToDate(Long timestamp) {
         Date date = new Date(timestamp);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return dateFormat.format(date);

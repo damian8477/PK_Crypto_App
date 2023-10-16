@@ -14,15 +14,14 @@ import pl.coderslab.binance.client.model.enums.PositionSide;
 import pl.coderslab.entity.orders.Symbol;
 import pl.coderslab.entity.user.User;
 import pl.coderslab.enums.CashType;
+import pl.coderslab.interfaces.BinanceService;
+import pl.coderslab.interfaces.OwnSignalService;
+import pl.coderslab.interfaces.SymbolService;
+import pl.coderslab.interfaces.UserService;
 import pl.coderslab.model.CommonSignal;
 import pl.coderslab.model.CryptoName;
 import pl.coderslab.model.OwnSignal;
 import pl.coderslab.repository.SymbolRepository;
-import pl.coderslab.service.binance.BinanceService;
-import pl.coderslab.service.binance.OwnSignalService;
-import pl.coderslab.service.entity.SymbolService;
-import pl.coderslab.service.entity.UserService;
-
 import javax.validation.Valid;
 
 import java.util.Arrays;

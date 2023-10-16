@@ -7,19 +7,20 @@ import org.springframework.stereotype.Service;
 import pl.coderslab.binance.client.RequestOptions;
 import pl.coderslab.binance.client.SyncRequestClient;
 import pl.coderslab.entity.user.UserSetting;
+import pl.coderslab.interfaces.SyncService;
 
 import static java.util.Objects.isNull;
 
 @Service
-public class SyncService {
+public class SyncServiceImpl implements SyncService {
 
     @Value("${binance.api.var.api-key}")
     public String apiKey;
     @Value("${binance.api.var.secret-key}")
     public String secretKey;
     public SyncRequestClient syncRequestClient;
-    private static final Logger logger = LoggerFactory.getLogger(SyncService.class);
-
+    private static final Logger logger = LoggerFactory.getLogger(SyncServiceImpl.class);
+    @Override
     public SyncRequestClient sync(UserSetting userSetting) {
         try {
             RequestOptions options = new RequestOptions();

@@ -14,13 +14,13 @@ import org.springframework.web.bind.annotation.*;
 import pl.coderslab.entity.user.User;
 import pl.coderslab.entity.user.UserSetting;
 import pl.coderslab.enums.TokenType;
+import pl.coderslab.interfaces.TelegramCodeService;
+import pl.coderslab.interfaces.UserService;
+import pl.coderslab.interfaces.UserSettingService;
+import pl.coderslab.interfaces.UserTokenService;
 import pl.coderslab.model.NewPassword;
 import pl.coderslab.repository.UserRepository;
 import pl.coderslab.repository.UserSettingRepository;
-import pl.coderslab.service.entity.UserService;
-import pl.coderslab.service.entity.UserSettingService;
-import pl.coderslab.service.entity.UserTokenService;
-import pl.coderslab.service.telegram.TelegramCodeService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

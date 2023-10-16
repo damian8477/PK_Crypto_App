@@ -1,8 +1,6 @@
 package pl.coderslab.service.telegram;
 
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -10,12 +8,13 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import pl.coderslab.interfaces.TelegramBotService;
 
 @Service
 @RequiredArgsConstructor
-public class TelegramBotService extends TelegramLongPollingBot {
+public class TelegramBotServiceImpl extends TelegramLongPollingBot implements TelegramBotService {
     private final RequestTelegramService requestTelegramService;
-    private static final Logger logger = LoggerFactory.getLogger(TelegramBotService.class);
+    private static final Logger logger = LoggerFactory.getLogger(TelegramBotServiceImpl.class);
 
 
     @Override
@@ -42,7 +41,7 @@ public class TelegramBotService extends TelegramLongPollingBot {
             logger.info(e.toString());
         }
     }
-
+    @Override
     public void sendMessage(String chatId, String message){
         try{
             SendMessage response = new SendMessage();

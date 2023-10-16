@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import pl.coderslab.entity.user.TelegramCode;
 import pl.coderslab.entity.user.User;
 import pl.coderslab.entity.user.UserSetting;
+import pl.coderslab.interfaces.TelegramCodeService;
 import pl.coderslab.repository.TelegramCodeRepository;
 import pl.coderslab.repository.UserSettingRepository;
 
@@ -14,13 +15,13 @@ import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
-public class TelegramCodeService {
+public class TelegramCodeServiceImpl implements TelegramCodeService {
     private final UserSettingRepository userSettingRepository;
     private final TelegramCodeRepository telegramCodeRepository;
 
-    private static final Logger logger = LoggerFactory.getLogger(TelegramCodeService.class);
+    private static final Logger logger = LoggerFactory.getLogger(TelegramCodeServiceImpl.class);
 
-
+    @Override
     public String checkCode(User user, String code, String chatId) {
         if (user.getUserSetting() != null && telegramCodeRepository.existsByUser(user)) {
             UserSetting userSetting = user.getUserSetting().get(0);
@@ -42,7 +43,7 @@ public class TelegramCodeService {
         return "Użytkownik o podanym loginie nie istnieje lub nie oczekuje na autoryzacje telegrama\nPo 3 próbach, klucz zostanie usunięty";
     }
 
-
+    @Override
     public String getCode(int length, User user) {
         if (telegramCodeRepository.existsByUser(user)) {
             return telegramCodeRepository.getByUser(user).getNumberCode();
@@ -58,7 +59,7 @@ public class TelegramCodeService {
 
     }
 
-    public String generateRandomCode(int length) {
+    private String generateRandomCode(int length) {
         Random random = new Random();
         StringBuilder code = new StringBuilder();
 

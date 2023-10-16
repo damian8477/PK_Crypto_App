@@ -13,35 +13,31 @@ import pl.coderslab.binance.client.model.trade.PositionRisk;
 import pl.coderslab.entity.orders.Order;
 import pl.coderslab.entity.user.User;
 import pl.coderslab.enums.Emoticon;
+import pl.coderslab.interfaces.*;
 import pl.coderslab.model.BinanceConfirmOrder;
 import pl.coderslab.repository.OrderRepository;
-import pl.coderslab.service.binance.BinanceService;
-import pl.coderslab.service.binance.BinanceBasicService;
-import pl.coderslab.service.binance.OrderService;
-import pl.coderslab.service.binance.SyncService;
-import pl.coderslab.service.telegram.TelegramBotService;
 
 import static java.util.Objects.isNull;
 
 @Service
 @RequiredArgsConstructor
-public class CloseService {
+public class CloseServiceImpl implements CloseService {
     private final SyncService syncService;
     private final BinanceBasicService binanceUserService;
     private final BinanceService binanceService;
     private final OrderRepository orderRepository;
     private final OrderService orderService;
     private final TelegramBotService telegramBotService;
-    private static final Logger logger = LoggerFactory.getLogger(CloseService.class);
+    private static final Logger logger = LoggerFactory.getLogger(CloseServiceImpl.class);
 
-
+    @Override
     public boolean closeOrderByUser(Order order, User user, String lot) {
         SyncRequestClient syncRequestClient = syncService.sync(user.getUserSetting().get(0));
         killOrder(syncRequestClient, order, user, lot);
         return true;
     }
 
-
+    @Override
     public boolean killOrder(SyncRequestClient syncRequestClient, Order order, User user, String lot) {
         PositionRisk position = syncRequestClient.getPositionRisk().stream()
                 .filter(s -> s.getSymbol().equals(order.getSymbolName()))
@@ -63,7 +59,7 @@ public class CloseService {
         }
         return false;
     }
-
+    @Override
     public void killSymbol(SyncRequestClient syncRequestClient, PositionRisk position, String lotSize) {
         String lot = String.valueOf(Math.abs(position.getPositionAmt().doubleValue()));
         if (lotSize != null) {
