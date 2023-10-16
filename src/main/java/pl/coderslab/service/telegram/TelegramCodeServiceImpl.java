@@ -12,7 +12,10 @@ import pl.coderslab.repository.TelegramCodeRepository;
 import pl.coderslab.repository.UserSettingRepository;
 
 import java.util.Random;
-
+/**
+ * Implementation of the {@link TelegramCodeService} interface providing methods
+ * for handling Telegram codes and user authentication.
+ */
 @Service
 @RequiredArgsConstructor
 public class TelegramCodeServiceImpl implements TelegramCodeService {
@@ -20,7 +23,16 @@ public class TelegramCodeServiceImpl implements TelegramCodeService {
     private final TelegramCodeRepository telegramCodeRepository;
 
     private static final Logger logger = LoggerFactory.getLogger(TelegramCodeServiceImpl.class);
-
+    /**
+     * Checks if the provided Telegram code matches the expected code for the user.
+     * If the codes match, the user's Telegram chat ID is updated, and the Telegram code is deleted.
+     * If the number of attempts exceeds 3, the Telegram code is deleted.
+     *
+     * @param user   the user for whom the code is checked.
+     * @param code   the Telegram code provided by the user.
+     * @param chatId the Telegram chat ID.
+     * @return a message indicating the result of the code check.
+     */
     @Override
     public String checkCode(User user, String code, String chatId) {
         if (user.getUserSetting() != null && telegramCodeRepository.existsByUser(user)) {
@@ -42,7 +54,15 @@ public class TelegramCodeServiceImpl implements TelegramCodeService {
         }
         return "Użytkownik o podanym loginie nie istnieje lub nie oczekuje na autoryzacje telegrama\nPo 3 próbach, klucz zostanie usunięty";
     }
-
+    /**
+     * Generates and retrieves the Telegram token code for the user.
+     * If the user already has a Telegram code, the existing code is returned.
+     * If not, a new Telegram code is generated, saved, and returned.
+     *
+     * @param length the length of the generated code.
+     * @param user   the user for whom the code is generated.
+     * @return the generated Telegram code.
+     */
     @Override
     public String getCode(int length, User user) {
         if (telegramCodeRepository.existsByUser(user)) {
@@ -58,7 +78,12 @@ public class TelegramCodeServiceImpl implements TelegramCodeService {
         }
 
     }
-
+    /**
+     * Generates a random code of the specified length.
+     *
+     * @param length the length of the generated code.
+     * @return the generated random code.
+     */
     private String generateRandomCode(int length) {
         Random random = new Random();
         StringBuilder code = new StringBuilder();
@@ -70,6 +95,4 @@ public class TelegramCodeServiceImpl implements TelegramCodeService {
 
         return code.toString();
     }
-
-
 }

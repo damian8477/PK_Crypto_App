@@ -10,7 +10,9 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * Entity class representing a user in the system.
+ */
 @Entity
 @Table(name = "users")
 @Data
