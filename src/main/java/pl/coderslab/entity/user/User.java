@@ -1,6 +1,9 @@
 package pl.coderslab.entity.user;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import pl.coderslab.entity.alert.Alert;
 import pl.coderslab.entity.orders.Order;
 import pl.coderslab.entity.strategy.Strategy;
@@ -16,6 +19,7 @@ import java.util.List;
 @Entity
 @Table(name = "users")
 @Data
+@Builder @NoArgsConstructor @AllArgsConstructor
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

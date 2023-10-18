@@ -1,24 +1,28 @@
 package pl.coderslab.service.entity;
 
+import lombok.RequiredArgsConstructor;
 import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.coderslab.entity.user.User;
 import pl.coderslab.interfaces.UserService;
+import pl.coderslab.repository.AlertRepository;
+import pl.coderslab.repository.OrderRepository;
 import pl.coderslab.repository.UserRepository;
+import pl.coderslab.repository.UserSettingRepository;
 
 import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-
+    private final UserSettingRepository userSettingRepository;
+    private final UserRepository userRepository;
+    private final OrderRepository orderRepository;
+    private final AlertRepository alertRepository;
     private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
-
-    @Autowired
-    private UserRepository userRepository;
 
     @Override
     @Transactional
@@ -32,6 +36,16 @@ public class UserServiceImpl implements UserService {
         }
         return user;
     }
+
+    @Override
+    @Transactional
+    public void deleteById(Long userId){
+        userSettingRepository.deleteAllByUserId(userId);
+        orderRepository.deleteAllByUserId(userId);
+        alertRepository.deleteAllByUserId(userId);
+        userRepository.deleteById(userId);
+    }
+
 
     @Override
     @Transactional

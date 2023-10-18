@@ -43,6 +43,7 @@
                             <form:checkbox path="activeSignal" class="form-control"/>
                         </div>
                     </div>
+                    <form:hidden path="telegramChatId"/>
                     <form:hidden path="id"/>
                     <form:hidden path="user"/>
                     <form:button class="btn btn-color rounded-0 pt-0 pb-0 pr-4 pl-4">Dodaj</form:button>

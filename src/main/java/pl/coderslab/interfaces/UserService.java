@@ -10,6 +10,9 @@ public interface UserService {
     User getUserWithUserSettings(Long userId);
 
     @Transactional
+    void deleteById(Long userId);
+
+    @Transactional
     User getUserWithUserSettingsByUserName(String userName);
 
     @Transactional

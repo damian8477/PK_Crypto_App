@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import pl.coderslab.configuration.DatabaseConverter;
 
 import javax.persistence.*;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.Pattern;
 
 
 @Entity
@@ -23,11 +23,11 @@ public class UserSetting {
     private Integer id;
     @Convert(converter = DatabaseConverter.class)
     @Column(name = "binance_key")
-    @Size(min = 64, max = 64, message = "Binance key musi mieć 64 znaki")
+    @Pattern(regexp = "^.{64}$", message = "Binance key musi mieć 64 znaki")
     private String binanceKey;
     @Convert(converter = DatabaseConverter.class)
     @Column(name = "binance_secret")
-    @Size(min = 64, max = 64, message = "Binance secret musi mieć 64 znaki")
+     @Pattern(regexp = "^.{64}$", message = "Binance secret musi mieć 64 znaki")
     private String binanceSecret;
     @Column(name = "telegram_chat_id")
     @Convert(converter = DatabaseConverter.class)

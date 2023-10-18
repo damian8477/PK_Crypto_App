@@ -48,7 +48,7 @@ public class AdminController {
 
     @PostMapping("/deletet")
     public String postEditViedw(@RequestParam Long userId) {
-        userRepository.deleteById(userId);
+        userService.deleteById(userId);
         return "redirect:/admin/user-list";
     }
 }
