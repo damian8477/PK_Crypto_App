@@ -38,15 +38,15 @@ Poniżej znajdziesz instrukcje, jak uruchomić projekt na swoim lokalnym środow
       - telegram.token.var.name
       - telegram.token.var.token
       
-      **binance.api.var.api-key
-      **binance.api.var.secret-key
+      - binance.api.var.api-key
+      - binance.api.var.secret-key
       
-      **spring.datasource.url
-      **spring.datasource.username
-      **spring.datasource.password
+      - spring.datasource.url
+      - spring.datasource.username
+      - spring.datasource.password
       
-      **spring.mail.username
-      **spring.mail.password
+      - spring.mail.username
+      - spring.mail.password
 
 
 
