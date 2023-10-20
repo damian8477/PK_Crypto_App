@@ -37,7 +37,7 @@ public class ScheduledServiceImpl implements ScheduledService {
     public void check() {
         List<User> users = userService.getActiveUsers();
         logger.info("Scheduled counter: " + count);
-        if(count % 1 == 0) {
+        if (count % 1 == 0) {
             checkUserOrderService.checkInActiveOrder(users);
         }
         if (count % 2 == 0) {
@@ -59,6 +59,5 @@ public class ScheduledServiceImpl implements ScheduledService {
         List<TelegramCode> telegramCodes = telegramCodeRepository.findAllByExpiredCode(LocalDateTime.now().minusMinutes(15L));
         telegramCodeRepository.deleteAll(telegramCodes);
         userTokenRepository.deleteAllByExpiredCode(LocalDateTime.now().minusMinutes(15L));
-
     }
 }
