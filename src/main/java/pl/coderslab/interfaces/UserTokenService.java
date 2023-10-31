@@ -6,7 +6,7 @@ import pl.coderslab.enums.TokenType;
 import javax.transaction.Transactional;
 
 public interface UserTokenService {
-    @Transactional
+
     boolean generateUserToken(User user, TokenType tokenType);
 
     boolean checkUserToken(User user, String token);

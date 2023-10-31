@@ -1,9 +1,6 @@
 package pl.coderslab.entity.user;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import pl.coderslab.configuration.DatabaseConverter;
 
 import javax.persistence.*;
@@ -11,7 +8,8 @@ import java.time.LocalDateTime;
 
 @Table(name = "telegram_key")
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor @AllArgsConstructor @Builder
 public class TelegramCode {
     @Id

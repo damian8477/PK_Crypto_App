@@ -1,9 +1,6 @@
 package pl.coderslab.entity.alert;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import pl.coderslab.binance.client.model.enums.PositionSide;
 import pl.coderslab.entity.user.User;
 import pl.coderslab.enums.Direction;
@@ -15,7 +12,7 @@ import java.math.BigDecimal;
 
 @Entity
 @Table(name = "alerts")
-@Data
+@Getter @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder

@@ -1,6 +1,8 @@
 package pl.coderslab.entity.strategy;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -10,7 +12,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "strategy_setting")
-@Data
+@Getter
+@Setter
 public class StrategySetting {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

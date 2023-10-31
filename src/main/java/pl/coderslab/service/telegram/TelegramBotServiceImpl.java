@@ -8,23 +8,24 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import pl.coderslab.configuration.TokenConfigProperties;
 import pl.coderslab.interfaces.TelegramBotService;
 
 @Service
 @RequiredArgsConstructor
 public class TelegramBotServiceImpl extends TelegramLongPollingBot implements TelegramBotService {
     private final RequestTelegramService requestTelegramService;
+    private final TokenConfigProperties tokenConfigProperties;
     private static final Logger logger = LoggerFactory.getLogger(TelegramBotServiceImpl.class);
-
 
     @Override
     public String getBotUsername() {
-        return requestTelegramService.botName;
+        return tokenConfigProperties.getName();
     }
 
     @Override
     public String getBotToken() {
-        return requestTelegramService.token;
+        return tokenConfigProperties.getToken();
     }
 
     @Override
@@ -46,26 +47,17 @@ public class TelegramBotServiceImpl extends TelegramLongPollingBot implements Te
         try{
             SendMessage response = new SendMessage();
             response.setChatId(chatId);
-            response.setText(message);
-            try {
+            if(message.length() < 1500){
+                response.setText(message);
                 execute(response);
-            } catch (TelegramApiException e) {
-                try {
-                    String[] messTab = message.toString().split("------");
-                    for (String outPart : messTab) {
-                        response.setText(outPart);
-                        execute(response);
-                    }
-                } catch (Exception f) {
-                    for (int i = 0; i < message.length(); i += 1500) {
-                        int next = i + 1500;
-                        if (next > message.length()) next = message.length();
-                        String mess = message.substring(i, next);
-                        response.setText(mess);
-                        execute(response);
-                    }
+            } else {
+                for (int i = 0; i < message.length(); i += 1500) {
+                    int next = i + 1500;
+                    if (next > message.length()) next = message.length();
+                    String mess = message.substring(i, next);
+                    response.setText(mess);
+                    execute(response);
                 }
-
             }
         }catch (TelegramApiException e){
             logger.error(e.toString());

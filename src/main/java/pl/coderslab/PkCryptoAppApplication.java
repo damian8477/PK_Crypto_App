@@ -8,7 +8,7 @@ import pl.coderslab.configuration.TokenConfigProperties;
 
 @SpringBootApplication
 @EnableScheduling
-@EnableConfigurationProperties(TokenConfigProperties.class)
+@EnableConfigurationProperties
 public class PkCryptoAppApplication {
     public static void main(String[] args) {
         SpringApplication.run(PkCryptoAppApplication.class, args);

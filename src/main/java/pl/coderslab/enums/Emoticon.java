@@ -23,10 +23,10 @@ public enum Emoticon {
         return label;
     }
 
-    public static String getWinLoss(BigDecimal realizedPLN){
+    public static Emoticon getWinLoss(BigDecimal realizedPLN){
         if(realizedPLN.doubleValue() >= 0){
-            return WIN.label;
+            return WIN;
         }
-        return LOSS.label;
+        return LOSS;
     }
 }

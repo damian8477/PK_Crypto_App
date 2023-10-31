@@ -54,34 +54,34 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                    .antMatchers("/login").permitAll()
+                .antMatchers("/login").permitAll()
                 .antMatchers("/logout").permitAll()
-                    .antMatchers("/logout").permitAll()
-                    .antMatchers("/admin/*").hasRole("ADMIN")
-                    .antMatchers("/starter").hasAnyRole("ADMIN", "USER")
-                    .antMatchers("/app/**").hasAnyRole("ADMIN", "USER")
-                    .antMatchers("/css/style.css").permitAll()
-                    .antMatchers("/register").permitAll()
-                    .anyRequest().authenticated()
+                .antMatchers("/logout").permitAll()
+                .antMatchers("/admin/*").hasRole("ADMIN")
+                .antMatchers("/starter").hasAnyRole("ADMIN", "USER")
+                .antMatchers("/app/**").hasAnyRole("ADMIN", "USER")
+                .antMatchers("/css/style.css").permitAll()
+                .antMatchers("/register").permitAll()
+                .anyRequest().authenticated()
                 .and()
-                    .formLogin()
-                    .loginPage("/login")
-                    .defaultSuccessUrl("/starter")// Po zalogowaniu przekieruj na /private
-                    .successHandler((request, response, authentication) -> {
-                        SecurityContextHolder.getContext().setAuthentication(authentication);
-                        response.sendRedirect("/starter"); // lub dowolny inny URL
-                         })
-                    .permitAll()
+                .formLogin()
+                .loginPage("/login")
+                .defaultSuccessUrl("/starter")// Po zalogowaniu przekieruj na /private
+                .successHandler((request, response, authentication) -> {
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                    response.sendRedirect("/starter"); // lub dowolny inny URL
+                })
+                .permitAll()
                 .and()
-                    .logout()
-                    .permitAll()
-                    .logoutUrl("/logout") // Ścieżka wylogowania
-                    .logoutSuccessUrl("/login") // Przekierowanie po wylogowaniu
-                    .invalidateHttpSession(true) // Zakończ sesję użytkownika
-                    .deleteCookies("JSESSIONID")//; // Usuń ciasteczko sesji
+                .logout()
+                .permitAll()
+                .logoutUrl("/logout") // Ścieżka wylogowania
+                .logoutSuccessUrl("/login") // Przekierowanie po wylogowaniu
+                .invalidateHttpSession(true) // Zakończ sesję użytkownika
+                .deleteCookies("JSESSIONID")//; // Usuń ciasteczko sesji
                 .and()
-                    .csrf()
-                    .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
+                .csrf()
+                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
 //                .and()
 //                .csrf().disable();
     }

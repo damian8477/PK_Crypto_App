@@ -9,7 +9,6 @@ import pl.coderslab.entity.user.TelegramCode;
 import pl.coderslab.entity.user.User;
 import pl.coderslab.interfaces.AlertService;
 import pl.coderslab.interfaces.CheckUserOrderService;
-import pl.coderslab.interfaces.ScheduledService;
 import pl.coderslab.interfaces.UserService;
 import pl.coderslab.repository.TelegramCodeRepository;
 import pl.coderslab.repository.UserTokenRepository;
@@ -19,20 +18,19 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class ScheduledServiceImpl implements ScheduledService {
+public class ScheduledService {
     private final TelegramCodeRepository telegramCodeRepository;
     private final AlertService alertService;
     private final CheckUserOrderService checkUserOrderService;
     private final UserService userService;
     private final UserTokenRepository userTokenRepository;
-    private static final Logger logger = LoggerFactory.getLogger(ScheduledServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(ScheduledService.class);
     private static int count = 0;
 
     //todo  czasy kiedy co ma być sprawdzane można trzymać w bazie
     //todo pobranie tych czasów np. raz na godzine lub wymuszenie z telegrama
     //todo dla zlecen innych niż MARKET sprawdzanie czy sie otworzylo i dopisywanie zlecen TP i SL
 
-    @Override
     @Scheduled(fixedDelay = 60000, initialDelay = 1000)
     public void check() {
         List<User> users = userService.getActiveUsers();

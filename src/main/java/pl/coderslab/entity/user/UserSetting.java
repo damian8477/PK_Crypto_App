@@ -1,10 +1,7 @@
 package pl.coderslab.entity.user;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import pl.coderslab.configuration.DatabaseConverter;
 
 import javax.persistence.*;
@@ -13,7 +10,8 @@ import javax.validation.constraints.Pattern;
 
 @Entity
 @Table(name = "user_settings")
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

@@ -1,9 +1,6 @@
 package pl.coderslab.entity.orders;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import pl.coderslab.entity.strategy.Strategy;
 import pl.coderslab.entity.user.User;
 
@@ -14,7 +11,8 @@ import java.time.format.DateTimeFormatter;
 
 @Entity
 @Table(name = "orders")
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

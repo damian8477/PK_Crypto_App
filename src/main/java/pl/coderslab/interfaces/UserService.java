@@ -6,19 +6,14 @@ import javax.transaction.Transactional;
 import java.util.List;
 
 public interface UserService {
-    @Transactional
     User getUserWithUserSettings(Long userId);
 
-    @Transactional
     void deleteById(Long userId);
 
-    @Transactional
     User getUserWithUserSettingsByUserName(String userName);
 
-    @Transactional
     List<User> getUserList();
 
-    @Transactional
     List<User> getActiveUsers();
 
     User getUserBasic(String username);

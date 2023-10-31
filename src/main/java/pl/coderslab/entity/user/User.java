@@ -1,9 +1,7 @@
 package pl.coderslab.entity.user;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.apache.commons.lang3.builder.ToStringExclude;
 import pl.coderslab.entity.alert.Alert;
 import pl.coderslab.entity.orders.Order;
 import pl.coderslab.entity.strategy.Strategy;
@@ -13,12 +11,14 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
+
+
 /**
  * Entity class representing a user in the system.
  */
 @Entity
 @Table(name = "users")
-@Data
+@Setter @Getter
 @Builder @NoArgsConstructor @AllArgsConstructor
 public class User {
     @Id
@@ -40,6 +40,7 @@ public class User {
     private String role = "ROLE_USER";
     @OneToMany(mappedBy = "user")
     private List<UserSetting> userSetting = new ArrayList<>();
+    @ToString.Exclude
     @ManyToMany(mappedBy = "users")
     private List<Strategy> strategies = new ArrayList<>();
     @OneToMany(mappedBy = "user")

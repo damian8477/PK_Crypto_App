@@ -12,12 +12,14 @@ import pl.coderslab.service.telegram.TelegramBotServiceImpl;
 @Configuration
 @RequiredArgsConstructor
 public class TelegramConfiguration {
-    private final RequestTelegramService requestTelegramService;
 
+    private final RequestTelegramService requestTelegramService;
+    private final TokenConfigProperties tokenConfigProperties;
     @Bean
     public void telegramBotsApi() throws TelegramApiException {
         TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
-        telegramBotsApi.registerBot(new TelegramBotServiceImpl(requestTelegramService));
+        telegramBotsApi.registerBot(
+                new TelegramBotServiceImpl(requestTelegramService, tokenConfigProperties));
     }
 
 }

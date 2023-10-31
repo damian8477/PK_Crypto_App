@@ -1,9 +1,6 @@
 package pl.coderslab.entity.user;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import pl.coderslab.configuration.DatabaseConverter;
 import pl.coderslab.enums.TokenType;
 
@@ -15,7 +12,8 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Getter
+@Setter
 public class UserToken {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
