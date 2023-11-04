@@ -16,11 +16,13 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class CommonSignal {
-    private String signalId;
+    private String sourceName;
+    private Long signalId;
     private String symbol;
     private PositionSide positionSide;
-    private String entryPrice;
+    private List<String> entryPrice;
     private List<String> takeProfit;
+    private List<String> takeProfitAgainst;
     private List<String> stopLoss;
     private Action action;
     private String lot;

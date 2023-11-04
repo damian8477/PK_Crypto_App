@@ -103,7 +103,7 @@ public class OwnSignalServiceImpl implements OwnSignalService {
         return CommonSignal.builder()
                 .symbol(signal.getSymbol())
                 .positionSide(signal.getPositionSide())
-                .entryPrice(signal.getEntryPrice().toString())
+                .entryPrice(List.of(signal.getEntryPrice().toString()))
                 .takeProfit(getTakeProfit(signal.getTakeProfit(), strategySetting))
                 .stopLoss(getStopLoss(signal.getStopLoss(), strategySetting))
                 .action(Action.OPEN)

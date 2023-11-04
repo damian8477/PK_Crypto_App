@@ -1,4 +1,4 @@
-package pl.coderslab.configuration;
+package pl.coderslab.configuration.properties;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
