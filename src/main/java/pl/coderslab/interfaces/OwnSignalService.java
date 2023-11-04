@@ -25,7 +25,7 @@ public interface OwnSignalService {
 
     String getLot(User user, StrategySetting strategySetting, OwnSignal signal, double marketPrice, SyncRequestClient syncRequestClient);
 
-    List<String> getTakeProfit(BigDecimal tp, StrategySetting strategySetting);
+    List<BigDecimal> getTakeProfit(BigDecimal tp, StrategySetting strategySetting);
 
-    List<String> getStopLoss(BigDecimal sl, StrategySetting strategySetting);
+    List<BigDecimal> getStopLoss(BigDecimal sl, StrategySetting strategySetting);
 }

@@ -103,7 +103,7 @@ public class OwnSignalServiceImpl implements OwnSignalService {
         return CommonSignal.builder()
                 .symbol(signal.getSymbol())
                 .positionSide(signal.getPositionSide())
-                .entryPrice(List.of(signal.getEntryPrice().toString()))
+                .entryPrice(List.of(signal.getEntryPrice()))
                 .takeProfit(getTakeProfit(signal.getTakeProfit(), strategySetting))
                 .stopLoss(getStopLoss(signal.getStopLoss(), strategySetting))
                 .action(Action.OPEN)
@@ -132,30 +132,30 @@ public class OwnSignalServiceImpl implements OwnSignalService {
         throw new IllegalArgumentException("Zły rodzaj płatności (lot, dolar lub %)");
     }
     @Override
-    public List<String> getTakeProfit(BigDecimal tp, StrategySetting strategySetting) {
-        List<String> takeProfits = new ArrayList<>();
+    public List<BigDecimal> getTakeProfit(BigDecimal tp, StrategySetting strategySetting) {
+        List<BigDecimal> takeProfits = new ArrayList<>();
         if (!isNull(strategySetting)) {
             if (strategySetting.isActiveBasicTp() && tp == null) {
                 //takeProfits.add()
             } else {
-                takeProfits.add(tp.toString());
+                takeProfits.add(tp);
             }
         } else {
-            takeProfits.add(tp.toString());
+            takeProfits.add(tp);
         }
         return takeProfits;
     }
     @Override
-    public List<String> getStopLoss(BigDecimal sl, StrategySetting strategySetting) {
-        List<String> stopLossList = new ArrayList<>();
+    public List<BigDecimal> getStopLoss(BigDecimal sl, StrategySetting strategySetting) {
+        List<BigDecimal> stopLossList = new ArrayList<>();
         if (!isNull(strategySetting)) {
             if (strategySetting.isActiveBasicTp() && sl == null) {
 
             } else {
-                stopLossList.add(sl.toString());
+                stopLossList.add(sl);
             }
         } else {
-            stopLossList.add(sl.toString());
+            stopLossList.add(sl);
         }
         return stopLossList;
     }

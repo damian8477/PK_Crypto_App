@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import pl.coderslab.interfaces.SignalService;
 import pl.coderslab.model.CommonSignal;
 import pl.coderslab.service.entity.SignalServiceImpl;
 import pl.coderslab.service.parser.VipSignalParserService;
@@ -12,6 +13,7 @@ import pl.coderslab.service.parser.VipSignalParserService;
 @RequiredArgsConstructor
 public class RequestSignalVipServiceImpl {
     private final VipSignalParserService vipSignalParserService;
+    private final SignalService signalService;
 
     private static final Logger logger = LoggerFactory.getLogger(RequestSignalVipServiceImpl.class);
 
@@ -19,6 +21,7 @@ public class RequestSignalVipServiceImpl {
         if(message.contains("BUY") || message.contains("SELL")){
             CommonSignal signal = vipSignalParserService.parseSignalMessage(message);
             System.out.println(signal);
+            signalService.saveSignalFromCommonSignal(signal);
         }
     }
 

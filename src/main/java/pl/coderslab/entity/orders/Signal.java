@@ -5,6 +5,7 @@ import pl.coderslab.entity.source.Source;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "signals")
@@ -38,7 +39,21 @@ public class Signal {
     private BigDecimal stopLoss;
     @Column(name = "during_time")
     private String duringTime;
+    @Column(updatable = false)
+    private LocalDateTime created;
+    private LocalDateTime updated;
     @ManyToOne
     private Source source;
+
+    @PrePersist
+    public void prePersis() {
+        created = LocalDateTime.now();
+        updated = created;
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        updated = LocalDateTime.now();
+    }
 
 }

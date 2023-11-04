@@ -103,7 +103,7 @@ public class BinanceServiceImpl implements BinanceService {
         if (signal.getOrderType().equals(OrderType.MARKET)) isOpen = true;
         if (sendOrderToBinance(syncRequestClient, signal.getSymbol(), orderSide, lot, marketPrice, positionSide, signal.getOrderType())) {
             if (isOpen) {
-                sendSlAndTpToAccount(syncRequestClient, signal.getSymbol(), orderSide, positionSide, signal.getStopLoss().get(0), signal.getTakeProfit().get(0));
+                sendSlAndTpToAccount(syncRequestClient, signal.getSymbol(), orderSide, positionSide, signal.getStopLoss().get(0).toString(), signal.getTakeProfit().get(0).toString());
             }
             orderService.save(user, signal, marketPrice, lot, "", "", lever, null, isOpen);
             telegramBotService.sendMessage(user.getUserSetting().get(0).getTelegramChatId(), String.format("%s Zlecenie otwarte! \n%s %s $%s LOT: $%s", Emoticon.OPEN.getLabel(), signal.getSymbol(), Emoticon.valueOf(signal.getPositionSide().toString()), marketPrice, signal.getLot()));

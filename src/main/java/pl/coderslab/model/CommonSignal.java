@@ -9,6 +9,7 @@ import pl.coderslab.binance.client.model.enums.PositionSide;
 import pl.coderslab.enums.Action;
 import pl.coderslab.enums.MarginType;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Data
@@ -20,10 +21,10 @@ public class CommonSignal {
     private Long signalId;
     private String symbol;
     private PositionSide positionSide;
-    private List<String> entryPrice;
-    private List<String> takeProfit;
-    private List<String> takeProfitAgainst;
-    private List<String> stopLoss;
+    private List<BigDecimal> entryPrice;
+    private List<BigDecimal> takeProfit;
+    private List<BigDecimal> takeProfitAgainst;
+    private List<BigDecimal> stopLoss;
     private Action action;
     private String lot;
     private int lever;
