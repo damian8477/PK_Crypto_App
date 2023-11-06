@@ -1,7 +1,8 @@
 package pl.coderslab.interfaces;
 
 import pl.coderslab.binance.client.SyncRequestClient;
-import pl.coderslab.entity.strategy.StrategySetting;
+import pl.coderslab.entity.strategy.Source;
+import pl.coderslab.entity.strategy.Strategy;
 import pl.coderslab.entity.user.User;
 import pl.coderslab.entity.user.UserSetting;
 import pl.coderslab.model.CommonSignal;
@@ -21,11 +22,11 @@ public interface OwnSignalService {
 
     void checkTypeOrder(OwnSignal signal, BigDecimal marketPrice);
 
-    CommonSignal createCommonSignal(User user, OwnSignal signal, StrategySetting strategySetting, UserSetting userSetting, SyncRequestClient syncRequestClient);
+    CommonSignal createCommonSignal(User user, OwnSignal signal, Strategy strategySetting, UserSetting userSetting, SyncRequestClient syncRequestClient);
 
-    String getLot(User user, StrategySetting strategySetting, OwnSignal signal, double marketPrice, SyncRequestClient syncRequestClient);
+    String getLot(User user, Source strategySetting, OwnSignal signal, double marketPrice, SyncRequestClient syncRequestClient);
 
-    List<BigDecimal> getTakeProfit(BigDecimal tp, StrategySetting strategySetting);
+    List<BigDecimal> getTakeProfit(BigDecimal tp, Source strategySetting);
 
-    List<BigDecimal> getStopLoss(BigDecimal sl, StrategySetting strategySetting);
+    List<BigDecimal> getStopLoss(BigDecimal sl, Source strategySetting);
 }

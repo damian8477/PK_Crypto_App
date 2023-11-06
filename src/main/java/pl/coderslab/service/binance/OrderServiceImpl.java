@@ -6,6 +6,7 @@ import pl.coderslab.binance.client.SyncRequestClient;
 import pl.coderslab.binance.client.model.trade.PositionRisk;
 import pl.coderslab.entity.orders.HistoryOrder;
 import pl.coderslab.entity.orders.Order;
+import pl.coderslab.entity.strategy.Source;
 import pl.coderslab.entity.strategy.Strategy;
 import pl.coderslab.entity.user.User;
 import pl.coderslab.interfaces.OrderService;
@@ -31,6 +32,7 @@ public class OrderServiceImpl implements OrderService {
     private final SyncService syncService;
     private final HistoryOrderRepository historyOrderRepository;
     private final UserSettingService userSettingService;
+
     @Override
     public Order getOrderBySymbol(User user, String symbol) {
         SyncRequestClient syncRequestClient = syncService.sync(user.getUserSetting().get(0));
@@ -55,6 +57,7 @@ public class OrderServiceImpl implements OrderService {
                 .profitProcent(positionRisk.getUnrealizedProfit().doubleValue())
                 .build();
     }
+
     @Override
     public List<Order> prepareOrderList(User user, List<Order> orders) {
         if (userSettingService.userSettingExist(user.getUserSetting()) && isNull(orders)) {
@@ -65,6 +68,7 @@ public class OrderServiceImpl implements OrderService {
             return addOwnOrder(user, orders);
         }
     }
+
     private List<Order> addOwnOrder(User user, List<Order> orderList) {
         SyncRequestClient syncRequestClient = syncService.sync(user.getUserSetting().get(0));
         List<PositionRisk> positionRiskList = syncRequestClient.getPositionRisk().stream()
@@ -127,9 +131,10 @@ public class OrderServiceImpl implements OrderService {
                         .build());
 
     }
+
     @Override
     public void save(User user, CommonSignal signal, String entryPrice, String lot,
-                     String amount, String startProfit, int lev, Strategy strategy, boolean isOpen) {
+                     String amount, String startProfit, int lev, Strategy strategy, boolean isOpen, Source source) {
         orderRepository.save(Order.builder()
                 .user(user)
                 .symbolName(signal.getSymbol())
@@ -139,6 +144,7 @@ public class OrderServiceImpl implements OrderService {
                 .lot(lot)
                 .side(signal.getPositionSide().toString())
                 .strategy(strategy)
+                .source(source)
                 .profitProcent(0.0)
                 .amount(amount)
                 .startProfit(startProfit)

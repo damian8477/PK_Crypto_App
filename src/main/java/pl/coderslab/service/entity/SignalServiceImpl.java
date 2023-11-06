@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pl.coderslab.entity.orders.Signal;
 import pl.coderslab.interfaces.SignalService;
-import pl.coderslab.interfaces.SourceRepository;
+import pl.coderslab.repository.SourceRepository;
 import pl.coderslab.model.CommonSignal;
 import pl.coderslab.repository.SignalRepository;
 import pl.coderslab.service.telegram.RequestTelegramService;
@@ -20,13 +20,14 @@ public class SignalServiceImpl implements SignalService {
     private static final Logger logger = LoggerFactory.getLogger(RequestTelegramService.class);
 
     @Override
-    public void saveSignalFromCommonSignal(CommonSignal commonSignal){
+    public Signal saveSignalFromCommonSignal(CommonSignal commonSignal){
         try{
             Signal signal = fillSignal(commonSignal);
-            signalRepository.save(signal);
+            return signalRepository.save(signal);
         }catch (Exception e){
             logger.error("Error during save signal to db " + e);
         }
+        return null;
     }
 
     private Signal fillSignal(CommonSignal commonSignal){

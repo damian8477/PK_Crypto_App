@@ -1,7 +1,7 @@
 package pl.coderslab.entity.orders;
 
 import lombok.*;
-import pl.coderslab.entity.source.Source;
+import pl.coderslab.entity.strategy.Source;
 
 import javax.persistence.*;
 import java.math.BigDecimal;

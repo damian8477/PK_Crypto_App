@@ -7,7 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import pl.coderslab.entity.strategy.StrategySetting;
+import pl.coderslab.entity.strategy.Source;
 import pl.coderslab.repository.StrategySettingRepository;
 
 import javax.validation.Valid;
@@ -26,12 +26,12 @@ public class StrategyController {
 
     @GetMapping("/add")
     public String getAddStrategy(Model model) {
-        model.addAttribute("strategy", new StrategySetting());
+        model.addAttribute("strategy", new Source());
         return "/app/strategy/add";
     }
 
     @PostMapping("/add")
-    public String addStrategy(@Valid @ModelAttribute("strategy") StrategySetting strategySetting, BindingResult bindingResult, Model model, @AuthenticationPrincipal UserDetails authenticatedUser) {
+    public String addStrategy(@Valid @ModelAttribute("strategy") Source strategySetting, BindingResult bindingResult, Model model, @AuthenticationPrincipal UserDetails authenticatedUser) {
         if (bindingResult.hasErrors()) {
             return "/app/strategy/add";
         }

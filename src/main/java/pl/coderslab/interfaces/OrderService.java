@@ -1,6 +1,7 @@
 package pl.coderslab.interfaces;
 
 import pl.coderslab.entity.orders.Order;
+import pl.coderslab.entity.strategy.Source;
 import pl.coderslab.entity.strategy.Strategy;
 import pl.coderslab.entity.user.User;
 import pl.coderslab.model.BinanceConfirmOrder;
@@ -16,5 +17,5 @@ public interface OrderService {
     void saveHistoryOrderToDB(User user, Order order, BinanceConfirmOrder binanceConfirmOrder, boolean ownClosed);
 
     void save(User user, CommonSignal signal, String entryPrice, String lot,
-              String amount, String startProfit, int lev, Strategy strategy, boolean isOpen);
+              String amount, String startProfit, int lev, Strategy strategy, boolean isOpen, Source source);
 }

@@ -5,7 +5,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pl.coderslab.binance.client.SyncRequestClient;
-import pl.coderslab.entity.strategy.StrategySetting;
+import pl.coderslab.entity.strategy.Source;
+import pl.coderslab.entity.strategy.Strategy;
 import pl.coderslab.entity.user.User;
 import pl.coderslab.entity.user.UserSetting;
 import pl.coderslab.enums.Action;
@@ -98,16 +99,16 @@ public class OwnSignalServiceImpl implements OwnSignalService {
     }
 
     @Override
-    public CommonSignal createCommonSignal(User user, OwnSignal signal, StrategySetting strategySetting, UserSetting userSetting, SyncRequestClient syncRequestClient) {
+    public CommonSignal createCommonSignal(User user, OwnSignal signal, Strategy strategySetting, UserSetting userSetting, SyncRequestClient syncRequestClient) {
         double marketPrice = binanceSupport.getMarketPriceDouble(syncRequestClient, signal.getSymbol());
         return CommonSignal.builder()
                 .symbol(signal.getSymbol())
                 .positionSide(signal.getPositionSide())
                 .entryPrice(List.of(signal.getEntryPrice()))
-                .takeProfit(getTakeProfit(signal.getTakeProfit(), strategySetting))
-                .stopLoss(getStopLoss(signal.getStopLoss(), strategySetting))
+                .takeProfit(getTakeProfit(signal.getTakeProfit(), null))
+                .stopLoss(getStopLoss(signal.getStopLoss(), null))
                 .action(Action.OPEN)
-                .lot(getLot(user, strategySetting, signal, marketPrice, syncRequestClient))
+                .lot(getLot(user, null, signal, marketPrice, syncRequestClient))
                 .lever(signal.getLever())
                 .isStrategy(false)
                 .marginType(MarginType.CROSSED)
@@ -115,7 +116,7 @@ public class OwnSignalServiceImpl implements OwnSignalService {
                 .build();
     }
     @Override
-    public String getLot(User user, StrategySetting strategySetting, OwnSignal signal, double marketPrice, SyncRequestClient syncRequestClient) {
+    public String getLot(User user, Source strategySetting, OwnSignal signal, double marketPrice, SyncRequestClient syncRequestClient) {
         switch (signal.getCashType()) {
             case LOT -> {
                 return signal.getLot().toString();
@@ -132,7 +133,7 @@ public class OwnSignalServiceImpl implements OwnSignalService {
         throw new IllegalArgumentException("Zły rodzaj płatności (lot, dolar lub %)");
     }
     @Override
-    public List<BigDecimal> getTakeProfit(BigDecimal tp, StrategySetting strategySetting) {
+    public List<BigDecimal> getTakeProfit(BigDecimal tp, Source strategySetting) {
         List<BigDecimal> takeProfits = new ArrayList<>();
         if (!isNull(strategySetting)) {
             if (strategySetting.isActiveBasicTp() && tp == null) {
@@ -146,7 +147,7 @@ public class OwnSignalServiceImpl implements OwnSignalService {
         return takeProfits;
     }
     @Override
-    public List<BigDecimal> getStopLoss(BigDecimal sl, StrategySetting strategySetting) {
+    public List<BigDecimal> getStopLoss(BigDecimal sl, Source strategySetting) {
         List<BigDecimal> stopLossList = new ArrayList<>();
         if (!isNull(strategySetting)) {
             if (strategySetting.isActiveBasicTp() && sl == null) {

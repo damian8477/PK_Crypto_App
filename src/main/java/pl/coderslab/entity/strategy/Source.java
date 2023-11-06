@@ -1,8 +1,8 @@
 package pl.coderslab.entity.strategy;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import pl.coderslab.enums.SourceType;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -11,10 +11,10 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
-@Table(name = "strategy_setting")
+@Table(name = "sources")
 @Getter
 @Setter
-public class StrategySetting {
+public class Source {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -22,6 +22,12 @@ public class StrategySetting {
     private String name;
     @Size(min = 10)
     private String description;
+    private boolean active;
+    @Column(name = "source_type")
+    private SourceType sourceType;
+    private boolean sliding;
+    @Column(name = "max_leverage")
+    private int maxLeverage;
     @Column(name = "admin_strategy")
     private boolean adminStrategy;
     @Column(name = "be_percent")
@@ -36,7 +42,7 @@ public class StrategySetting {
     private BigDecimal basicTpPercent;
     @Column(name = "basic_sl_percent")
     private BigDecimal basicSlPercent;
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     private List<Strategy> strategies;
 //    @ManyToMany
 //    @JoinTable(name = "indicators_strategysettings",

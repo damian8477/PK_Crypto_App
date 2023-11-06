@@ -10,6 +10,7 @@ import pl.coderslab.binance.client.model.market.Candlestick;
 import pl.coderslab.binance.client.model.trade.Income;
 import pl.coderslab.binance.client.model.trade.Order;
 import pl.coderslab.binance.client.model.trade.PositionRisk;
+import pl.coderslab.binance.common.Common;
 import pl.coderslab.entity.orders.Symbol;
 import pl.coderslab.entity.user.User;
 import pl.coderslab.entity.user.UserSetting;
@@ -31,7 +32,7 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
-public class BinanceServiceImpl implements BinanceService {
+public class BinanceServiceImpl extends Common implements BinanceService {
 
     private final SyncService syncService;
     private final SymbolRepository symbolRepository;
@@ -105,7 +106,7 @@ public class BinanceServiceImpl implements BinanceService {
             if (isOpen) {
                 sendSlAndTpToAccount(syncRequestClient, signal.getSymbol(), orderSide, positionSide, signal.getStopLoss().get(0).toString(), signal.getTakeProfit().get(0).toString());
             }
-            orderService.save(user, signal, marketPrice, lot, "", "", lever, null, isOpen);
+            orderService.save(user, signal, marketPrice, lot, "", "", lever, null, isOpen, null);
             telegramBotService.sendMessage(user.getUserSetting().get(0).getTelegramChatId(), String.format("%s Zlecenie otwarte! \n%s %s $%s LOT: $%s", Emoticon.OPEN.getLabel(), signal.getSymbol(), Emoticon.valueOf(signal.getPositionSide().toString()), marketPrice, signal.getLot()));
             logger.info(String.format("Username: %s\n%s Zlecenie otwarte! \n%s %s $%s LOT: $%s", user.getUsername(), Emoticon.OPEN.getLabel(), signal.getSymbol(), Emoticon.valueOf(signal.getPositionSide().toString()), marketPrice, signal.getLot()));
             return true;
@@ -144,6 +145,47 @@ public class BinanceServiceImpl implements BinanceService {
             syncRequestClient.postOrder(cryptoName, orderCloseSide, positionSide, OrderType.TAKE_PROFIT_MARKET, TimeInForce.GTC,
                     lot, null, null, null, takeProfitStr, null, NewOrderRespType.ACK);
 
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean sendSlAndTpToAccountMultipleTp(SyncRequestClient syncRequestClient, String cryptoName, PositionSide positionSide, String stopLoss, List<BigDecimal> takeProfit, double minQty, int lever, double marketPrice, OrderType orderType, int lengthPrice) {
+        try {
+            OrderSide orderCloseSide;
+            if (positionSide.equals(PositionSide.LONG)) orderCloseSide = OrderSide.SELL;
+            else {
+                orderCloseSide = OrderSide.BUY;
+            }
+            String finalSide = orderCloseSide.toString();
+            try {
+                List<Order> listOrder = syncRequestClient.getOpenOrders(cryptoName).stream()
+                        .filter(s -> s.getSide().equals(finalSide))
+                        .toList();
+                for (Order order : listOrder) {
+                    syncRequestClient.cancelOrder(cryptoName, order.getOrderId(), order.getClientOrderId());
+                }
+            } catch (Exception e) {
+                logger.info("Error during cancel order");
+            }
+            PositionRisk positionRisk = syncRequestClient.getPositionRisk().stream()
+                    .filter(s -> s.getPositionAmt().doubleValue() != 0)
+                    .filter(s -> s.getSymbol().equals(cryptoName))
+                    .findFirst().orElse(null);
+            String stopLossStr = aroundValueCryptoName(null, null, String.valueOf(stopLoss), lengthPrice);
+            String lot = positionRisk.getPositionAmt().toString().replace("-", "");
+            List<String> lotsTp = getLotsTp(takeProfit.size(), minQty, Double.parseDouble(lot), lever, marketPrice);
+            if(orderType.equals(OrderType.MARKET)){
+                syncRequestClient.postOrder(cryptoName, orderCloseSide, positionSide, OrderType.STOP_MARKET, TimeInForce.GTC,
+                        lot, null, null, null, stopLossStr, null, NewOrderRespType.ACK);
+            }
+            for (int i = 0; i < lotsTp.size(); i++) {
+                String takeProfitLot = aroundValueCryptoName(null, null, takeProfit.get(i).toString(), lengthPrice);
+                syncRequestClient.postOrder(cryptoName, orderCloseSide, positionSide, OrderType.TAKE_PROFIT_MARKET, TimeInForce.GTC,
+                        lotsTp.get(i), null, null, null, takeProfitLot, null, NewOrderRespType.ACK);
+            }
         } catch (Exception e) {
             return false;
         }

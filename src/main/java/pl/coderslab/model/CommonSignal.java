@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import pl.coderslab.binance.client.model.enums.OrderType;
 import pl.coderslab.binance.client.model.enums.PositionSide;
+import pl.coderslab.entity.orders.Signal;
 import pl.coderslab.enums.Action;
 import pl.coderslab.enums.MarginType;
 
@@ -18,7 +19,7 @@ import java.util.List;
 @Builder
 public class CommonSignal {
     private String sourceName;
-    private Long signalId;
+    private Signal signalId;
     private String symbol;
     private PositionSide positionSide;
     private List<BigDecimal> entryPrice;

@@ -1,6 +1,7 @@
 package pl.coderslab.entity.orders;
 
 import lombok.*;
+import pl.coderslab.entity.strategy.Source;
 import pl.coderslab.entity.strategy.Strategy;
 import pl.coderslab.entity.user.User;
 
@@ -41,6 +42,8 @@ public class Order {
     @Column(updatable = false)
     private LocalDateTime created;
     private LocalDateTime updated;
+    @ManyToOne
+    private Source source;
     @ManyToOne
     private Strategy strategy;
     @ManyToOne

@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import pl.coderslab.entity.user.User;
+import pl.coderslab.enums.MarginType;
 
 import javax.persistence.*;
 import java.util.List;
@@ -19,11 +20,17 @@ public class Strategy {
     private String name;
     @Column(name = "percent_of_money")
     private Double percentOfMoney;
+    @Column(name = "percent_money")
+    private boolean percentMoney;
     private boolean active;
-    @ManyToMany(fetch = FetchType.EAGER)
+    @Column(name = "max_leverage")
+    private int maxLeverage;
+    private MarginType marginType;
+    @ManyToOne
+    private Source source;
+    @ManyToMany//(fetch = FetchType.EAGER)
     @JoinTable(name = "user_strategy",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "strategy_id"))
     private List<User> users;
-
 }

@@ -6,7 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import pl.coderslab.binance.client.model.enums.OrderType;
 import pl.coderslab.binance.client.model.enums.PositionSide;
-import pl.coderslab.entity.strategy.StrategySetting;
+import pl.coderslab.entity.strategy.Source;
+import pl.coderslab.entity.strategy.Strategy;
 import pl.coderslab.entity.user.UserSetting;
 import pl.coderslab.enums.CashType;
 
@@ -17,7 +18,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @Builder
 public class OwnSignal {
-    private StrategySetting strategySetting;
+    private Strategy strategySetting;
     private UserSetting userSetting;
     private String symbol;
     private PositionSide positionSide = PositionSide.LONG;
