@@ -12,6 +12,7 @@ import pl.coderslab.interfaces.CheckUserOrderService;
 import pl.coderslab.interfaces.UserService;
 import pl.coderslab.repository.TelegramCodeRepository;
 import pl.coderslab.repository.UserTokenRepository;
+import pl.coderslab.strategy.service.Strategy110Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -24,6 +25,7 @@ public class ScheduledService {
     private final CheckUserOrderService checkUserOrderService;
     private final UserService userService;
     private final UserTokenRepository userTokenRepository;
+    private final Strategy110Service strategy110Service;
     private static final Logger logger = LoggerFactory.getLogger(ScheduledService.class);
     private static int count = 0;
 
@@ -37,6 +39,9 @@ public class ScheduledService {
     public void check() {
         List<User> users = userService.getActiveUsers();
         logger.info("Scheduled counter: " + count);
+        if(count == 0){
+            strategy110Service.downloadCryptoNameList();
+        }
         if (count % 1 == 0) {
             checkUserOrderService.checkInActiveOrder(users);
         }
@@ -46,12 +51,13 @@ public class ScheduledService {
         if (count % 4 == 0) {
 //            checkBotOrder();//todo co 3 minuty, trzeba sprawdzać świeczki 3 lub 5 minutowe
 //            checkStrategy();
+            strategy110Service.searchNewOrder(null);
         }
         if (count % 5 == 0 || count == 0)
             alertService.checkAlerts();
         count++;
         if (count > 360) {
-            count = 0;
+            count = 1;
         }
     }
 

@@ -7,6 +7,7 @@ import pl.coderslab.binance.client.model.enums.PositionSide;
 import pl.coderslab.binance.client.model.trade.PositionRisk;
 import pl.coderslab.entity.orders.HistoryOrder;
 import pl.coderslab.entity.orders.Order;
+import pl.coderslab.entity.orders.Signal;
 import pl.coderslab.entity.strategy.Source;
 import pl.coderslab.entity.strategy.Strategy;
 import pl.coderslab.entity.user.User;
@@ -130,7 +131,6 @@ public class OrderServiceImpl implements OrderService {
                         .ownClosed(ownClosed)
                         .signal(order.getSignal())
                         .build());
-
     }
 
     @Override
@@ -158,8 +158,42 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public void save(User user, Signal signal, String lot,
+                     String amount, String startProfit, int lev, Strategy strategy, boolean isOpen, Source source) {
+        orderRepository.save(Order.builder()
+                .user(user)
+                .symbolName(signal.getSymbol())
+                .tp(signal.getTakeProfit1().toString())
+                .sl(signal.getStopLoss().toString())
+                .entry(signal.getEntryPrice().toString())
+                .lot(lot)
+                .positionSide(PositionSide.valueOf(signal.getPositionSide().toString()))
+                .strategy(strategy)
+                .source(source)
+                .profitProcent(0.0)
+                .amount(amount)
+                .startProfit(startProfit)
+                .leverage(lev)
+                .open(isOpen)
+                .appOrder(true)
+                .signal(signal)
+                .build());
+
+    }
+
+    @Override
     public void update(Order order) {
         orderRepository.save(order);
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        orderRepository.deleteById(id);
+    }
+
+    @Override
+    public List<Order> findByUserId(Long id) {
+        return orderRepository.findByUserId(id);
     }
 
     private BigDecimal getProfitPercent(String entry, String close, int lev) {

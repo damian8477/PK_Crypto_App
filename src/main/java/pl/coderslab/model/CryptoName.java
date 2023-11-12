@@ -17,5 +17,4 @@ public class CryptoName {
     private BigDecimal lowPrice;
     private BigDecimal highPrice;
     private BigDecimal dayChangePercent;
-
 }

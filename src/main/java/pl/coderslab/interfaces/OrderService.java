@@ -1,6 +1,7 @@
 package pl.coderslab.interfaces;
 
 import pl.coderslab.entity.orders.Order;
+import pl.coderslab.entity.orders.Signal;
 import pl.coderslab.entity.strategy.Source;
 import pl.coderslab.entity.strategy.Strategy;
 import pl.coderslab.entity.user.User;
@@ -18,6 +19,11 @@ public interface OrderService {
 
     void save(User user, CommonSignal commonSignal, String entryPrice, String lot,
               String amount, String startProfit, int lev, Strategy strategy, boolean isOpen, Source source);
+    void save(User user, Signal signal, String lot, String amount, String startProfit, int lev, Strategy strategy, boolean isOpen, Source source);
 
     void update(Order order);
+
+    void deleteById(Long id);
+
+    List<Order> findByUserId(Long id);
 }

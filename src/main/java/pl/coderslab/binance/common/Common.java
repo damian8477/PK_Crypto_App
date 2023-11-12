@@ -9,6 +9,7 @@ import pl.coderslab.binance.client.model.trade.AccountBalance;
 import pl.coderslab.binance.client.model.trade.MarginLot;
 import pl.coderslab.entity.strategy.Strategy;
 import pl.coderslab.enums.MarginType;
+import pl.coderslab.model.BinanceConfirmOrder;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -20,7 +21,7 @@ import java.util.*;
 import static java.lang.Double.parseDouble;
 import static java.util.Objects.isNull;
 
-public class Common {
+public abstract class Common {
 
     public List<String> getLotsTp(int size, double minQty, double lot, int lever, double marketPrice){
         int[] partList = new int[]{10, 6, 2, 1, 1};
@@ -175,6 +176,33 @@ public class Common {
         return String.format(str, objects);
     }
 
+    public double aroundValue(String enterPrice, double div) {
+        String[] result = enterPrice.split("\\.");
+        String part2 = result[1];
+        double precision;
+        if (!part2.isEmpty()) {
+            precision = Math.pow(10.0, part2.length());
+        } else {
+            precision = 10.0;
+        }
+        div = Math.round(div * precision);
+        div = div / precision;
+        int lenghEnter = enterPrice.length();
+        if (String.valueOf(div).length() > lenghEnter) {
+            String memory = String.valueOf(div).substring(0, lenghEnter);
+            return Double.parseDouble(memory);
+        }
+        return div;
+    }
+
+    public String aroundValueS(String cryptoName, String div) {
+        int lengthEnter = cryptoName.length();
+        if (String.valueOf(div).length() > lengthEnter) {
+            return String.valueOf(div).substring(0, lengthEnter);
+        }
+        return div;
+    }
+
     public String getTimeStamp() {
         LocalDateTime localNow = LocalDateTime.now();
         ZonedDateTime zonedUTC = localNow.atZone(ZoneId.of("UTC"));
@@ -183,4 +211,5 @@ public class Common {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(YOUR_DATE_TIME_PATTERN);
         return zonedIST.format(formatter);
     }
+
 }

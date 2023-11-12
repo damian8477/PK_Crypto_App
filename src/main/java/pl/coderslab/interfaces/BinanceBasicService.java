@@ -4,8 +4,10 @@ import pl.coderslab.binance.client.SyncRequestClient;
 import pl.coderslab.binance.client.model.enums.OrderSide;
 import pl.coderslab.binance.client.model.enums.PositionSide;
 import pl.coderslab.binance.client.model.trade.MarginLot;
+import pl.coderslab.binance.client.model.trade.PositionRisk;
 import pl.coderslab.entity.user.User;
 import pl.coderslab.enums.MarginType;
+import pl.coderslab.model.BinanceConfirmOrder;
 
 import java.math.BigDecimal;
 
@@ -40,4 +42,7 @@ public interface BinanceBasicService {
     double getUserBalance(SyncRequestClient syncRequestClient, String cryptoName);
 
     String getCurrency(String cryptoName);
+    BinanceConfirmOrder getBinanceConfirmOrder(SyncRequestClient syncRequestClient, PositionRisk positionRisk);
+
+    String convertTimestampToDate(Long timestamp);
 }

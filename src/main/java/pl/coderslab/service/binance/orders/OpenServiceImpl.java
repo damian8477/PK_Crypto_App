@@ -89,6 +89,9 @@ public class OpenServiceImpl extends Common implements OpenService {
 
         MarginLot marginLot = calculateLotSizeQuantityMargin(signal.getSymbol(), amountValue, lever, sync, marketPrice, exchangeInfoEntry);
         boolean isOpen = false;
+        if((signal.getPositionSide().equals(PositionSide.LONG) && marketPrice > signal.getEntryPrice().get(0).doubleValue()) || (signal.getPositionSide().equals(PositionSide.SHORT) && marketPrice < signal.getEntryPrice().get(0).doubleValue())) {
+            signal.setOrderType(OrderType.MARKET);
+        }
         if (signal.getOrderType().equals(OrderType.MARKET)) isOpen = true;
         if (binanceService.sendOrderToBinance(sync, signal.getSymbol(), orderSide, marginLot.getLot(), String.valueOf(marketPrice), positionSide, signal.getOrderType(), signal.getEntryPrice().get(0).toString())) {
                 binanceService.sendSlAndTpToAccountMultipleTp(sync, signal.getSymbol(), positionSide, signal.getStopLoss().get(0).toString(),

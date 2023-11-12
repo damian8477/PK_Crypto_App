@@ -79,7 +79,7 @@ public class CheckUserOrderServiceImpl implements CheckUserOrderService {
                 .filter(s -> s.getPositionSide().equals(order.getPositionSide().toString()))
                 .map(Order::getOrigQty)
                 .reduce(BigDecimal.ZERO, BigDecimal::add).doubleValue();
-        if(position.getPositionAmt().abs().doubleValue() > stopLossLot) {
+        if(position.getPositionAmt().abs().doubleValue() != stopLossLot) {
             cancelAllOpenOrders(sync, position.getSymbol(), order.getPositionSide(), orderType);
             binanceService.sendSlToAccount(sync, order.getSymbolName(), order.getPositionSide(), order.getSl(), position.getPositionAmt().abs().toString());
         }
@@ -148,8 +148,9 @@ public class CheckUserOrderServiceImpl implements CheckUserOrderService {
     @Override
     public void cancelAllOpenOrders(SyncRequestClient syncRequestClient, String symbol, PositionSide side, String type) {
         try {
-            List<Order> listOrder = syncRequestClient.getOpenOrders(symbol).stream()
-                    .filter(s -> s.getPositionSide().equals(side))
+            List<Order> orders = syncRequestClient.getOpenOrders(symbol);
+            List<Order> listOrder = orders.stream()
+                    .filter(s -> s.getPositionSide().equals(side.toString()))
                     .toList();
             for (Order order : listOrder) {
                 if(isNull(type) || order.getType().equals(type)){
