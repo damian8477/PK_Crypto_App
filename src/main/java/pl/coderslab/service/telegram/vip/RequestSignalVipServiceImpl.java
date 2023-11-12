@@ -22,7 +22,7 @@ public class RequestSignalVipServiceImpl {
         if(message.contains("BUY") || message.contains("SELL")){
             CommonSignal signal = vipSignalParserService.parseSignalMessage(message);
             logger.info("Signal Vip: " + signal);
-            signal.setSignalId(signalService.saveSignalFromCommonSignal(signal));
+            signal.setSignal(signalService.saveSignalFromCommonSignal(signal));
             openService.newSignal(signal);
 
         }

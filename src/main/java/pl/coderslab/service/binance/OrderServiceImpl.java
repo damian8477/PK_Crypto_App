@@ -3,6 +3,7 @@ package pl.coderslab.service.binance;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.coderslab.binance.client.SyncRequestClient;
+import pl.coderslab.binance.client.model.enums.PositionSide;
 import pl.coderslab.binance.client.model.trade.PositionRisk;
 import pl.coderslab.entity.orders.HistoryOrder;
 import pl.coderslab.entity.orders.Order;
@@ -50,7 +51,7 @@ public class OrderServiceImpl implements OrderService {
                 .sl("")//todo tutaj moze pobrac zlecenia do danego coina
                 .tp("")//todo
                 .user(user)
-                .side(positionRisk.getPositionSide())
+                .positionSide(PositionSide.valueOf(positionRisk.getPositionSide()))
                 .lot(positionRisk.getPositionAmt().toString())
                 .entry(positionRisk.getEntryPrice().toString())
                 .amount(String.valueOf(Math.round(100.0 * positionRisk.getEntryPrice().doubleValue() * positionRisk.getPositionAmt().doubleValue() / positionRisk.getLeverage().doubleValue()) / 100.0))
@@ -86,7 +87,7 @@ public class OrderServiceImpl implements OrderService {
                             .sl("")//todo tutaj moze pobrac zlecenia do danego coina
                             .tp("")//todo
                             .user(user)
-                            .side(s.getPositionSide())
+                            .positionSide(PositionSide.valueOf(s.getPositionSide()))
                             .lot(s.getPositionAmt().toString())
                             .entry(s.getEntryPrice().toString())
                             .leverage(s.getLeverage().intValue())
@@ -118,7 +119,7 @@ public class OrderServiceImpl implements OrderService {
                         .entry(binanceConfirmOrder.getEntryPrice())
                         .close(binanceConfirmOrder.getClosePrice())
                         .lot(binanceConfirmOrder.getLot())
-                        .side(order.getSide())
+                        .side(order.getPositionSide().toString())
                         .amount(getAmount(order.getLeverage(), binanceConfirmOrder.getEntryPrice(), binanceConfirmOrder.getLot()))
                         .leverage(order.getLeverage())
                         .commission(binanceConfirmOrder.getCommission())
@@ -133,16 +134,16 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void save(User user, CommonSignal signal, String entryPrice, String lot,
+    public void save(User user, CommonSignal commonSignal, String entryPrice, String lot,
                      String amount, String startProfit, int lev, Strategy strategy, boolean isOpen, Source source) {
         orderRepository.save(Order.builder()
                 .user(user)
-                .symbolName(signal.getSymbol())
-                .tp(signal.getTakeProfit().get(0).toString())
-                .sl(signal.getStopLoss().get(0).toString())
+                .symbolName(commonSignal.getSymbol())
+                .tp(commonSignal.getTakeProfit().get(0).toString())
+                .sl(commonSignal.getStopLoss().get(0).toString())
                 .entry(entryPrice)
                 .lot(lot)
-                .side(signal.getPositionSide().toString())
+                .positionSide(PositionSide.valueOf(commonSignal.getPositionSide().toString()))
                 .strategy(strategy)
                 .source(source)
                 .profitProcent(0.0)
@@ -151,8 +152,14 @@ public class OrderServiceImpl implements OrderService {
                 .leverage(lev)
                 .open(isOpen)
                 .appOrder(true)
+                .signal(commonSignal.getSignal())
                 .build());
 
+    }
+
+    @Override
+    public void update(Order order) {
+        orderRepository.save(order);
     }
 
     private BigDecimal getProfitPercent(String entry, String close, int lev) {

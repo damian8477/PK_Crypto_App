@@ -1,6 +1,7 @@
 package pl.coderslab.entity.orders;
 
 import lombok.*;
+import pl.coderslab.binance.client.model.enums.PositionSide;
 import pl.coderslab.entity.strategy.Source;
 import pl.coderslab.entity.strategy.Strategy;
 import pl.coderslab.entity.user.User;
@@ -31,7 +32,7 @@ public class Order {
     private boolean isStrategy;
     @Column(name = "profit_procent")
     private Double profitProcent;
-    private String side;
+    private PositionSide positionSide;
     private String amount;
     @Column(name = "start_profit")
     private String startProfit;

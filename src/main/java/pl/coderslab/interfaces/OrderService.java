@@ -16,6 +16,8 @@ public interface OrderService {
 
     void saveHistoryOrderToDB(User user, Order order, BinanceConfirmOrder binanceConfirmOrder, boolean ownClosed);
 
-    void save(User user, CommonSignal signal, String entryPrice, String lot,
+    void save(User user, CommonSignal commonSignal, String entryPrice, String lot,
               String amount, String startProfit, int lev, Strategy strategy, boolean isOpen, Source source);
+
+    void update(Order order);
 }

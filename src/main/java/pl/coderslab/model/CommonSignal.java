@@ -19,7 +19,7 @@ import java.util.List;
 @Builder
 public class CommonSignal {
     private String sourceName;
-    private Signal signalId;
+    private Signal signal;
     private String symbol;
     private PositionSide positionSide;
     private List<BigDecimal> entryPrice;

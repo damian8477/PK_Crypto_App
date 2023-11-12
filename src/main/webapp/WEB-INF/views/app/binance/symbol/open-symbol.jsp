@@ -24,24 +24,30 @@
                             <form:select id="positionSide" path="positionSide"
                                          cssClass="col-sm-10 label-size col-form-label">
                                 <form:options items="${positionSides}" itemLabel="name"/>
-                            </form:select>
+                            </form:select><form:errors path="positionSide"/>
                         </div>
                     </div>
                     <div class="form-group row">
                         <label class="col-sm-2 label-size col-form-label">Strategia</label>
-                        <div class="col-sm-10">
-                            <form:select id="strategySetting" path="strategySetting"
-                                         cssClass="col-sm-10 label-size col-form-label">
-                                <form:options items="${user.strategies}" itemLabel="name"/>
-                            </form:select>
-                        </div>
+<%--                        <div class="col-sm-10">--%>
+<%--                            <form:select id="strategySetting" path="strategySetting"--%>
+<%--                                         cssClass="col-sm-10 label-size col-form-label">--%>
+<%--                                <form:options items="${user.strategies}" itemLabel="name"/>--%>
+<%--                            </form:select><form:errors path="strategySetting"/>--%>
+<%--                        </div>                      --%>
+<%--                        <div class="col-sm-10">--%>
+<%--                            <form:select id="strategySetting" path="strategySetting"--%>
+<%--                                         cssClass="col-sm-10 label-size col-form-label">--%>
+<%--                                <form:options items="${user.strategies}" itemLabel="name"/>--%>
+<%--                            </form:select><form:errors path="strategySetting"/>--%>
+<%--                        </div>--%>
                     </div>
                     <div class="form-group row">
                         <label class="col-sm-2 label-size col-form-label">Typ zlecenia</label>
                         <div class="col-sm-10">
                             <form:select id="typeOrder" path="typeOrder" cssClass="col-sm-10 label-size col-form-label">
                                 <form:options items="${orderTypes}" itemLabel="name"/>
-                            </form:select>
+                            </form:select><form:errors path="typeOrder"/>
                         </div>
                     </div>
                     <div class="form-group row">

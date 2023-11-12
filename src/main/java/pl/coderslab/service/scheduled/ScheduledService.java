@@ -33,7 +33,7 @@ public class ScheduledService {
 
 
 
-   // @Scheduled(fixedDelay = 60000, initialDelay = 1000)
+    @Scheduled(fixedDelay = 60000, initialDelay = 1000)
     public void check() {
         List<User> users = userService.getActiveUsers();
         logger.info("Scheduled counter: " + count);

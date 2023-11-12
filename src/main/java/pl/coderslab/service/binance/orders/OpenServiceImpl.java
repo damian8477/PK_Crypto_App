@@ -59,7 +59,7 @@ public class OpenServiceImpl extends Common implements OpenService {
         SyncRequestClient syncRequestClient = syncService.sync(user.getUserSetting().get(0));
         PositionRisk positionRisk = syncRequestClient.getPositionRisk().stream()
                 .filter(s -> s.getSymbol().equals(signal.getSymbol()))
-                .filter(s -> s.getPositionSide().equals(signal.getPositionSide()))
+                .filter(s -> s.getPositionSide().equals(signal.getPositionSide().toString()))
                 .filter(s -> s.getPositionAmt().doubleValue() != 0.0)
                 .findFirst().orElse(null);
         if (isNull(positionRisk) && !orderList.stream().anyMatch(s -> s.getSymbolName().equals(signal.getSymbol()))) { //todo dac wiecej warunkow
@@ -90,11 +90,9 @@ public class OpenServiceImpl extends Common implements OpenService {
         MarginLot marginLot = calculateLotSizeQuantityMargin(signal.getSymbol(), amountValue, lever, sync, marketPrice, exchangeInfoEntry);
         boolean isOpen = false;
         if (signal.getOrderType().equals(OrderType.MARKET)) isOpen = true;
-        if (binanceService.sendOrderToBinance(sync, signal.getSymbol(), orderSide, marginLot.getLot(), String.valueOf(marketPrice), positionSide, signal.getOrderType())) {
-            if (isOpen) {
+        if (binanceService.sendOrderToBinance(sync, signal.getSymbol(), orderSide, marginLot.getLot(), String.valueOf(marketPrice), positionSide, signal.getOrderType(), signal.getEntryPrice().get(0).toString())) {
                 binanceService.sendSlAndTpToAccountMultipleTp(sync, signal.getSymbol(), positionSide, signal.getStopLoss().get(0).toString(),
-                        signal.getTakeProfit(), minQty, lever, marketPrice, signal.getOrderType(), lengthPrice);
-            }
+                        signal.getTakeProfit(), minQty, lever, marketPrice, signal.getOrderType(), lengthPrice, marginLot.getLot());
             orderService.save(user, signal, String.valueOf(marketPrice), marginLot.getLot(), "", "", lever, strategy, isOpen, source);
             telegramBotService.sendMessage(user.getUserSetting().get(0).getTelegramChatId(), String.format("%s Zlecenie otwarte! \n%s %s $%s LOT: $%s", Emoticon.OPEN.getLabel(), signal.getSymbol(), Emoticon.valueOf(signal.getPositionSide().toString()), marketPrice, signal.getLot()));
             logger.info(String.format("Username: %s\n%s Zlecenie otwarte! \n%s %s $%s LOT: $%s", user.getUsername(), Emoticon.OPEN.getLabel(), signal.getSymbol(), Emoticon.valueOf(signal.getPositionSide().toString()), marketPrice, signal.getLot()));

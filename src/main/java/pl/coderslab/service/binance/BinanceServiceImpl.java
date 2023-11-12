@@ -102,7 +102,7 @@ public class BinanceServiceImpl extends Common implements BinanceService {
         String lot = signal.getLot();
         boolean isOpen = false;
         if (signal.getOrderType().equals(OrderType.MARKET)) isOpen = true;
-        if (sendOrderToBinance(syncRequestClient, signal.getSymbol(), orderSide, lot, marketPrice, positionSide, signal.getOrderType())) {
+        if (sendOrderToBinance(syncRequestClient, signal.getSymbol(), orderSide, lot, marketPrice, positionSide, signal.getOrderType(), null)) {
             if (isOpen) {
                 sendSlAndTpToAccount(syncRequestClient, signal.getSymbol(), orderSide, positionSide, signal.getStopLoss().get(0).toString(), signal.getTakeProfit().get(0).toString());
             }
@@ -152,7 +152,21 @@ public class BinanceServiceImpl extends Common implements BinanceService {
     }
 
     @Override
-    public boolean sendSlAndTpToAccountMultipleTp(SyncRequestClient syncRequestClient, String cryptoName, PositionSide positionSide, String stopLoss, List<BigDecimal> takeProfit, double minQty, int lever, double marketPrice, OrderType orderType, int lengthPrice) {
+    public boolean sendSlToAccount(SyncRequestClient syncRequestClient, String cryptoName, PositionSide positionSide, String stopLoss, String lot) {
+        try {
+            OrderSide orderCloseSide = OrderSide.BUY;
+            if (positionSide.equals(PositionSide.LONG)) orderCloseSide = OrderSide.SELL;
+            String stopLossStr = binanceSupport.aroundValueCryptoName(syncRequestClient, cryptoName, String.valueOf(stopLoss));
+            syncRequestClient.postOrder(cryptoName, orderCloseSide, positionSide, OrderType.STOP_MARKET, TimeInForce.GTC,
+                    lot, null, null, null, stopLossStr, null, NewOrderRespType.ACK);
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean sendSlAndTpToAccountMultipleTp(SyncRequestClient syncRequestClient, String cryptoName, PositionSide positionSide, String stopLoss, List<BigDecimal> takeProfit, double minQty, int lever, double marketPrice, OrderType orderType, int lengthPrice, String orderLot) {
         try {
             OrderSide orderCloseSide;
             if (positionSide.equals(PositionSide.LONG)) orderCloseSide = OrderSide.SELL;
@@ -175,7 +189,7 @@ public class BinanceServiceImpl extends Common implements BinanceService {
                     .filter(s -> s.getSymbol().equals(cryptoName))
                     .findFirst().orElse(null);
             String stopLossStr = aroundValueCryptoName(null, null, String.valueOf(stopLoss), lengthPrice);
-            String lot = positionRisk.getPositionAmt().toString().replace("-", "");
+            String lot = OrderType.MARKET.equals(orderType) ? positionRisk.getPositionAmt().toString().replace("-", "") : orderLot;
             List<String> lotsTp = getLotsTp(takeProfit.size(), minQty, Double.parseDouble(lot), lever, marketPrice);
             if(orderType.equals(OrderType.MARKET)){
                 syncRequestClient.postOrder(cryptoName, orderCloseSide, positionSide, OrderType.STOP_MARKET, TimeInForce.GTC,
@@ -187,20 +201,28 @@ public class BinanceServiceImpl extends Common implements BinanceService {
                         lotsTp.get(i), null, null, null, takeProfitLot, null, NewOrderRespType.ACK);
             }
         } catch (Exception e) {
+            logger.info("Error during cancel order " + e);
             return false;
         }
         return true;
     }
 
     @Override
-    public boolean sendOrderToBinance(SyncRequestClient syncRequestClient, String cryptoName, OrderSide orderSide, String lot, String marketPrice, PositionSide positionSide, OrderType orderType) {
+    public boolean sendOrderToBinance(SyncRequestClient syncRequestClient, String cryptoName, OrderSide orderSide, String lot, String marketPrice, PositionSide positionSide, OrderType orderType, String entryPrice) {
         int count = 0;
         while (true) {
             count++;
             if (count > 2) break;
             try {
-                syncRequestClient.postOrder(cryptoName, orderSide, positionSide, orderType, null,
-                        lot, null, null, null, null, null, NewOrderRespType.ACK);
+                if(OrderType.MARKET.equals(orderType)){
+                    syncRequestClient.postOrder(cryptoName, orderSide, positionSide, orderType, null,
+                            lot, null, null, cryptoName, null, null, NewOrderRespType.ACK);
+                } else {
+                    syncRequestClient.postOrder(cryptoName, orderSide, positionSide, orderType,  TimeInForce.GTC,
+                            lot, null, null, null, entryPrice, null, NewOrderRespType.ACK);
+                }
+
+
                 return true;
             } catch (Exception e) {
                 if (e.toString().contains("position side does not match")) {

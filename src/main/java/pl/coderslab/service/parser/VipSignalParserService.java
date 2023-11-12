@@ -20,7 +20,7 @@ public class VipSignalParserService {
                 .lever(10)
                 .stopLoss(List.of(BigDecimal.valueOf(getStopLoss(message))))
                 .entryPrice(getEntryPriceList(message))
-                .orderType(OrderType.MARKET)
+                .orderType(OrderType.STOP_MARKET)
                 .positionSide(positionSide(message))
                 .isStrategy(true)
                 .build();

@@ -33,7 +33,7 @@ public class TelegramVipServiceImpl extends TelegramLongPollingBot{
         SendMessage response = new SendMessage();
         response.setChatId(update.getMessage().getChatId().toString());
         requestSignalVipService.newMessage(message);
-        //response.setText("Read ok!");
+        response.setText("Read ok!");
         try {
             execute(response);
         } catch (TelegramApiException e) {

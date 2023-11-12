@@ -1,6 +1,7 @@
 package pl.coderslab.entity.orders;
 
 import lombok.*;
+import pl.coderslab.binance.client.model.enums.PositionSide;
 import pl.coderslab.entity.strategy.Source;
 
 import javax.persistence.*;
@@ -19,6 +20,8 @@ public class Signal {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String symbol;
+    @Column(name = "position_side")
+    private PositionSide positionSide;
     @Column(name = "entry_price")
     private BigDecimal entryPrice;
     @Column(name = "entry_price2")
