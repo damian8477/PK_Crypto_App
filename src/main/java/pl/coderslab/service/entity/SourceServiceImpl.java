@@ -12,10 +12,10 @@ import javax.transaction.Transactional;
 @RequiredArgsConstructor
 public class SourceServiceImpl implements SourceService {
     private final SourceRepository sourceRepository;
+
     @Override
     @Transactional
-    public Source findByName(String name){
-        Source source = sourceRepository.findByName(name);
-        return source;
+    public Source findByName(String name) {
+        return sourceRepository.findByName(name);
     }
 }

@@ -12,6 +12,7 @@ import pl.coderslab.repository.TelegramCodeRepository;
 import pl.coderslab.repository.UserSettingRepository;
 
 import java.util.Random;
+
 /**
  * Implementation of the {@link TelegramCodeService} interface providing methods
  * for handling Telegram codes and user authentication.
@@ -23,6 +24,7 @@ public class TelegramCodeServiceImpl implements TelegramCodeService {
     private final TelegramCodeRepository telegramCodeRepository;
 
     private static final Logger logger = LoggerFactory.getLogger(TelegramCodeServiceImpl.class);
+
     /**
      * Checks if the provided Telegram code matches the expected code for the user.
      * If the codes match, the user's Telegram chat ID is updated, and the Telegram code is deleted.
@@ -54,6 +56,7 @@ public class TelegramCodeServiceImpl implements TelegramCodeService {
         }
         return "Użytkownik o podanym loginie nie istnieje lub nie oczekuje na autoryzacje telegrama\nPo 3 próbach, klucz zostanie usunięty";
     }
+
     /**
      * Generates and retrieves the Telegram token code for the user.
      * If the user already has a Telegram code, the existing code is returned.
@@ -78,6 +81,7 @@ public class TelegramCodeServiceImpl implements TelegramCodeService {
         }
 
     }
+
     /**
      * Generates a random code of the specified length.
      *

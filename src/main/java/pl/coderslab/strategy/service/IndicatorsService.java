@@ -137,7 +137,6 @@ public class IndicatorsService extends Common {
     }
 
     public String getCandleStick(String cryptoName) {
-        CandlestickInterval candlestickInterval = null;
         List<Candlestick> candlestickList = syncRequestClient.getCandlestick(cryptoName, CandlestickInterval.ONE_MINUTE, null, null, 2);
         String low = candlestickList.get(0).getLow().toString();
         String open = candlestickList.get(0).getOpen().toString();
@@ -149,12 +148,6 @@ public class IndicatorsService extends Common {
         if (high.length() > returnCandle.length()) returnCandle = high;
         return returnCandle;
     }
-
-    private void checkWaitingOrder() {
-        List<CandleParam> candleParamList = candleParameter(syncRequestClient, 3, "GMTUSDT", 1000);
-        List<CandleParam> candleParamList2 = candleParameter(syncRequestClient, 60, "BTCUSDT", 100);
-    }
-
 
     private List<CandleParam> candleParameter(SyncRequestClient syncRequestClient, int minute, String cryptoName, int countCandle) {
         CandlestickInterval candlestickInterval = null;

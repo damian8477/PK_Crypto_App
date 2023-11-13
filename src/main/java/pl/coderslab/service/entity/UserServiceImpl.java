@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void deleteById(Long userId){
+    public void deleteById(Long userId) {
         userSettingRepository.deleteAllByUserId(userId);
         orderRepository.deleteAllByUserId(userId);
         alertRepository.deleteAllByUserId(userId);
@@ -62,6 +62,7 @@ public class UserServiceImpl implements UserService {
         users.forEach(this::fillUser);
         return users;
     }
+
     @Override
     @Transactional
     public List<User> getActiveUsers() {
@@ -74,6 +75,7 @@ public class UserServiceImpl implements UserService {
     public User getUserBasic(String username) {
         return userRepository.findByUsername(username);
     }
+
     @Override
     public void fillUser(User user) {
         if (user != null) {

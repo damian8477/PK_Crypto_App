@@ -49,7 +49,6 @@ public class OpenServiceImpl extends Common implements OpenService {
                     Strategy strategy = user.getStrategies().stream().filter(k -> k.getSource().getId().equals(source.getId())).findFirst().orElse(null);
                     ExchangeInfoEntry exchangeInfoEntry1 = SymbolExchangeService.exchangeInfoEntries.stream().filter(exchangeInfoEntry -> exchangeInfoEntry.getSymbol().equals(signal.getSymbol())).findFirst().orElse(null);
                     newOrder(signal, user.getOrders(), source, user, marketPrice, exchangeInfoEntry1, strategy);
-//                    newOrder(signal, user.getOrders(), source, user, marketPrice, SymbolExchangeService.exchangeInfoEntries.stream().filter(exchangeInfoEntry -> exchangeInfoEntry.getSymbol().equals(signal.getSymbol())).findFirst().orElse(null), null);
                 }
             });
         });
@@ -62,7 +61,7 @@ public class OpenServiceImpl extends Common implements OpenService {
                 .filter(s -> s.getPositionSide().equals(signal.getPositionSide().toString()))
                 .filter(s -> s.getPositionAmt().doubleValue() != 0.0)
                 .findFirst().orElse(null);
-        if (isNull(positionRisk) && !orderList.stream().anyMatch(s -> s.getSymbolName().equals(signal.getSymbol()))) { //todo dac wiecej warunkow
+        if (isNull(positionRisk) && !orderList.stream().anyMatch(s -> s.getSymbolName().equals(signal.getSymbol()))) {
             openSignal(signal, syncRequestClient, exchangeInfoEntry, user, marketPrice, source, strategy);
         }
     }
@@ -71,9 +70,9 @@ public class OpenServiceImpl extends Common implements OpenService {
         try {
             boolean okOrder = newOrderForUserSlidingHedge(signal, sync, marketPrice, source, strategy, exchangeInfoEntry, user);
             if (okOrder)
-                logger.info(user.getUsername() + " " + getTimeStamp() + " " + signal.getSymbol() + source.getName() + " order");
+                logger.info(getStringFormat("%s %s %s %s order", user.getUsername(), getTimeStamp(), signal.getSymbol(),source.getName()));
         } catch (Exception e) {
-            logger.error(user.getUsername() + " " + getTimeStamp() + " " + signal.getSymbol() + source.getName() + " order" + e);
+            logger.error(getStringFormat("%s %s %s %s order %s", user.getUsername(), getTimeStamp(), signal.getSymbol(), source.getName(), e.getMessage()));
         }
     }
 
@@ -89,13 +88,13 @@ public class OpenServiceImpl extends Common implements OpenService {
 
         MarginLot marginLot = calculateLotSizeQuantityMargin(signal.getSymbol(), amountValue, lever, sync, marketPrice, exchangeInfoEntry);
         boolean isOpen = false;
-        if((signal.getPositionSide().equals(PositionSide.LONG) && marketPrice > signal.getEntryPrice().get(0).doubleValue()) || (signal.getPositionSide().equals(PositionSide.SHORT) && marketPrice < signal.getEntryPrice().get(0).doubleValue())) {
+        if ((signal.getPositionSide().equals(PositionSide.LONG) && marketPrice > signal.getEntryPrice().get(0).doubleValue()) || (signal.getPositionSide().equals(PositionSide.SHORT) && marketPrice < signal.getEntryPrice().get(0).doubleValue())) {
             signal.setOrderType(OrderType.MARKET);
         }
         if (signal.getOrderType().equals(OrderType.MARKET)) isOpen = true;
         if (binanceService.sendOrderToBinance(sync, signal.getSymbol(), orderSide, marginLot.getLot(), String.valueOf(marketPrice), positionSide, signal.getOrderType(), signal.getEntryPrice().get(0).toString())) {
-                binanceService.sendSlAndTpToAccountMultipleTp(sync, signal.getSymbol(), positionSide, signal.getStopLoss().get(0).toString(),
-                        signal.getTakeProfit(), minQty, lever, marketPrice, signal.getOrderType(), lengthPrice, marginLot.getLot());
+            binanceService.sendSlAndTpToAccountMultipleTp(sync, signal.getSymbol(), positionSide, signal.getStopLoss().get(0).toString(),
+                    signal.getTakeProfit(), minQty, lever, marketPrice, signal.getOrderType(), lengthPrice, marginLot.getLot());
             orderService.save(user, signal, String.valueOf(marketPrice), marginLot.getLot(), "", "", lever, strategy, isOpen, source);
             telegramBotService.sendMessage(user.getUserSetting().get(0).getTelegramChatId(), String.format("%s Zlecenie otwarte! \n%s %s $%s LOT: $%s", Emoticon.OPEN.getLabel(), signal.getSymbol(), Emoticon.valueOf(signal.getPositionSide().toString()), marketPrice, signal.getLot()));
             logger.info(String.format("Username: %s\n%s Zlecenie otwarte! \n%s %s $%s LOT: $%s", user.getUsername(), Emoticon.OPEN.getLabel(), signal.getSymbol(), Emoticon.valueOf(signal.getPositionSide().toString()), marketPrice, signal.getLot()));

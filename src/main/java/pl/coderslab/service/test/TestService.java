@@ -23,17 +23,25 @@ public class TestService {
 
 //@Scheduled(fixedDelay = 600000, initialDelay = 1000)
     public void test(){
+//        Source source = sourceService.findByName("VIP");
+    try{
         Source source = sourceService.findByName("VIP");
-        System.out.println("kurwa");
-        SyncRequestClient syncRequestClient = syncService.sync(null);
-    List<Order> listOrder = syncRequestClient.getOpenOrders("BTCUSDT").stream()
-            .filter(s -> s.getPositionSide().equals("LONG"))
-            .toList();
-
-    for (Order order : listOrder) {
-        //if(order.getWorkingType())
-        System.out.println(order);
+        System.out.println(source);
+    }catch (Exception e){
+        System.out.println(e);
     }
+        Source source = sourceService.findByName("RSI");
+        System.out.println(source);
+//        System.out.println("kurwa");
+//        SyncRequestClient syncRequestClient = syncService.sync(null);
+//    List<Order> listOrder = syncRequestClient.getOpenOrders("BTCUSDT").stream()
+//            .filter(s -> s.getPositionSide().equals("LONG"))
+//            .toList();
+//
+//    for (Order order : listOrder) {
+//        //if(order.getWorkingType())
+//        System.out.println(order);
+//    }
     }
 
     private void test1(){

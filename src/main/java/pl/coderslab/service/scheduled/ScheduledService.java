@@ -34,16 +34,17 @@ public class ScheduledService {
     //todo dla zlecen innych niż MARKET sprawdzanie czy sie otworzylo i dopisywanie zlecen TP i SL
 
 
-
     @Scheduled(fixedDelay = 60000, initialDelay = 1000)
     public void check() {
         List<User> users = userService.getActiveUsers();
         logger.info("Scheduled counter: " + count);
-        if(count == 0){
+        if (count == 0) {
             strategy110Service.downloadCryptoNameList();
         }
         if (count % 1 == 0) {
             checkUserOrderService.checkInActiveOrder(users);
+            strategy110Service.searchNewOrder(null);
+            strategy110Service.checkOrderStatusBot(null);
         }
         if (count % 2 == 0) {
             checkTokensExpirationTime();
@@ -51,7 +52,6 @@ public class ScheduledService {
         if (count % 4 == 0) {
 //            checkBotOrder();//todo co 3 minuty, trzeba sprawdzać świeczki 3 lub 5 minutowe
 //            checkStrategy();
-            strategy110Service.searchNewOrder(null);
         }
         if (count % 5 == 0 || count == 0)
             alertService.checkAlerts();

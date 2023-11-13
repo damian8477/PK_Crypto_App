@@ -35,6 +35,7 @@ public class SymbolServiceImpl implements SymbolService {
             throw new IllegalArgumentException("Nie ma takiego symbolu na giełdzie binance");
         }
     }
+
     @Override
     public AlertSetting getBasicAlert(String symbol) {
         return AlertSetting.builder()

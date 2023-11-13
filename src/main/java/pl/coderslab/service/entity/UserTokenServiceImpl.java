@@ -43,11 +43,11 @@ public class UserTokenServiceImpl implements UserTokenService {
     }
 
     @Override
-    public boolean checkUserToken(User user, String token){
+    public boolean checkUserToken(User user, String token) {
         UserToken userToken = userTokenRepository.findByUserId(user.getId());
-        if(userToken.getTokenType().equals(TokenType.PASSWORD) && (userToken.getToken().equals(token))){
-                userTokenRepository.deleteById(userToken.getId());
-                return true;
+        if (userToken.getTokenType().equals(TokenType.PASSWORD) && (userToken.getToken().equals(token))) {
+            userTokenRepository.deleteById(userToken.getId());
+            return true;
 
         }
         return false;

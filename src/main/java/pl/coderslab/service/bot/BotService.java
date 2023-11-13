@@ -12,6 +12,7 @@ import pl.coderslab.entity.strategy.Source;
 import pl.coderslab.entity.user.User;
 import pl.coderslab.interfaces.BinanceBasicService;
 import pl.coderslab.interfaces.OrderService;
+import pl.coderslab.interfaces.SignalService;
 import pl.coderslab.interfaces.UserService;
 import pl.coderslab.model.BinanceConfirmOrder;
 import pl.coderslab.strategy.service.IndicatorsService;
@@ -30,6 +31,7 @@ public class BotService extends Common {
     private final IndicatorsService indicatorsService;
     private final OrderService orderService;
     private final UserService userService;
+    private final SignalService signalService;
 
     private static final Logger logger = LoggerFactory.getLogger(BotService.class);
 
@@ -51,7 +53,7 @@ public class BotService extends Common {
                 if (percentSl > 0.0) stopPercent = percentSl * 0.01;
                 if (percentTp > 0.0) takePercent = (percentTp * 0.01);
 
-                if (side.equals("BUY")) {
+                if (side.equals("LONG")) {
                     stopLoss = aroundValue(candleStick, (1.0 - stopPercent) * marketPrice);
                     takeProfit = aroundValue(candleStick, (1.0 + takePercent) * marketPrice);
                 } else {
@@ -75,25 +77,27 @@ public class BotService extends Common {
                             .stopLoss(BigDecimal.valueOf(stopLoss))
                             .source(source)
                             .build();
+                    signalService.save(signal);
                     orderService.save(bot, signal, "", "10.0", null, 10, null, true, source);
+                }
             }
-        }} catch (Exception e) {
+        } catch (Exception e) {
             logger.info(symbol + " " + getTimeStamp() + "error in newOrder" + e);
         }
     }
 
-    public void checkOrderStatusBot(String sourceName, List<Order> activeOrdersListArg) throws IOException, TimeoutException {
+    public void checkOrderStatusBot(String sourceName, List<Order> activeOrdersListArg) {
         List<Order> activeOrdersList = activeOrdersListArg.stream()
                 .filter(s -> (s.getSource().getName().equals(sourceName)))
                 .filter(s -> s.getUser().getId() == 1000)
                 .toList();
         for (Order activeOrders : activeOrdersList) {
-                double marketPrice = binanceBasicService.getMarketPriceDouble(null, activeOrders.getSymbolName());
-                normalBot(activeOrders, marketPrice);
+            double marketPrice = binanceBasicService.getMarketPriceDouble(null, activeOrders.getSymbolName());
+            normalBot(activeOrders, marketPrice);
         }
     }
 
-    public void normalBot(Order order, double marketPrice) throws IOException, TimeoutException {
+    public void normalBot(Order order, double marketPrice) {
         Map<String, Double> highLowMarketPrice = indicatorsService.candle1mLowHigh(order.getSymbolName());
         double lowPrice = highLowMarketPrice.get("Low");
         double highPrice = highLowMarketPrice.get("High");
@@ -112,7 +116,7 @@ public class BotService extends Common {
         }
     }
 
-    public void killOrder(pl.coderslab.entity.orders.Order order, double marketPrice) throws IOException, TimeoutException {
+    public void killOrder(pl.coderslab.entity.orders.Order order, double marketPrice) {
         orderService.deleteById(order.getId());
         Double totalPercentValue = aroundValue("1.11", percentProfitBot(marketPrice, order));
 

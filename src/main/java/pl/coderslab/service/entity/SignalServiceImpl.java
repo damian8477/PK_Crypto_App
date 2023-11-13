@@ -20,17 +20,22 @@ public class SignalServiceImpl implements SignalService {
     private static final Logger logger = LoggerFactory.getLogger(RequestTelegramService.class);
 
     @Override
-    public Signal saveSignalFromCommonSignal(CommonSignal commonSignal){
-        try{
+    public void save(Signal signal) {
+        signalRepository.save(signal);
+    }
+
+    @Override
+    public Signal saveSignalFromCommonSignal(CommonSignal commonSignal) {
+        try {
             Signal signal = fillSignal(commonSignal);
             return signalRepository.save(signal);
-        }catch (Exception e){
+        } catch (Exception e) {
             logger.error("Error during save signal to db " + e);
         }
         return null;
     }
 
-    private Signal fillSignal(CommonSignal commonSignal){
+    private Signal fillSignal(CommonSignal commonSignal) {
         return Signal.builder()
                 .symbol(commonSignal.getSymbol())
                 .entryPrice(commonSignal.getEntryPrice().get(0))
@@ -45,8 +50,6 @@ public class SignalServiceImpl implements SignalService {
                 .source(sourceRepository.findByName(commonSignal.getSourceName()))
                 .build();
     }
-
-
 
 
 }

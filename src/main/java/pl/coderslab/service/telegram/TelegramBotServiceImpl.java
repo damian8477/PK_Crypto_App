@@ -42,12 +42,13 @@ public class TelegramBotServiceImpl extends TelegramLongPollingBot implements Te
             logger.info(e.toString());
         }
     }
+
     @Override
-    public void sendMessage(String chatId, String message){
-        try{
+    public void sendMessage(String chatId, String message) {
+        try {
             SendMessage response = new SendMessage();
             response.setChatId(chatId);
-            if(message.length() < 1500){
+            if (message.length() < 1500) {
                 response.setText(message);
                 execute(response);
             } else {
@@ -59,7 +60,7 @@ public class TelegramBotServiceImpl extends TelegramLongPollingBot implements Te
                     execute(response);
                 }
             }
-        }catch (TelegramApiException e){
+        } catch (TelegramApiException e) {
             logger.error(e.toString());
         }
 

@@ -71,7 +71,7 @@ public class CheckUserOrderServiceImpl implements CheckUserOrderService {
                 });
     }
 
-    public void checkStopLoss(SyncRequestClient sync, User user, PositionRisk position, pl.coderslab.entity.orders.Order order){
+    public void checkStopLoss(SyncRequestClient sync, User user, PositionRisk position, pl.coderslab.entity.orders.Order order) {
         List<Order> orders = sync.getOpenOrders(position.getSymbol());
         String orderType = OrderType.STOP_MARKET.toString();
         double stopLossLot = orders.stream()
@@ -79,7 +79,7 @@ public class CheckUserOrderServiceImpl implements CheckUserOrderService {
                 .filter(s -> s.getPositionSide().equals(order.getPositionSide().toString()))
                 .map(Order::getOrigQty)
                 .reduce(BigDecimal.ZERO, BigDecimal::add).doubleValue();
-        if(position.getPositionAmt().abs().doubleValue() != stopLossLot) {
+        if (position.getPositionAmt().abs().doubleValue() != stopLossLot) {
             cancelAllOpenOrders(sync, position.getSymbol(), order.getPositionSide(), orderType);
             binanceService.sendSlToAccount(sync, order.getSymbolName(), order.getPositionSide(), order.getSl(), position.getPositionAmt().abs().toString());
         }
@@ -94,8 +94,14 @@ public class CheckUserOrderServiceImpl implements CheckUserOrderService {
                             .filter(s -> s.getPositionSide().equals(order.getPositionSide().toString()))
                             .filter(s -> s.getPositionAmt().doubleValue() != 0.0)
                             .findFirst().orElse(null);
+                    List<Order> orders = syncRequestClient.getOpenOrders(order.getSymbolName());
+                    double marketPrice = positionRisks.stream()
+                            .filter(s -> s.getSymbol().equals(order.getSymbolName()))
+                            .findFirst()
+                            .map(PositionRisk::getMarkPrice)
+                            .map(BigDecimal::doubleValue)
+                            .orElse(0.0);
                     if (!isNull(position)) {
-                        List<Order> orders = syncRequestClient.getOpenOrders(position.getSymbol());
                         List<Order> takeProfitOrder = orders.stream()
                                 .filter(s -> s.getType().equals(OrderType.TAKE_PROFIT_MARKET.toString()))
                                 .filter(s -> s.getPositionSide().equals(order.getPositionSide().toString()))
@@ -103,12 +109,15 @@ public class CheckUserOrderServiceImpl implements CheckUserOrderService {
                         List<Order> stopLossOrder = orders.stream()
                                 .filter(s -> s.getType().equals(OrderType.STOP_MARKET.toString()))
                                 .filter(s -> s.getPositionSide().equals(order.getPositionSide().toString()))
-                                .collect(Collectors.toList());
-                        if (!takeProfitOrder.isEmpty() && stopLossOrder.isEmpty()) {
-                            if (binanceService.sendSlToAccount(syncRequestClient, order.getSymbolName(), order.getPositionSide(), order.getSl(), position.getPositionAmt().abs().toString())) {
-                                order.setOpen(true);
-                                orderService.update(order);
-                            }
+                                .toList();
+                        if (!takeProfitOrder.isEmpty() && stopLossOrder.isEmpty() && (binanceService.sendSlToAccount(syncRequestClient, order.getSymbolName(), order.getPositionSide(), order.getSl(), position.getPositionAmt().abs().toString()))) {
+                            order.setOpen(true);
+                            orderService.update(order);
+                        }
+                    } else {
+                        if (orders.isEmpty() || (order.getPositionSide().toString().equals("LONG") && marketPrice < Double.parseDouble(order.getSl())) || (order.getPositionSide().toString().equals("SHORT") && marketPrice > Double.parseDouble(order.getSl()))) {
+                            cancelAllOpenOrders(syncRequestClient, order.getSymbolName(), order.getPositionSide(), null);
+                            orderService.deleteById(order.getId());
                         }
                     }
                 });
@@ -116,7 +125,7 @@ public class CheckUserOrderServiceImpl implements CheckUserOrderService {
 
     public void updateSlAndTp(SyncRequestClient syncRequestClient, User user, List<PositionRisk> positionRisks) {
         user.getOrders().stream()
-                .filter(s -> s.isOpen())
+                .filter(pl.coderslab.entity.orders.Order::isOpen)
                 .forEach(order -> {
                     PositionRisk position = positionRisks.stream()
                             .filter(s -> s.getSymbol().equals(order.getSymbolName()))
@@ -144,7 +153,6 @@ public class CheckUserOrderServiceImpl implements CheckUserOrderService {
     }
 
 
-
     @Override
     public void cancelAllOpenOrders(SyncRequestClient syncRequestClient, String symbol, PositionSide side, String type) {
         try {
@@ -153,7 +161,7 @@ public class CheckUserOrderServiceImpl implements CheckUserOrderService {
                     .filter(s -> s.getPositionSide().equals(side.toString()))
                     .toList();
             for (Order order : listOrder) {
-                if(isNull(type) || order.getType().equals(type)){
+                if (isNull(type) || order.getType().equals(type)) {
                     syncRequestClient.cancelOrder(symbol, order.getOrderId(), order.getClientOrderId());
                 }
             }

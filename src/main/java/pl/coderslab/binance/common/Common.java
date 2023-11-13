@@ -9,7 +9,6 @@ import pl.coderslab.binance.client.model.trade.AccountBalance;
 import pl.coderslab.binance.client.model.trade.MarginLot;
 import pl.coderslab.entity.strategy.Strategy;
 import pl.coderslab.enums.MarginType;
-import pl.coderslab.model.BinanceConfirmOrder;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -23,7 +22,7 @@ import static java.util.Objects.isNull;
 
 public abstract class Common {
 
-    public List<String> getLotsTp(int size, double minQty, double lot, int lever, double marketPrice){
+    public List<String> getLotsTp(int size, double minQty, double lot, int lever, double marketPrice) {
         int[] partList = new int[]{10, 6, 2, 1, 1};
         int sum = Arrays.stream(partList).sum();
         int partLastAdd = partList[0];
@@ -33,7 +32,7 @@ public abstract class Common {
         for (int i = partList.length - 1; i >= 0; i--) {
             int part = (i == 0) ? partLastAdd : partList[i];
             double lotNew = (i == 0) ? lotsLast : partOfLot * part;
-            if(lotNew * marketPrice * lever > 5.0 && (i <= size-1) && i >= 0){
+            if (lotNew * marketPrice * lever > 5.0 && (i <= size - 1)) {
                 double lotTp = calculateLot(lotNew, minQty);
                 lotsLast -= lotTp;
                 lots.add(String.valueOf(lotTp));
@@ -42,10 +41,11 @@ public abstract class Common {
         Collections.reverse(lots);
         return lots;
     }
+
     public double getAmountValue(String symbol, SyncRequestClient syncRequestClient, Strategy strategy) {
         double balance = getUserBalanceDouble(syncRequestClient, symbol);
         if (strategy.getPercentOfMoney() > 0 && strategy.isPercentMoney()) {
-            return (strategy.getPercentOfMoney()  / 100.0) * balance;
+            return (strategy.getPercentOfMoney() / 100.0) * balance;
         } else {
             return strategy.getPercentOfMoney();
         }
@@ -63,7 +63,7 @@ public abstract class Common {
     public MarginLot calculateLotSizeQuantityMargin(String symbol, double amountInUSDT, int leverage, SyncRequestClient syncRequestClient, double marketPrice, ExchangeInfoEntry exchangeInfoEntry) {
         try {
             double minLotSize = calculateMinimumLotSize(symbol, syncRequestClient, exchangeInfoEntry);
-            double margin = amountInUSDT * (double) leverage;
+            double margin = amountInUSDT * leverage;
             double lotSize = margin / marketPrice;
             return new MarginLot("0.0", Double.toString(calculateLot(lotSize, minLotSize)));
         } catch (Exception e) {
@@ -71,11 +71,11 @@ public abstract class Common {
         }
     }
 
-    public Double getMinQty(String symbol, SyncRequestClient syncRequestClient, ExchangeInfoEntry exchangeInfoEntry){
+    public Double getMinQty(String symbol, SyncRequestClient syncRequestClient, ExchangeInfoEntry exchangeInfoEntry) {
         return calculateMinimumLotSize(symbol, syncRequestClient, exchangeInfoEntry);
     }
 
-    public int getLengthPrice(SyncRequestClient syncRequestClient, String cryptoName){
+    public int getLengthPrice(SyncRequestClient syncRequestClient, String cryptoName) {
         List<Candlestick> candlestickList = syncRequestClient.getCandlestick(cryptoName, CandlestickInterval.FIVE_MINUTES, null, null, 2);
         int lengthEnter = candlestickList.get(0).getClose().toString().length();
         if (candlestickList.get(0).getOpen().toString().length() > lengthEnter)
@@ -86,8 +86,9 @@ public abstract class Common {
             lengthEnter = candlestickList.get(0).getLow().toString().length();
         return lengthEnter;
     }
+
     public String aroundValueCryptoName(SyncRequestClient syncRequestClient, String cryptoName, String div, Integer length) {
-        if(isNull(length)){
+        if (isNull(length)) {
             length = getLengthPrice(syncRequestClient, cryptoName);
         }
         if (String.valueOf(div).length() > length) {
@@ -98,12 +99,12 @@ public abstract class Common {
 
 
     public double calculateMinimumLotSize(String symbol, SyncRequestClient syncRequestClient, ExchangeInfoEntry exchangeInfoEntry) {
-        Optional<Map.Entry<String, String>>  minQty;
-        if(isNull(exchangeInfoEntry)){
+        Optional<Map.Entry<String, String>> minQty;
+        if (isNull(exchangeInfoEntry)) {
             ExchangeInformation exchangeInformation = syncRequestClient.getExchangeInformation();
             List<ExchangeInfoEntry> exchangeInfoEntries = exchangeInformation.getSymbols();
 
-             minQty = exchangeInfoEntries.stream()
+            minQty = exchangeInfoEntries.stream()
                     .filter(obj -> obj.getSymbol().equals(symbol))
                     .map(ExchangeInfoEntry::getFilters)
                     .flatMap(Collection::stream)
@@ -141,6 +142,7 @@ public abstract class Common {
         }
         return "USDT";
     }
+
     public int setLeverageF(SyncRequestClient syncRequestClient, int leverage, String cryptoName) {
         try {
             syncRequestClient.changeInitialLeverage(cryptoName, leverage);

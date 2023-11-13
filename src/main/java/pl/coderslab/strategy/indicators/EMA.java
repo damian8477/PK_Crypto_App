@@ -11,7 +11,6 @@ public class EMA implements Indicator {
     private final List<Double> EMAhistory;
     private final boolean historyNeeded;
     private double currentEMA;
-    private String fileName;
 
     public EMA(List<Double> closingPrices, int period, boolean historyNeeded) {
         currentEMA = 0;
