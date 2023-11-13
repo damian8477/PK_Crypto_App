@@ -44,11 +44,5 @@ public class Source {
     private BigDecimal basicSlPercent;
     @OneToMany(fetch = FetchType.EAGER)
     private List<Strategy> strategies;
-//    @ManyToMany
-//    @JoinTable(name = "indicators_strategysettings",
-//            joinColumns = @JoinColumn(name = "indicator_id"),
-//            inverseJoinColumns = @JoinColumn(name = "strategy_setting_id"))
-//    private List<Indicator> indicators;
-
 
 }

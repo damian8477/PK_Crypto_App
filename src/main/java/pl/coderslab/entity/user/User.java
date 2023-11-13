@@ -18,8 +18,11 @@ import java.util.List;
  */
 @Entity
 @Table(name = "users")
-@Setter @Getter
-@Builder @NoArgsConstructor @AllArgsConstructor
+@Setter
+@Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

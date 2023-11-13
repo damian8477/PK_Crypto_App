@@ -10,7 +10,9 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor @AllArgsConstructor @Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class TelegramCode {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

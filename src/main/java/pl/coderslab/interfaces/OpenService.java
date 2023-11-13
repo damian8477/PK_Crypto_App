@@ -5,7 +5,5 @@ import pl.coderslab.model.CommonSignal;
 
 
 public interface OpenService {
-
-
     void newSignal(CommonSignal signal);
 }

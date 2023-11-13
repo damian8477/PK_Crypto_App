@@ -1,6 +1,5 @@
 package pl.coderslab.entity.strategy;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 

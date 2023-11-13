@@ -25,7 +25,7 @@ public class UserSetting {
     private String binanceKey;
     @Convert(converter = DatabaseConverter.class)
     @Column(name = "binance_secret")
-     @Pattern(regexp = "^.{64}$", message = "Binance secret musi mieć 64 znaki")
+    @Pattern(regexp = "^.{64}$", message = "Binance secret musi mieć 64 znaki")
     private String binanceSecret;
     @Column(name = "telegram_chat_id")
     @Convert(converter = DatabaseConverter.class)
