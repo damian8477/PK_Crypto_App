@@ -10,6 +10,7 @@ import pl.coderslab.enums.MarginType;
 import pl.coderslab.model.BinanceConfirmOrder;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public interface BinanceBasicService {
     void setMarginType(SyncRequestClient syncRequestClient, MarginType marginType, String symbol);
@@ -45,4 +46,5 @@ public interface BinanceBasicService {
     BinanceConfirmOrder getBinanceConfirmOrder(SyncRequestClient syncRequestClient, PositionRisk positionRisk);
 
     String convertTimestampToDate(Long timestamp);
+    List<String> getSymbolList();
 }

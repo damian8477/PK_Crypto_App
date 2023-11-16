@@ -145,5 +145,15 @@ public class Strategy110Service extends BotService {
         orderService.saveHistoryOrderToDB(order.getUser(), order, binanceConfirmOrder, false);
     }
 
+    public void checkCoinInStrategy(){
+        List<String> symbolOfBinance = binanceBasicService.getSymbolList();
+        List<RsiStrategy> rsiSymbols = rsiStrategyRepository.findAll();
+        rsiSymbols.forEach(s->{
+            if(!symbolOfBinance.contains(s.getSymbol())){
+                rsiStrategyRepository.delete(s);
+            }
+        });
+    }
+
 
 }

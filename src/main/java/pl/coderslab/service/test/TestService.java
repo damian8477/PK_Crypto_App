@@ -7,9 +7,12 @@ import pl.coderslab.binance.client.SyncRequestClient;
 import pl.coderslab.binance.client.model.enums.*;
 import pl.coderslab.binance.client.model.market.ExchangeInfoEntry;
 import pl.coderslab.binance.client.model.trade.Order;
+import pl.coderslab.binance.client.model.trade.PositionRisk;
 import pl.coderslab.entity.strategy.Source;
+import pl.coderslab.entity.strategy.rsi.RsiStrategy;
 import pl.coderslab.interfaces.SourceService;
 import pl.coderslab.interfaces.SyncService;
+import pl.coderslab.repository.RsiStrategyRepository;
 import pl.coderslab.repository.SourceRepository;
 
 import java.util.List;
@@ -20,31 +23,31 @@ import java.util.stream.Collectors;
 public class TestService {
     private final SyncService syncService;
     private final SourceService sourceService;
+    private final RsiStrategyRepository rsiStrategyRepository;
 
-//@Scheduled(fixedDelay = 600000, initialDelay = 1000)
-    public void test(){
-//        Source source = sourceService.findByName("VIP");
-    try{
-        Source source = sourceService.findByName("VIP");
-        System.out.println(source);
-    }catch (Exception e){
-        System.out.println(e);
-    }
-        Source source = sourceService.findByName("RSI");
-        System.out.println(source);
-//        System.out.println("kurwa");
-//        SyncRequestClient syncRequestClient = syncService.sync(null);
-//    List<Order> listOrder = syncRequestClient.getOpenOrders("BTCUSDT").stream()
-//            .filter(s -> s.getPositionSide().equals("LONG"))
-//            .toList();
-//
-//    for (Order order : listOrder) {
-//        //if(order.getWorkingType())
-//        System.out.println(order);
-//    }
+    //@Scheduled(fixedDelay = 600000, initialDelay = 1000)
+    public void test() {
+        try {
+            List<String> symbolList = List.of("bch", "eos", "ltc", "trx", "etc", "link", "xml", "xmr", "dash", "zec", "xtz", "iota", "atom", "ont", "vet", "bat", "atom", "neo", "iost", "qtum", "algo", "zil", "doge", "omg", "comp", "mkr", "waves", "dot", "snx", "bal", "crv", "trb", "blz");
+            SyncRequestClient syncRequestClient = syncService.sync(null);
+            List<String> symbolOfBinance = syncRequestClient.getPositionRisk().stream()
+                    .map(PositionRisk::getSymbol).toList();
+            List<String> rsiSymbols = rsiStrategyRepository.findAll().stream()
+                    .map(RsiStrategy::getSymbol).toList();
+            symbolList.forEach(s -> {
+                if (!symbolOfBinance.contains(s) && !rsiSymbols.contains(s)) {
+                    RsiStrategy rsiStrategy = new RsiStrategy();
+                    rsiStrategy.setSymbol(s.toUpperCase() + "USDT");
+                    rsiStrategyRepository.save(rsiStrategy);
+                }
+            });
+
+        } catch (Exception e) {
+            System.out.println(e);
+        }
     }
 
-    private void test1(){
+    private void test1() {
         Source source = sourceService.findByName("VIP");
         System.out.println("kurwa");
         SyncRequestClient syncRequestClient = syncService.sync(null);
@@ -63,7 +66,7 @@ public class TestService {
             e.printStackTrace();
         }
         syncRequestClient.postOrder("BTCUSDT", OrderSide.SELL, PositionSide.LONG, OrderType.TAKE_PROFIT_MARKET, TimeInForce.GTC,
-                "0.004", null, null, null,"40000", null, NewOrderRespType.ACK);
+                "0.004", null, null, null, "40000", null, NewOrderRespType.ACK);
 //        System.out.println(syncRequestClient.getExchangeInformation().getSymbols().stream().filter(s->s.getSymbol().equals("BTCUSDT")).collect(Collectors.toList()));
 
     }

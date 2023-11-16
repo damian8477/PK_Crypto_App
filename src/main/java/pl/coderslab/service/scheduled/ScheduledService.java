@@ -40,6 +40,7 @@ public class ScheduledService {
         logger.info("Scheduled counter: " + count);
         if (count == 0) {
             strategy110Service.downloadCryptoNameList();
+            strategy110Service.checkCoinInStrategy();
         }
         if (count % 1 == 0) {
             checkUserOrderService.checkInActiveOrder(users);

@@ -246,6 +246,12 @@ public class BinanceBasicServiceImpl implements BinanceBasicService {
     }
 
     @Override
+    public List<String> getSymbolList(){
+        SyncRequestClient syncRequestClient = syncService.sync(null);
+        return syncRequestClient.getPositionRisk().stream().map(PositionRisk::getSymbol).toList();
+    }
+
+    @Override
     public String convertTimestampToDate(Long timestamp) {
         Date date = new Date(timestamp);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
