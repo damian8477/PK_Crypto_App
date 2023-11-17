@@ -106,7 +106,7 @@ public class BinanceServiceImpl extends Common implements BinanceService {
             if (isOpen) {
                 sendSlAndTpToAccount(syncRequestClient, signal.getSymbol(), orderSide, positionSide, signal.getStopLoss().get(0).toString(), signal.getTakeProfit().get(0).toString());
             }
-            orderService.save(user, signal, marketPrice, lot, "", "", lever, null, isOpen, null);
+            orderService.save(user, signal, marketPrice, lot, "", "", lever, null, isOpen, null, false);
             telegramBotService.sendMessage(user.getUserSetting().get(0).getTelegramChatId(), String.format("%s Zlecenie otwarte! \n%s %s $%s LOT: $%s", Emoticon.OPEN.getLabel(), signal.getSymbol(), Emoticon.valueOf(signal.getPositionSide().toString()), marketPrice, signal.getLot()));
             logger.info(String.format("Username: %s\n%s Zlecenie otwarte! \n%s %s $%s LOT: $%s", user.getUsername(), Emoticon.OPEN.getLabel(), signal.getSymbol(), Emoticon.valueOf(signal.getPositionSide().toString()), marketPrice, signal.getLot()));
             return true;
@@ -252,8 +252,8 @@ public class BinanceServiceImpl extends Common implements BinanceService {
         }
     }
     @Override
-    public BinanceConfirmOrder getBinanceConfirmOrder(SyncRequestClient syncRequestClient, PositionRisk positionRisk) {
-        String symbol = positionRisk.getSymbol();
+    public BinanceConfirmOrder getBinanceConfirmOrder(SyncRequestClient syncRequestClient, pl.coderslab.entity.orders.Order order, double marketPrice) {
+        String symbol = order.getSymbolName();
         double sumProfit = 0.0;
         double sumCommission = 0.0;
         Long closeTime = 0l;
@@ -285,9 +285,9 @@ public class BinanceServiceImpl extends Common implements BinanceService {
                 .realizedPln(BigDecimal.valueOf(sumProfit).setScale(2, RoundingMode.HALF_UP))
                 .commission(BigDecimal.valueOf(sumCommission).setScale(2, RoundingMode.HALF_UP))
                 .time(convertTimestampToDate(closeTime))
-                .closePrice(positionRisk.getMarkPrice().toString())
-                .entryPrice(positionRisk.getEntryPrice().toString())
-                .lot(positionRisk.getPositionAmt().abs().toString())
+                .closePrice(String.valueOf(marketPrice))
+                .entryPrice(order.getEntry())
+                .lot(order.getLot())
                 .build();
     }
 

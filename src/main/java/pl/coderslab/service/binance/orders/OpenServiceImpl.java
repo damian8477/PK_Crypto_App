@@ -95,7 +95,7 @@ public class OpenServiceImpl extends Common implements OpenService {
         if (binanceService.sendOrderToBinance(sync, signal.getSymbol(), orderSide, marginLot.getLot(), String.valueOf(marketPrice), positionSide, signal.getOrderType(), signal.getEntryPrice().get(0).toString())) {
             binanceService.sendSlAndTpToAccountMultipleTp(sync, signal.getSymbol(), positionSide, signal.getStopLoss().get(0).toString(),
                     signal.getTakeProfit(), minQty, lever, marketPrice, signal.getOrderType(), lengthPrice, marginLot.getLot());
-            orderService.save(user, signal, String.valueOf(marketPrice), marginLot.getLot(), "", "", lever, strategy, isOpen, source);
+            orderService.save(user, signal, String.valueOf(marketPrice), marginLot.getLot(), "", "", lever, strategy, isOpen, source, true);
             telegramBotService.sendMessage(user.getUserSetting().get(0).getTelegramChatId(), String.format("%s Zlecenie otwarte! \n%s %s $%s LOT: $%s", Emoticon.OPEN.getLabel(), signal.getSymbol(), Emoticon.valueOf(signal.getPositionSide().toString()), marketPrice, signal.getLot()));
             logger.info(String.format("Username: %s\n%s Zlecenie otwarte! \n%s %s $%s LOT: $%s", user.getUsername(), Emoticon.OPEN.getLabel(), signal.getSymbol(), Emoticon.valueOf(signal.getPositionSide().toString()), marketPrice, signal.getLot()));
             return true;

@@ -27,7 +27,7 @@ public class ScheduledService {
     private final UserTokenRepository userTokenRepository;
     private final Strategy110Service strategy110Service;
     private static final Logger logger = LoggerFactory.getLogger(ScheduledService.class);
-    private static int count = 0;
+    private static int count = 1;
 
     //todo  czasy kiedy co ma być sprawdzane można trzymać w bazie
     //todo pobranie tych czasów np. raz na godzine lub wymuszenie z telegrama
@@ -37,14 +37,13 @@ public class ScheduledService {
     @Scheduled(fixedDelay = 60000, initialDelay = 1000)
     public void check() {
         List<User> users = userService.getActiveUsers();
-        logger.info("Scheduled counter: " + count);
-        if (count == 0) {
+        logger.info("Scheduled counter: " + count + " " + LocalDateTime.now());
+        if (count == 1) {
             strategy110Service.downloadCryptoNameList();
             strategy110Service.checkCoinInStrategy();
         }
         if (count % 1 == 0) {
             checkUserOrderService.checkInActiveOrder(users);
-            strategy110Service.searchNewOrder(null);
             strategy110Service.checkOrderStatusBot(null);
         }
         if (count % 2 == 0) {
@@ -52,7 +51,7 @@ public class ScheduledService {
         }
         if (count % 4 == 0) {
 //            checkBotOrder();//todo co 3 minuty, trzeba sprawdzać świeczki 3 lub 5 minutowe
-//            checkStrategy();
+            strategy110Service.searchNewOrder(null);
         }
         if (count % 5 == 0 || count == 0)
             alertService.checkAlerts();

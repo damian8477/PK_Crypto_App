@@ -134,7 +134,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public void save(User user, CommonSignal commonSignal, String entryPrice, String lot,
-                     String amount, String startProfit, int lev, Strategy strategy, boolean isOpen, Source source) {
+                     String amount, String startProfit, int lev, Strategy strategy, boolean isOpen, Source source, boolean isStrategy) {
         orderRepository.save(Order.builder()
                 .user(user)
                 .symbolName(commonSignal.getSymbol())
@@ -152,13 +152,14 @@ public class OrderServiceImpl implements OrderService {
                 .open(isOpen)
                 .appOrder(true)
                 .signal(commonSignal.getSignal())
+                .isStrategy(isStrategy)
                 .build());
 
     }
 
     @Override
     public void save(User user, Signal signal, String lot,
-                     String amount, String startProfit, int lev, Strategy strategy, boolean isOpen, Source source) {
+                     String amount, String startProfit, int lev, Strategy strategy, boolean isOpen, Source source, boolean isStrategy) {
         orderRepository.save(Order.builder()
                 .user(user)
                 .symbolName(signal.getSymbol())
@@ -176,6 +177,7 @@ public class OrderServiceImpl implements OrderService {
                 .open(isOpen)
                 .appOrder(true)
                 .signal(signal)
+                .isStrategy(isStrategy)
                 .build());
 
     }

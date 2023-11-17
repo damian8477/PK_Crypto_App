@@ -38,11 +38,8 @@ public class CheckUserOrderServiceImpl implements CheckUserOrderService {
             if (!user.getOrders().isEmpty() && userSettingService.userSettingExist(user.getUserSetting())) {
                 SyncRequestClient syncRequestClient = syncService.sync(user.getUserSetting().get(0));
                 List<PositionRisk> positions = syncRequestClient.getPositionRisk();
-                List<PositionRisk> openedPositions = positions.stream()
-                        .filter(s -> s.getPositionAmt().doubleValue() != 0.0)
-                        .toList();
                 updateSlAndTp(syncRequestClient, user, positions);
-                checkOpenOrders(syncRequestClient, user, openedPositions);
+                checkOpenOrders(syncRequestClient, user, positions);
                 checkWaitingOrders(syncRequestClient, user, positions);
             }
         });
@@ -56,19 +53,28 @@ public class CheckUserOrderServiceImpl implements CheckUserOrderService {
                             .filter(s -> s.getSymbol().equals(order.getSymbolName()))
                             .filter(s -> s.getPositionSide().equals(order.getPositionSide().toString()))
                             .findFirst().orElse(null);
-                    if (isNull(position)) {
-                        cancelAllOpenOrders(syncRequestClient, order.getSymbolName(), order.getPositionSide(), null);
-                        orderRepository.deleteById(order.getId());
-                        String message = String.format("Zlecenie zamknięte samodzielnie! %s $%s %s Lot: %s", Emoticon.OWN_CLOSED.getLabel(), order.getSymbolName(), order.getPositionSide(), order.getLot());
-                        BinanceConfirmOrder binanceConfirmOrder = binanceService.getBinanceConfirmOrder(syncRequestClient, position);
-                        binanceConfirmOrder.setEntryPrice(order.getEntry());
-                        binanceConfirmOrder.setLot(order.getLot());
-                        orderService.saveHistoryOrderToDB(user, order, binanceConfirmOrder, true);
-                        telegramBotService.sendMessage(user.getUserSetting().get(0).getTelegramChatId(), message);
+                    double marketPrice = position.getMarkPrice().doubleValue();
+                    if (position.getPositionAmt().doubleValue() == 0.0) {
+                        if(!order.isStrategy()){
+                            closeOrderSignal(syncRequestClient, order, marketPrice, user, "Zlecenie zamknięte samodzielnie! ", Emoticon.OWN_CLOSED.getLabel(), true);
+                        } else {
+                            closeOrderSignal(syncRequestClient, order, marketPrice, user, "Zlecenie zamknięte! ", Emoticon.CLOSE.getLabel(), false);
+                        }
                     } else {
                         checkStopLoss(syncRequestClient, user, position, order);
                     }
                 });
+    }
+
+    public void closeOrderSignal(SyncRequestClient syncRequestClient, pl.coderslab.entity.orders.Order order, double marketPrice, User user, String mess, String emoticon, boolean ownClosed){
+        cancelAllOpenOrders(syncRequestClient, order.getSymbolName(), order.getPositionSide(), null);
+        orderRepository.deleteById(order.getId());
+        String message = String.format(mess + " %s $%s %s Lot: %s", emoticon, order.getSymbolName(), order.getPositionSide(), order.getLot());
+        BinanceConfirmOrder binanceConfirmOrder = binanceService.getBinanceConfirmOrder(syncRequestClient, order, marketPrice);
+        binanceConfirmOrder.setEntryPrice(order.getEntry());
+        binanceConfirmOrder.setLot(order.getLot());
+        orderService.saveHistoryOrderToDB(user, order, binanceConfirmOrder, ownClosed);
+        telegramBotService.sendMessage(user.getUserSetting().get(0).getTelegramChatId(), message);
     }
 
     public void checkStopLoss(SyncRequestClient sync, User user, PositionRisk position, pl.coderslab.entity.orders.Order order) {
@@ -116,8 +122,7 @@ public class CheckUserOrderServiceImpl implements CheckUserOrderService {
                         }
                     } else {
                         if (orders.isEmpty() || (order.getPositionSide().toString().equals("LONG") && marketPrice < Double.parseDouble(order.getSl())) || (order.getPositionSide().toString().equals("SHORT") && marketPrice > Double.parseDouble(order.getSl()))) {
-                            cancelAllOpenOrders(syncRequestClient, order.getSymbolName(), order.getPositionSide(), null);
-                            orderService.deleteById(order.getId());
+                            closeOrderSignal(syncRequestClient, order, marketPrice, user, "Zlecenie zamknięte! ", Emoticon.CLOSE.getLabel(), false);
                         }
                     }
                 });

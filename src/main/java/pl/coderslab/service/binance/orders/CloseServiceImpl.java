@@ -17,6 +17,9 @@ import pl.coderslab.interfaces.*;
 import pl.coderslab.model.BinanceConfirmOrder;
 import pl.coderslab.repository.OrderRepository;
 
+import java.math.BigDecimal;
+import java.util.List;
+
 import static java.util.Objects.isNull;
 
 @Service
@@ -39,18 +42,25 @@ public class CloseServiceImpl implements CloseService {
 
     @Override
     public boolean killOrder(SyncRequestClient syncRequestClient, Order order, User user, String lot) {
-        PositionRisk position = syncRequestClient.getPositionRisk().stream()
+        List<PositionRisk> positions = syncRequestClient.getPositionRisk().stream()
                 .filter(s -> s.getSymbol().equals(order.getSymbolName()))
                 .filter(s -> s.getPositionSide().equals(order.getPositionSide().toString()))
+                .toList();
+        PositionRisk position = positions.stream()
                 .filter(s -> s.getPositionAmt().doubleValue() != 0.0)
                 .findFirst().orElse(null);
+        double marketPrice = positions.stream()
+                .findFirst()
+                .map(PositionRisk::getMarkPrice)
+                .map(BigDecimal::doubleValue)
+                .orElse(0.0);
         if (!isNull(position)) {
             if (position.getPositionAmt().doubleValue() != 0.0) {
                 killSymbol(syncRequestClient, position, lot);
                 //todo logger
                 if (order.isAppOrder()) {
                     orderRepository.deleteById(order.getId());
-                    BinanceConfirmOrder binanceConfirmOrder = binanceService.getBinanceConfirmOrder(syncRequestClient, position);
+                    BinanceConfirmOrder binanceConfirmOrder = binanceService.getBinanceConfirmOrder(syncRequestClient, order, marketPrice);
                     orderService.saveHistoryOrderToDB(user, order, binanceConfirmOrder, false);
                     telegramBotService.sendMessage(user.getUserSetting().get(0).getTelegramChatId(), String.format("%s Zlecenie zamknięto w aplikacji! \n%s %s $%s %s $%s", Emoticon.CLOSE.getLabel(), order.getSymbolName(), order.getPositionSide(), position.getMarkPrice(), Emoticon.getWinLoss(binanceConfirmOrder.getRealizedPln()), binanceConfirmOrder.getRealizedPln()));
                 }

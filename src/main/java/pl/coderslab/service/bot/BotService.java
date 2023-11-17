@@ -76,7 +76,7 @@ public class BotService extends Common {
                             .source(source)
                             .build();
                     signalService.save(signal);
-                    orderService.save(bot, signal, "", "10.0", null, 10, null, true, source);
+                    orderService.save(bot, signal, "", "10.0", null, 10, null, true, source, true);
                 }
             }
         } catch (Exception e) {

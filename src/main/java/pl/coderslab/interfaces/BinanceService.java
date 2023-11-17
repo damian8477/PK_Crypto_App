@@ -5,6 +5,7 @@ import pl.coderslab.binance.client.model.enums.OrderSide;
 import pl.coderslab.binance.client.model.enums.OrderType;
 import pl.coderslab.binance.client.model.enums.PositionSide;
 import pl.coderslab.binance.client.model.trade.PositionRisk;
+import pl.coderslab.entity.orders.Order;
 import pl.coderslab.entity.user.User;
 import pl.coderslab.entity.user.UserSetting;
 import pl.coderslab.model.BinanceConfirmOrder;
@@ -35,7 +36,7 @@ public interface BinanceService {
 
     void cancelAllOpenOrders(SyncRequestClient syncRequestClient, String symbol, String side);
 
-    BinanceConfirmOrder getBinanceConfirmOrder(SyncRequestClient syncRequestClient, PositionRisk positionRisk);
+    BinanceConfirmOrder getBinanceConfirmOrder(SyncRequestClient syncRequestClient, Order order, double marketPrice);
 
     String convertTimestampToDate(Long timestamp);
 }
