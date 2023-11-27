@@ -28,8 +28,8 @@ public class Strategy {
     @ManyToOne
     private Source source;
     @ManyToMany//(fetch = FetchType.EAGER)
-    @JoinTable(name = "user_strategy",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "strategy_id"))
+//    @JoinTable(name = "user_strategy",
+//            joinColumns = @JoinColumn(name = "user_id"),
+//            inverseJoinColumns = @JoinColumn(name = "strategy_id"))
     private List<User> users;
 }

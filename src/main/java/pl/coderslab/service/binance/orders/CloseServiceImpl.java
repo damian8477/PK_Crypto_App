@@ -61,7 +61,11 @@ public class CloseServiceImpl implements CloseService {
                 if (order.isAppOrder()) {
                     orderRepository.deleteById(order.getId());
                     BinanceConfirmOrder binanceConfirmOrder = binanceService.getBinanceConfirmOrder(syncRequestClient, order, marketPrice);
-                    orderService.saveHistoryOrderToDB(user, order, binanceConfirmOrder, false);
+                    boolean win = false;
+                    if(binanceConfirmOrder.getRealizedPln().compareTo(new BigDecimal("0.0")) > 0){
+                        win = true;
+                    }
+                    orderService.saveHistoryOrderToDB(user, order, binanceConfirmOrder, false, win);
                     telegramBotService.sendMessage(user.getUserSetting().get(0).getTelegramChatId(), String.format("%s Zlecenie zamknięto w aplikacji! \n%s %s $%s %s $%s", Emoticon.CLOSE.getLabel(), order.getSymbolName(), order.getPositionSide(), position.getMarkPrice(), Emoticon.getWinLoss(binanceConfirmOrder.getRealizedPln()), binanceConfirmOrder.getRealizedPln()));
                 }
                 return true;

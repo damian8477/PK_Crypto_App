@@ -69,11 +69,15 @@ public class CheckUserOrderServiceImpl implements CheckUserOrderService {
     public void closeOrderSignal(SyncRequestClient syncRequestClient, pl.coderslab.entity.orders.Order order, double marketPrice, User user, String mess, String emoticon, boolean ownClosed){
         cancelAllOpenOrders(syncRequestClient, order.getSymbolName(), order.getPositionSide(), null);
         orderRepository.deleteById(order.getId());
-        String message = String.format(mess + " %s $%s %s Lot: %s", emoticon, order.getSymbolName(), order.getPositionSide(), order.getLot());
         BinanceConfirmOrder binanceConfirmOrder = binanceService.getBinanceConfirmOrder(syncRequestClient, order, marketPrice);
         binanceConfirmOrder.setEntryPrice(order.getEntry());
         binanceConfirmOrder.setLot(order.getLot());
-        orderService.saveHistoryOrderToDB(user, order, binanceConfirmOrder, ownClosed);
+        String message = String.format(mess + " %s $%s %s Lot: %s %s", emoticon, order.getSymbolName(), order.getPositionSide(), order.getLot(), binanceConfirmOrder.getRealizedPln() );
+        boolean win = false;
+        if(binanceConfirmOrder.getRealizedPln().compareTo(new BigDecimal("0.0")) > 0){
+            win = true;
+        }
+        orderService.saveHistoryOrderToDB(user, order, binanceConfirmOrder, ownClosed, win);
         telegramBotService.sendMessage(user.getUserSetting().get(0).getTelegramChatId(), message);
     }
 

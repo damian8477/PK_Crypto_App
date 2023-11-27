@@ -4,17 +4,16 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import pl.coderslab.binance.client.model.enums.OrderType;
 import pl.coderslab.binance.client.model.enums.PositionSide;
 import pl.coderslab.binance.common.Common;
 import pl.coderslab.entity.orders.Order;
 import pl.coderslab.entity.orders.Signal;
 import pl.coderslab.entity.strategy.Source;
 import pl.coderslab.entity.user.User;
-import pl.coderslab.interfaces.BinanceBasicService;
-import pl.coderslab.interfaces.OrderService;
-import pl.coderslab.interfaces.SignalService;
-import pl.coderslab.interfaces.UserService;
+import pl.coderslab.interfaces.*;
 import pl.coderslab.model.BinanceConfirmOrder;
+import pl.coderslab.model.CommonSignal;
 import pl.coderslab.strategy.service.IndicatorsService;
 
 import java.math.BigDecimal;
@@ -30,6 +29,7 @@ public class BotService extends Common {
     private final OrderService orderService;
     private final UserService userService;
     private final SignalService signalService;
+    private final OpenService openService;
 
     private static final Logger logger = LoggerFactory.getLogger(BotService.class);
 
@@ -77,6 +77,18 @@ public class BotService extends Common {
                             .build();
                     signalService.save(signal);
                     orderService.save(bot, signal, "", "10.0", null, 10, null, true, source, true);
+                    openService.newSignal(CommonSignal.builder()
+                                    .orderType(OrderType.MARKET)
+                                    .isStrategy(true)
+                                    .positionSide(signal.getPositionSide())
+                                    .lever(10)
+                                    .signal(signal)
+                                    .symbol(signal.getSymbol())
+                                    .sourceName(signal.getSource().getName())
+                                    .entryPrice(List.of(BigDecimal.valueOf(marketPrice)))
+                                    .takeProfit(List.of(signal.getTakeProfit1()))
+                                    .stopLoss(List.of(signal.getStopLoss()))
+                            .build());
                 }
             }
         } catch (Exception e) {
@@ -126,10 +138,10 @@ public class BotService extends Common {
             leverange = order.getLeverage();
         }
         double entryPrice = Double.parseDouble(order.getEntry());
-        if (order.getPositionSide().toString().equals("LONG")) {
-            return (markPrice - entryPrice) / entryPrice * 100.0 * (double) leverange;
+        if (order.getPositionSide().equals(PositionSide.LONG)) {
+            return (markPrice - entryPrice) / entryPrice * 100.0 * leverange;
         } else {
-            return (entryPrice - markPrice) / entryPrice * 100.0 * (double) leverange;
+            return (entryPrice - markPrice) / entryPrice * 100.0 *  leverange;
         }
     }
 

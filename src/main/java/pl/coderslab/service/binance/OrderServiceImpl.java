@@ -113,7 +113,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void saveHistoryOrderToDB(User user, Order order, BinanceConfirmOrder binanceConfirmOrder, boolean ownClosed) {
+    public void saveHistoryOrderToDB(User user, Order order, BinanceConfirmOrder binanceConfirmOrder, boolean ownClosed, boolean win) {
         historyOrderRepository.save(
                 HistoryOrder.builder()
                         .symbol(order.getSymbolName())
@@ -129,6 +129,7 @@ public class OrderServiceImpl implements OrderService {
                         .user(user)
                         .ownClosed(ownClosed)
                         .signal(order.getSignal())
+                        .win(win)
                         .build());
     }
 

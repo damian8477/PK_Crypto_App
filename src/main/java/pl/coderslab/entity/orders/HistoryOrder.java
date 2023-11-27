@@ -27,6 +27,7 @@ public class HistoryOrder {
     private String side;
     private BigDecimal amount;
     private Integer leverage;
+    private boolean win;
     private BigDecimal commission;
     @Column(name = "own_close")
     private boolean ownClosed = false;

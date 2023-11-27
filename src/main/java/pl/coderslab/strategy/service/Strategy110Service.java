@@ -11,6 +11,7 @@ import pl.coderslab.model.BinanceConfirmOrder;
 import pl.coderslab.repository.RsiStrategyRepository;
 import pl.coderslab.service.bot.BotService;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -30,8 +31,8 @@ public class Strategy110Service extends BotService {
     private static final Logger logger = LoggerFactory.getLogger(Strategy110Service.class);
 
 
-    public Strategy110Service(BinanceBasicService binanceBasicService, IndicatorsService indicatorsService, OrderService orderService, UserService userService, RsiStrategyRepository rsiStrategyRepository, IndicatorsService indicatorsService1, BotService botService, SourceService sourceService, BinanceBasicService binanceBasicService1, OrderService orderService1, SignalService signalService) {
-        super(binanceBasicService, indicatorsService, orderService, userService, signalService);
+    public Strategy110Service(BinanceBasicService binanceBasicService, IndicatorsService indicatorsService, OrderService orderService, UserService userService, RsiStrategyRepository rsiStrategyRepository, IndicatorsService indicatorsService1, BotService botService, SourceService sourceService, BinanceBasicService binanceBasicService1, OrderService orderService1, SignalService signalService, OpenService openService) {
+        super(binanceBasicService, indicatorsService, orderService, userService, signalService, openService);
         this.rsiStrategyRepository = rsiStrategyRepository;
         this.indicatorsService = indicatorsService1;
         this.botService = botService;
@@ -82,12 +83,14 @@ public class Strategy110Service extends BotService {
             }
             rsiStrategyRepository.updateActive(coin.getId(), true);
         } else {
-            if (coin.isDown()) {
-                Source source = sourceService.findByName(SOURCE_NAME);
-                botService.newOrder(SOURCE_NAME, coin.getSymbol(), "LONG", "0", "0", 1.1, 0.7, String.valueOf(avRsi), orders, source, candleStick);
+            if (avRsi < coin.getLongRsiTrigger() + 2.0) {
+                if (coin.isDown()) {
+                    Source source = sourceService.findByName(SOURCE_NAME);
+                    botService.newOrder(SOURCE_NAME, coin.getSymbol(), "LONG", "0", "0", 3.0, 0.9, String.valueOf(avRsi), orders, source, candleStick);
+                }
+                rsiStrategyRepository.updateActive(coin.getId(), false);
+                rsiStrategyRepository.updateDown(coin.getId(), false);
             }
-            rsiStrategyRepository.updateActive(coin.getId(), false);
-            rsiStrategyRepository.updateDown(coin.getId(), false);
         }
     }
 
@@ -98,12 +101,15 @@ public class Strategy110Service extends BotService {
             }
             rsiStrategyRepository.updateActive(coin.getId(), true);
         } else {
-            if (coin.isUp()) {
-                Source source = sourceService.findByName(SOURCE_NAME);
-                botService.newOrder(SOURCE_NAME, coin.getSymbol(), "SHORT", "0", "0", 1.1, 0.7, String.valueOf(avRsi), orders, source, candleStick);
+            if (avRsi > coin.getSellRsiTrigger() - 2.0) {
+                if (coin.isUp()) {
+                    Source source = sourceService.findByName(SOURCE_NAME);
+                    botService.newOrder(SOURCE_NAME, coin.getSymbol(), "SHORT", "0", "0", 3.0, 0.9, String.valueOf(avRsi), orders, source, candleStick);
+                }
+                rsiStrategyRepository.updateActive(coin.getId(), false);
+                rsiStrategyRepository.updateUp(coin.getId(), false);
             }
-            rsiStrategyRepository.updateActive(coin.getId(), false);
-            rsiStrategyRepository.updateUp(coin.getId(), false);
+
         }
     }
 
@@ -141,8 +147,12 @@ public class Strategy110Service extends BotService {
         orderService.deleteById(order.getId());
         Double totalPercentValue = aroundValue("1.11", percentProfitBot(marketPrice, order));
         updateCountWinLoss(order, String.valueOf(totalPercentValue));
-        BinanceConfirmOrder binanceConfirmOrder = getBinanceConfirmOrder(order, marketPrice, totalPercentValue); //dokonczyc
-        orderService.saveHistoryOrderToDB(order.getUser(), order, binanceConfirmOrder, false);
+        BinanceConfirmOrder binanceConfirmOrder = getBinanceConfirmOrder(order, marketPrice, totalPercentValue);
+        boolean win = false;
+        if(totalPercentValue > 0){
+            win = true;
+        }
+        orderService.saveHistoryOrderToDB(order.getUser(), order, binanceConfirmOrder, false, win);
     }
 
     public void checkCoinInStrategy(){
