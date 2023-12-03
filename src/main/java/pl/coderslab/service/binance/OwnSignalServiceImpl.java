@@ -34,14 +34,10 @@ public class OwnSignalServiceImpl implements OwnSignalService {
     public void checkOwnSignal(OwnSignal signal, SyncRequestClient syncRequestClient) {
         if (signal.getStrategySetting() == null) {
             BigDecimal price = binanceSupport.getMarketPriceBigDecimal(syncRequestClient, signal.getSymbol());
-
             checkTpAndSl(signal, price);
             checkCashType(signal, price);
             checkOrderSide(signal, price);
             checkTypeOrder(signal, price);
-            //todo
-        } else {
-            //todo
         }
     }
     @Override

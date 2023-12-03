@@ -34,9 +34,6 @@ public interface BinanceService {
 
     boolean sendOrderToBinance(SyncRequestClient syncRequestClient, String cryptoName, OrderSide orderSide, String lot, String marketPrice, PositionSide positionSide, OrderType orderType, String entryPrice);
 
-    void cancelAllOpenOrders(SyncRequestClient syncRequestClient, String symbol, String side);
-
     BinanceConfirmOrder getBinanceConfirmOrder(SyncRequestClient syncRequestClient, Order order, double marketPrice);
 
-    String convertTimestampToDate(Long timestamp);
 }

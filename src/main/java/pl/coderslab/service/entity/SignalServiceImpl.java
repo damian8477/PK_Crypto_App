@@ -30,7 +30,7 @@ public class SignalServiceImpl implements SignalService {
             Signal signal = fillSignal(commonSignal);
             return signalRepository.save(signal);
         } catch (Exception e) {
-            logger.error("Error during save signal to db " + e);
+            logger.error(String.format("Error during save signal to db %s", e));
         }
         return null;
     }

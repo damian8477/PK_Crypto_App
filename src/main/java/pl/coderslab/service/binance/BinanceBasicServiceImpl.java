@@ -140,7 +140,7 @@ public class BinanceBasicServiceImpl implements BinanceBasicService {
                 syncRequestClient.cancelOrder(symbol, order.getOrderId(), order.getClientOrderId());
             }
         } catch (Exception e) {
-            //todo
+            logger.info(String.format("Error during cancel order %s", e));
         }
     }
 
@@ -224,7 +224,7 @@ public class BinanceBasicServiceImpl implements BinanceBasicService {
                 commissionList = syncRequestClient.getIncomeHistory(symbol, IncomeType.COMMISSION, diff, null, 50);
             }
             for (Income income : profitList) {
-                closeTime = income.getTime(); //todo pobrac czas z income, ale trzeba przekonwertowac timestamp na time
+                closeTime = income.getTime();
                 sumProfit += income.getIncome().doubleValue();
             }
             for (Income commission : commissionList) {

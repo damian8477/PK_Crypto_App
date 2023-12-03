@@ -11,6 +11,7 @@ import pl.coderslab.entity.strategy.Strategy;
 import pl.coderslab.enums.MarginType;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -212,6 +213,12 @@ public abstract class Common {
         String YOUR_DATE_TIME_PATTERN = "yyyy-MM-dd' 'HH:mm:ss";
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(YOUR_DATE_TIME_PATTERN);
         return zonedIST.format(formatter);
+    }
+
+    public String convertTimestampToDate(Long timestamp) {
+        Date date = new Date(timestamp);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return dateFormat.format(date);
     }
 
 }

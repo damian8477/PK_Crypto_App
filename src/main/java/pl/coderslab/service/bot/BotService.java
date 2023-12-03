@@ -63,9 +63,6 @@ public class BotService extends Common {
                 if (!sl.equals("0"))
                     stopLoss = aroundValue(candleStick, Double.parseDouble(sl));
 
-                if (rsi.equals("")) {
-                    rsi = String.valueOf(indicatorsService.getAvrRsi(symbol, 14));
-                }
                 if ((side.equals("LONG") && stopLoss < marketPrice) || (side.equals("SHORT") && stopLoss > marketPrice)) {
                     Signal signal = Signal.builder()
                             .symbol(symbol)
@@ -96,40 +93,8 @@ public class BotService extends Common {
         }
     }
 
-    public void checkOrderStatusBot(String sourceName, List<Order> activeOrdersListArg) {
-        List<Order> activeOrdersList = activeOrdersListArg.stream()
-                .filter(s -> (s.getSource().getName().equals(sourceName)))
-                .filter(s -> s.getUser().getId() == 1000)
-                .toList();
-        for (Order activeOrders : activeOrdersList) {
-            double marketPrice = binanceBasicService.getMarketPriceDouble(null, activeOrders.getSymbolName());
-            normalBot(activeOrders, marketPrice);
-        }
-    }
-
-    public void normalBot(Order order, double marketPrice) {
-        Map<String, Double> highLowMarketPrice = indicatorsService.candle1mLowHigh(order.getSymbolName());
-        double lowPrice = highLowMarketPrice.get("Low");
-        double highPrice = highLowMarketPrice.get("High");
-        if (order.getPositionSide().toString().equals("LONG")) {
-            if (highPrice > Double.parseDouble(order.getTp())) {
-                killOrder(order, Double.parseDouble(order.getTp()));
-            } else if (lowPrice < Double.parseDouble(order.getSl())) {
-                killOrder(order, Double.parseDouble(order.getSl()));
-            }
-        } else if (order.getPositionSide().toString().equals("SHORT")) {
-            if (lowPrice < Double.parseDouble(order.getTp())) {
-                killOrder(order, Double.parseDouble(order.getTp()));
-            } else if (highPrice > Double.parseDouble(order.getSl())) {
-                killOrder(order, Double.parseDouble(order.getSl()));
-            }
-        }
-    }
-
     public void killOrder(pl.coderslab.entity.orders.Order order, double marketPrice) {
         orderService.deleteById(order.getId());
-        Double totalPercentValue = aroundValue("1.11", percentProfitBot(marketPrice, order));
-
     }
 
     public double percentProfitBot(double markPrice, Order order) {

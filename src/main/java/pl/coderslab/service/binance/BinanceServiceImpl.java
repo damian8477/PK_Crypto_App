@@ -24,11 +24,11 @@ import pl.coderslab.repository.SymbolRepository;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import static java.util.Objects.isNull;
 
 @Service
 @RequiredArgsConstructor
@@ -39,44 +39,45 @@ public class BinanceServiceImpl extends Common implements BinanceService {
     private final BinanceBasicService binanceSupport;
     private final OrderService orderService;
     private final TelegramBotService telegramBotService;
+    private final MessageService messageService;
 
     private static final Logger logger = LoggerFactory.getLogger(BinanceServiceImpl.class);
+
     @Override
     public List<CryptoName> getSymbols() {
         List<CryptoName> cryptoNameList = new ArrayList<>();
         List<Symbol> symbolList = symbolRepository.findAll();
         SyncRequestClient syncRequestClient = syncService.sync(null);
-        if (symbolList != null) {
-            symbolList.forEach(s -> {
-                List<Candlestick> candlestick = syncRequestClient.getCandlestick(s.getName(), CandlestickInterval.DAILY, null, null, 1);
-                if (candlestick.size() > 0) {
-                    Candlestick cd = candlestick.get(0);
-                    cryptoNameList.add(new CryptoName(
-                            s.getId(),
-                            s.getName(),
-                            cd.getClose(),
-                            false, //todo
-                            cd.getLow(),
-                            cd.getHigh(),
-                            ((cd.getClose().subtract(cd.getOpen())).multiply(BigDecimal.valueOf(100.0)).divide(cd.getClose(), 2, RoundingMode.HALF_UP))
-                    ));
-                }
-            });
-        }
+        symbolList.forEach(s -> {
+            List<Candlestick> candlestick = syncRequestClient.getCandlestick(s.getName(), CandlestickInterval.DAILY, null, null, 1);
+            if (!candlestick.isEmpty()) {
+                Candlestick cd = candlestick.get(0);
+                cryptoNameList.add(new CryptoName(
+                        s.getId(),
+                        s.getName(),
+                        cd.getClose(),
+                        false,
+                        cd.getLow(),
+                        cd.getHigh(),
+                        ((cd.getClose().subtract(cd.getOpen())).multiply(BigDecimal.valueOf(100.0)).divide(cd.getClose(), 2, RoundingMode.HALF_UP))
+                ));
+            }
+        });
         return cryptoNameList;
     }
+
     @Override
     public CryptoName getSymbols(int symbolId) {
         Symbol symbol = symbolRepository.findById(symbolId).orElse(null);
         if (symbol != null) {
             List<Candlestick> candlestick = syncService.sync(null).getCandlestick(symbol.getName(), CandlestickInterval.DAILY, null, null, 1);
-            if (candlestick.size() > 0) {
+            if (!candlestick.isEmpty()) {
                 Candlestick cd = candlestick.get(0);
                 return new CryptoName(
                         symbol.getId(),
                         symbol.getName(),
                         cd.getClose(),
-                        false, //todo
+                        false,
                         cd.getLow(),
                         cd.getHigh(),
                         ((cd.getClose().subtract(cd.getOpen())).multiply(BigDecimal.valueOf(100.0)).divide(cd.getClose(), 2, RoundingMode.HALF_UP))
@@ -85,15 +86,16 @@ public class BinanceServiceImpl extends Common implements BinanceService {
         }
         return new CryptoName();
     }
+
     @Override
     public List<String> getSymbolNames() {
         return syncService.sync(null).getPositionRisk().stream()
                 .map(PositionRisk::getSymbol)
                 .toList();
     }
+
     @Override
     public boolean createOrder(CommonSignal signal, User user, SyncRequestClient syncRequestClient) {
-        //todo sprawdzenie czy sygnal jest otwarty
         OrderSide orderSide = binanceSupport.getOrderSideForOpen(signal.getPositionSide());
         PositionSide positionSide = signal.getPositionSide();
         binanceSupport.setMarginType(syncRequestClient, signal.getMarginType(), signal.getSymbol());
@@ -107,48 +109,42 @@ public class BinanceServiceImpl extends Common implements BinanceService {
                 sendSlAndTpToAccount(syncRequestClient, signal.getSymbol(), orderSide, positionSide, signal.getStopLoss().get(0).toString(), signal.getTakeProfit().get(0).toString());
             }
             orderService.save(user, signal, marketPrice, lot, "", "", lever, null, isOpen, null, false);
-            telegramBotService.sendMessage(user.getUserSetting().get(0).getTelegramChatId(), String.format("%s Zlecenie otwarte! \n%s %s $%s LOT: $%s", Emoticon.OPEN.getLabel(), signal.getSymbol(), Emoticon.valueOf(signal.getPositionSide().toString()), marketPrice, signal.getLot()));
-            logger.info(String.format("Username: %s\n%s Zlecenie otwarte! \n%s %s $%s LOT: $%s", user.getUsername(), Emoticon.OPEN.getLabel(), signal.getSymbol(), Emoticon.valueOf(signal.getPositionSide().toString()), marketPrice, signal.getLot()));
+            telegramBotService.sendMessage(user.getUserSetting().get(0).getTelegramChatId(), String.format(messageService.getOrderOpenSignal(null), Emoticon.OPEN.getLabel(), signal.getSymbol(), Emoticon.valueOf(signal.getPositionSide().toString()), marketPrice, signal.getLot()));
+            logger.info(String.format("Username: %s%n%s Zlecenie otwarte! %n%s %s $%s LOT: $%s", user.getUsername(), Emoticon.OPEN.getLabel(), signal.getSymbol(), Emoticon.valueOf(signal.getPositionSide().toString()), marketPrice, signal.getLot()));
             return true;
         }
         return false;
     }
+
     @Override
     public SyncRequestClient sync(UserSetting userSetting) {
         return syncService.sync(userSetting);
     }
+
     @Override
     public boolean sendSlAndTpToAccount(SyncRequestClient syncRequestClient, String cryptoName, OrderSide orderSide, PositionSide positionSide, String stopLoss, String takeProfit) {
         try {
             OrderSide orderCloseSide = OrderSide.BUY;
             if (orderSide.equals(OrderSide.BUY)) orderCloseSide = OrderSide.SELL;
-            String finalSide = orderCloseSide.toString();
-            try {
-                List<Order> listOrder = syncRequestClient.getOpenOrders(cryptoName).stream()
-                        .filter(s -> s.getSide().equals(finalSide))
-                        .toList();
-                for (Order order : listOrder) {
-                    syncRequestClient.cancelOrder(cryptoName, order.getOrderId(), order.getClientOrderId());
-                }
-            } catch (Exception e) {
-
-            }
+            binanceSupport.cancelOpenOrder(syncRequestClient, cryptoName, orderCloseSide);
             PositionRisk positionRisk = syncRequestClient.getPositionRisk().stream()
                     .filter(s -> s.getPositionAmt().doubleValue() != 0)
                     .filter(s -> s.getSymbol().equals(cryptoName))
                     .findFirst().orElse(null);
             String stopLossStr = binanceSupport.aroundValueCryptoName(syncRequestClient, cryptoName, String.valueOf(stopLoss));
             String takeProfitStr = binanceSupport.aroundValueCryptoName(syncRequestClient, cryptoName, String.valueOf(takeProfit));
-            String lot = positionRisk.getPositionAmt().toString().replace("-", "");
-            syncRequestClient.postOrder(cryptoName, orderCloseSide, positionSide, OrderType.STOP_MARKET, TimeInForce.GTC,
-                    lot, null, null, null, stopLossStr, null, NewOrderRespType.ACK);
-            syncRequestClient.postOrder(cryptoName, orderCloseSide, positionSide, OrderType.TAKE_PROFIT_MARKET, TimeInForce.GTC,
-                    lot, null, null, null, takeProfitStr, null, NewOrderRespType.ACK);
-
+            if (!isNull(positionRisk)) {
+                String lot = positionRisk.getPositionAmt().toString().replace("-", "");
+                syncRequestClient.postOrder(cryptoName, orderCloseSide, positionSide, OrderType.STOP_MARKET, TimeInForce.GTC,
+                        lot, null, null, null, stopLossStr, null, NewOrderRespType.ACK);
+                syncRequestClient.postOrder(cryptoName, orderCloseSide, positionSide, OrderType.TAKE_PROFIT_MARKET, TimeInForce.GTC,
+                        lot, null, null, null, takeProfitStr, null, NewOrderRespType.ACK);
+                return true;
+            }
         } catch (Exception e) {
-            return false;
+            logger.info(String.format("Error during send SL and Tp to account %s", e));
         }
-        return true;
+        return false;
     }
 
     @Override
@@ -159,10 +155,11 @@ public class BinanceServiceImpl extends Common implements BinanceService {
             String stopLossStr = binanceSupport.aroundValueCryptoName(syncRequestClient, cryptoName, String.valueOf(stopLoss));
             syncRequestClient.postOrder(cryptoName, orderCloseSide, positionSide, OrderType.STOP_MARKET, TimeInForce.GTC,
                     lot, null, null, null, stopLossStr, null, NewOrderRespType.ACK);
+            return true;
         } catch (Exception e) {
-            return false;
+            logger.error(String.format("Error during send sl to account %s", e));
         }
-        return true;
+        return false;
     }
 
     @Override
@@ -173,38 +170,30 @@ public class BinanceServiceImpl extends Common implements BinanceService {
             else {
                 orderCloseSide = OrderSide.BUY;
             }
-            String finalSide = orderCloseSide.toString();
-            try {
-                List<Order> listOrder = syncRequestClient.getOpenOrders(cryptoName).stream()
-                        .filter(s -> s.getSide().equals(finalSide))
-                        .toList();
-                for (Order order : listOrder) {
-                    syncRequestClient.cancelOrder(cryptoName, order.getOrderId(), order.getClientOrderId());
-                }
-            } catch (Exception e) {
-                logger.info("Error during cancel order");
-            }
+            binanceSupport.cancelOpenOrder(syncRequestClient, cryptoName, orderCloseSide);
             PositionRisk positionRisk = syncRequestClient.getPositionRisk().stream()
                     .filter(s -> s.getPositionAmt().doubleValue() != 0)
                     .filter(s -> s.getSymbol().equals(cryptoName))
                     .findFirst().orElse(null);
             String stopLossStr = aroundValueCryptoName(null, null, String.valueOf(stopLoss), lengthPrice);
-            String lot = OrderType.MARKET.equals(orderType) ? positionRisk.getPositionAmt().toString().replace("-", "") : orderLot;
-            List<String> lotsTp = getLotsTp(takeProfit.size(), minQty, Double.parseDouble(lot), lever, marketPrice);
-            if(orderType.equals(OrderType.MARKET)){
-                syncRequestClient.postOrder(cryptoName, orderCloseSide, positionSide, OrderType.STOP_MARKET, TimeInForce.GTC,
-                        lot, null, null, null, stopLossStr, null, NewOrderRespType.ACK);
-            }
-            for (int i = 0; i < lotsTp.size(); i++) {
-                String takeProfitLot = aroundValueCryptoName(null, null, takeProfit.get(i).toString(), lengthPrice);
-                syncRequestClient.postOrder(cryptoName, orderCloseSide, positionSide, OrderType.TAKE_PROFIT_MARKET, TimeInForce.GTC,
-                        lotsTp.get(i), null, null, null, takeProfitLot, null, NewOrderRespType.ACK);
+            if (!isNull(positionRisk)) {
+                String lot = OrderType.MARKET.equals(orderType) ? positionRisk.getPositionAmt().toString().replace("-", "") : orderLot;
+                List<String> lotsTp = getLotsTp(takeProfit.size(), minQty, Double.parseDouble(lot), lever, marketPrice);
+                if (orderType.equals(OrderType.MARKET)) {
+                    syncRequestClient.postOrder(cryptoName, orderCloseSide, positionSide, OrderType.STOP_MARKET, TimeInForce.GTC,
+                            lot, null, null, null, stopLossStr, null, NewOrderRespType.ACK);
+                }
+                for (int i = 0; i < lotsTp.size(); i++) {
+                    String takeProfitLot = aroundValueCryptoName(null, null, takeProfit.get(i).toString(), lengthPrice);
+                    syncRequestClient.postOrder(cryptoName, orderCloseSide, positionSide, OrderType.TAKE_PROFIT_MARKET, TimeInForce.GTC,
+                            lotsTp.get(i), null, null, null, takeProfitLot, null, NewOrderRespType.ACK);
+                }
+                return true;
             }
         } catch (Exception e) {
-            logger.info("Error during cancel order " + e);
-            return false;
+            logger.info(String.format("Error during cancel order %s", e));
         }
-        return true;
+        return false;
     }
 
     @Override
@@ -214,15 +203,13 @@ public class BinanceServiceImpl extends Common implements BinanceService {
             count++;
             if (count > 2) break;
             try {
-                if(OrderType.MARKET.equals(orderType)){
+                if (OrderType.MARKET.equals(orderType)) {
                     syncRequestClient.postOrder(cryptoName, orderSide, positionSide, orderType, null,
                             lot, null, null, cryptoName, null, null, NewOrderRespType.ACK);
                 } else {
-                    syncRequestClient.postOrder(cryptoName, orderSide, positionSide, orderType,  TimeInForce.GTC,
+                    syncRequestClient.postOrder(cryptoName, orderSide, positionSide, orderType, TimeInForce.GTC,
                             lot, null, null, null, entryPrice, null, NewOrderRespType.ACK);
                 }
-
-
                 return true;
             } catch (Exception e) {
                 if (e.toString().contains("position side does not match")) {
@@ -231,32 +218,18 @@ public class BinanceServiceImpl extends Common implements BinanceService {
                 if (Double.parseDouble(lot) * Double.parseDouble(marketPrice) < 5.0) {
                     throw new IllegalArgumentException("zlecenie poniżej 5$");
                 }
+
             }
         }
-        syncRequestClient.postOrder(cryptoName, orderSide, PositionSide.BOTH, orderType, null,
-                lot, null, null, null, null, null, NewOrderRespType.ACK);
-        return true;
+        return false;
     }
-    @Override
-    public void cancelAllOpenOrders(SyncRequestClient syncRequestClient, String symbol, String side) {
-        String sideCancelFinal = side;
-        try {
-            List<Order> listOrder = syncRequestClient.getOpenOrders(symbol).stream()
-                    .filter(s -> s.getSide().equals(sideCancelFinal))
-                    .toList();
-            for (Order order : listOrder) {
-                syncRequestClient.cancelOrder(symbol, order.getOrderId(), order.getClientOrderId());
-            }
-        } catch (Exception e) {
-            syncRequestClient.cancelAllOpenOrder(symbol);
-        }
-    }
+
     @Override
     public BinanceConfirmOrder getBinanceConfirmOrder(SyncRequestClient syncRequestClient, pl.coderslab.entity.orders.Order order, double marketPrice) {
         String symbol = order.getSymbolName();
         double sumProfit = 0.0;
         double sumCommission = 0.0;
-        Long closeTime = 0l;
+        Long closeTime = 0L;
         try {
             Timestamp timestamp = new Timestamp(System.currentTimeMillis());
             long time = timestamp.getTime();
@@ -270,7 +243,7 @@ public class BinanceServiceImpl extends Common implements BinanceService {
                 commissionList = syncRequestClient.getIncomeHistory(symbol, IncomeType.COMMISSION, diff, null, 50);
             }
             for (Income income : profitList) {
-                closeTime = income.getTime(); //todo pobrac czas z income, ale trzeba przekonwertowac timestamp na time
+                closeTime = income.getTime();
                 sumProfit += income.getIncome().doubleValue();
             }
             for (Income commission : commissionList) {
@@ -278,7 +251,7 @@ public class BinanceServiceImpl extends Common implements BinanceService {
             }
             sumCommission *= 2;
         } catch (Exception e) {
-            logger.error(String.valueOf(e));
+            logger.error(String.format("getBinanceConfirmOrder() %s", e));
         }
         return BinanceConfirmOrder.builder()
                 .symbol(symbol)
@@ -291,11 +264,5 @@ public class BinanceServiceImpl extends Common implements BinanceService {
                 .build();
     }
 
-    @Override
-    public String convertTimestampToDate(Long timestamp) {
-        Date date = new Date(timestamp);
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        return dateFormat.format(date);
-    }
 
 }

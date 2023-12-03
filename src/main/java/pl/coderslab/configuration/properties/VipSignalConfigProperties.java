@@ -4,8 +4,8 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
-@ConfigurationProperties(prefix = "telegram.token.vip")
 @Component
+@ConfigurationProperties(prefix = "telegram.token.vip")
 @Data
 public class VipSignalConfigProperties {
     private String name;

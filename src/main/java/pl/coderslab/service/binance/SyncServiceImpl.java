@@ -3,7 +3,6 @@ package pl.coderslab.service.binance;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import pl.coderslab.binance.client.RequestOptions;
 import pl.coderslab.binance.client.SyncRequestClient;
@@ -31,6 +30,7 @@ public class SyncServiceImpl implements SyncService {
             }
             return SyncRequestClient.create(userSetting.getBinanceKey(), userSetting.getBinanceSecret(), options);
         } catch (Exception e) {
+            logger.info(String.format("Error during connecting to binance %s", e));
             return sync(userSetting);
         }
     }

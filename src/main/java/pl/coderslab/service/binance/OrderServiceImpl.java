@@ -49,8 +49,8 @@ public class OrderServiceImpl implements OrderService {
                 .appOrder(false)
                 .id(0L)
                 .isStrategy(false)
-                .sl("")//todo tutaj moze pobrac zlecenia do danego coina
-                .tp("")//todo
+                .sl("")
+                .tp("")
                 .user(user)
                 .positionSide(PositionSide.valueOf(positionRisk.getPositionSide()))
                 .lot(positionRisk.getPositionAmt().toString())
@@ -78,24 +78,22 @@ public class OrderServiceImpl implements OrderService {
                 .toList();
         fillProfit(orderList, positionRiskList);
         positionRiskList.stream()
-                .filter(s -> !orderList.stream().anyMatch(order -> order.getSymbolName().equals(s.getSymbol())))
-                .forEach(s -> {
-                    orderList.add(Order.builder()
-                            .symbolName(s.getSymbol())
-                            .appOrder(false)
-                            .id(0L)
-                            .isStrategy(false)
-                            .sl("")//todo tutaj moze pobrac zlecenia do danego coina
-                            .tp("")//todo
-                            .user(user)
-                            .positionSide(PositionSide.valueOf(s.getPositionSide()))
-                            .lot(s.getPositionAmt().toString())
-                            .entry(s.getEntryPrice().toString())
-                            .leverage(s.getLeverage().intValue())
-                            .amount(String.valueOf(Math.round(100.0 * s.getEntryPrice().doubleValue() * s.getPositionAmt().doubleValue() / s.getLeverage().doubleValue()) / 100.0))
-                            .profitProcent(s.getUnrealizedProfit().setScale(2, RoundingMode.HALF_UP).doubleValue())
-                            .build());
-                });
+                .filter(s -> orderList.stream().noneMatch(order -> order.getSymbolName().equals(s.getSymbol())))
+                .forEach(s -> orderList.add(Order.builder()
+                        .symbolName(s.getSymbol())
+                        .appOrder(false)
+                        .id(0L)
+                        .isStrategy(false)
+                        .sl("")
+                        .tp("")
+                        .user(user)
+                        .positionSide(PositionSide.valueOf(s.getPositionSide()))
+                        .lot(s.getPositionAmt().toString())
+                        .entry(s.getEntryPrice().toString())
+                        .leverage(s.getLeverage().intValue())
+                        .amount(String.valueOf(Math.round(100.0 * s.getEntryPrice().doubleValue() * s.getPositionAmt().doubleValue() / s.getLeverage().doubleValue()) / 100.0))
+                        .profitProcent(s.getUnrealizedProfit().setScale(2, RoundingMode.HALF_UP).doubleValue())
+                        .build()));
         return orderList;
     }
 
@@ -201,10 +199,5 @@ public class OrderServiceImpl implements OrderService {
     private BigDecimal getProfitPercent(String entry, String close, int lev) {
         double percent = ((Math.abs(Double.parseDouble(entry) - Double.parseDouble(close)) / Double.parseDouble(entry)) * 100.0) * lev;
         return BigDecimal.valueOf(percent).setScale(2, RoundingMode.HALF_UP);
-    }
-
-    private BigDecimal getAmount(int lev, String entry, String lot) {
-        double amount = (Double.parseDouble(entry) * Double.parseDouble(lot)) / lev;
-        return BigDecimal.valueOf(amount).setScale(2, RoundingMode.HALF_UP);
     }
 }

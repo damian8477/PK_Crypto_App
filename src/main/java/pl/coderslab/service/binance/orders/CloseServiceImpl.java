@@ -26,11 +26,12 @@ import static java.util.Objects.isNull;
 @RequiredArgsConstructor
 public class CloseServiceImpl implements CloseService {
     private final SyncService syncService;
-    private final BinanceBasicService binanceUserService;
+    private final BinanceBasicService binanceSupport;
     private final BinanceService binanceService;
     private final OrderRepository orderRepository;
     private final OrderService orderService;
     private final TelegramBotService telegramBotService;
+    private final MessageService messageService;
     private static final Logger logger = LoggerFactory.getLogger(CloseServiceImpl.class);
 
     @Override
@@ -57,7 +58,6 @@ public class CloseServiceImpl implements CloseService {
         if (!isNull(position)) {
             if (position.getPositionAmt().doubleValue() != 0.0) {
                 killSymbol(syncRequestClient, position, lot);
-                //todo logger
                 if (order.isAppOrder()) {
                     orderRepository.deleteById(order.getId());
                     BinanceConfirmOrder binanceConfirmOrder = binanceService.getBinanceConfirmOrder(syncRequestClient, order, marketPrice);
@@ -66,7 +66,8 @@ public class CloseServiceImpl implements CloseService {
                         win = true;
                     }
                     orderService.saveHistoryOrderToDB(user, order, binanceConfirmOrder, false, win);
-                    telegramBotService.sendMessage(user.getUserSetting().get(0).getTelegramChatId(), String.format("%s Zlecenie zamknięto w aplikacji! \n%s %s $%s %s $%s", Emoticon.CLOSE.getLabel(), order.getSymbolName(), order.getPositionSide(), position.getMarkPrice(), Emoticon.getWinLoss(binanceConfirmOrder.getRealizedPln()), binanceConfirmOrder.getRealizedPln()));
+                    telegramBotService.sendMessage(user.getUserSetting().get(0).getTelegramChatId(), String.format(messageService.getOrderCloseOwn(null), Emoticon.CLOSE.getLabel(), order.getSymbolName(), order.getPositionSide(), position.getMarkPrice(), Emoticon.getWinLoss(binanceConfirmOrder.getRealizedPln()), binanceConfirmOrder.getRealizedPln()));
+                    logger.info(String.format(messageService.getOrderCloseOwn(null), Emoticon.CLOSE.getLabel(), order.getSymbolName(), order.getPositionSide(), position.getMarkPrice(), Emoticon.getWinLoss(binanceConfirmOrder.getRealizedPln()), binanceConfirmOrder.getRealizedPln()));
                 }
                 return true;
             }
@@ -81,7 +82,7 @@ public class CloseServiceImpl implements CloseService {
                 lot = lotSize;
         }
         PositionSide positionSide = PositionSide.valueOf(position.getPositionSide());
-        OrderSide orderSide = binanceUserService.getOrderSideForClose(positionSide);
+        OrderSide orderSide = binanceSupport.getOrderSideForClose(positionSide);
         try {
             if (!binanceService.sendOrderToBinance(syncRequestClient, position.getSymbol(), orderSide, lot, position.getMarkPrice().toString(), positionSide, OrderType.MARKET, null)) {
                 if (!binanceService.sendOrderToBinance(syncRequestClient, position.getSymbol(), orderSide, lot, position.getMarkPrice().toString(), positionSide, OrderType.MARKET, null)) {
@@ -89,9 +90,9 @@ public class CloseServiceImpl implements CloseService {
                             lot, null, lot, null, null, null, NewOrderRespType.ACK);
                 }
             }
-            binanceService.cancelAllOpenOrders(syncRequestClient, position.getSymbol(), orderSide.toString());
+            binanceSupport.cancelOpenOrder(syncRequestClient, position.getSymbol(), orderSide);
         } catch (Exception e) {
-
+            logger.error(String.format("Error during kill order %s", e));
         }
     }
 }
