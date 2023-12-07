@@ -32,7 +32,7 @@ import static java.util.Objects.isNull;
 
 @Service
 @RequiredArgsConstructor
-public class BinanceServiceImpl extends Common implements BinanceService {
+public class BinanceServiceImpl implements BinanceService, Common {
 
     private final SyncService syncService;
     private final SymbolRepository symbolRepository;

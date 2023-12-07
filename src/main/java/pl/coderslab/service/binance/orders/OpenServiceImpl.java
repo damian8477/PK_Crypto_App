@@ -28,7 +28,7 @@ import static java.util.Objects.isNull;
 
 @Service
 @RequiredArgsConstructor
-public class OpenServiceImpl extends Common implements OpenService {
+public class OpenServiceImpl implements OpenService, Common {
     private final SourceService sourceService;
     private final BinanceBasicService binanceBasicService;
     private final BinanceService binanceService;

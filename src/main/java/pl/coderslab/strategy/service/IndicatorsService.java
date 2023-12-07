@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 
 @Service
-public class IndicatorsService extends Common {
+public class IndicatorsService implements Common {
     private final SyncRequestClient syncRequestClient;
 
     public IndicatorsService(SyncService syncService) {

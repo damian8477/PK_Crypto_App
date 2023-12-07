@@ -23,7 +23,7 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
-public class BotService extends Common {
+public class BotService implements Common {
     private final BinanceBasicService binanceBasicService;
     private final IndicatorsService indicatorsService;
     private final OrderService orderService;
