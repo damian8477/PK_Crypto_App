@@ -21,9 +21,9 @@ import java.util.*;
 import static java.lang.Double.parseDouble;
 import static java.util.Objects.isNull;
 
-public abstract class Common {
+public interface Common {
 
-    public List<String> getLotsTp(int size, double minQty, double lot, int lever, double marketPrice) {
+    default List<String> getLotsTp(int size, double minQty, double lot, int lever, double marketPrice) {
         int[] partList = new int[]{15, 10, 5};
         int sum = Arrays.stream(partList).sum();
         int partLastAdd = partList[0];
@@ -42,8 +42,7 @@ public abstract class Common {
         Collections.reverse(lots);
         return lots;
     }
-
-    public double getAmountValue(String symbol, SyncRequestClient syncRequestClient, Strategy strategy) {
+    default double getAmountValue(String symbol, SyncRequestClient syncRequestClient, Strategy strategy) {
         double balance = getUserBalanceDouble(syncRequestClient, symbol);
         if (strategy.getPercentOfMoney() > 0 && strategy.isPercentMoney()) {
             return (strategy.getPercentOfMoney() / 100.0) * balance;
@@ -51,8 +50,7 @@ public abstract class Common {
             return strategy.getPercentOfMoney();
         }
     }
-
-    public double getUserBalanceDouble(SyncRequestClient syncRequestClient, String cryptoName) {
+    default double getUserBalanceDouble(SyncRequestClient syncRequestClient, String cryptoName) {
         String curr = getCurrency(cryptoName);
         List<AccountBalance> balanceUserList = syncRequestClient.getBalance();
         List<BigDecimal> balanceList = balanceUserList.stream()
@@ -61,7 +59,7 @@ public abstract class Common {
         return Math.round(balanceList.get(0).doubleValue() * 100.0) / 100.0;
     }
 
-    public MarginLot calculateLotSizeQuantityMargin(String symbol, double amountInUSDT, int leverage, SyncRequestClient syncRequestClient, double marketPrice, ExchangeInfoEntry exchangeInfoEntry) {
+    default MarginLot calculateLotSizeQuantityMargin(String symbol, double amountInUSDT, int leverage, SyncRequestClient syncRequestClient, double marketPrice, ExchangeInfoEntry exchangeInfoEntry) {
         try {
             double minLotSize = calculateMinimumLotSize(symbol, syncRequestClient, exchangeInfoEntry);
             double margin = amountInUSDT * leverage;
@@ -72,11 +70,11 @@ public abstract class Common {
         }
     }
 
-    public Double getMinQty(String symbol, SyncRequestClient syncRequestClient, ExchangeInfoEntry exchangeInfoEntry) {
+    default Double getMinQty(String symbol, SyncRequestClient syncRequestClient, ExchangeInfoEntry exchangeInfoEntry) {
         return calculateMinimumLotSize(symbol, syncRequestClient, exchangeInfoEntry);
     }
 
-    public int getLengthPrice(SyncRequestClient syncRequestClient, String cryptoName) {
+    default int getLengthPrice(SyncRequestClient syncRequestClient, String cryptoName) {
         List<Candlestick> candlestickList = syncRequestClient.getCandlestick(cryptoName, CandlestickInterval.FIVE_MINUTES, null, null, 2);
         int lengthEnter = candlestickList.get(0).getClose().toString().length();
         if (candlestickList.get(0).getOpen().toString().length() > lengthEnter)
@@ -88,7 +86,7 @@ public abstract class Common {
         return lengthEnter;
     }
 
-    public String aroundValueCryptoName(SyncRequestClient syncRequestClient, String cryptoName, String div, Integer length) {
+    default String aroundValueCryptoName(SyncRequestClient syncRequestClient, String cryptoName, String div, Integer length) {
         if (isNull(length)) {
             length = getLengthPrice(syncRequestClient, cryptoName);
         }
@@ -99,7 +97,7 @@ public abstract class Common {
     }
 
 
-    public double calculateMinimumLotSize(String symbol, SyncRequestClient syncRequestClient, ExchangeInfoEntry exchangeInfoEntry) {
+    default double calculateMinimumLotSize(String symbol, SyncRequestClient syncRequestClient, ExchangeInfoEntry exchangeInfoEntry) {
         Optional<Map.Entry<String, String>> minQty;
         if (isNull(exchangeInfoEntry)) {
             ExchangeInformation exchangeInformation = syncRequestClient.getExchangeInformation();
@@ -131,7 +129,7 @@ public abstract class Common {
         return 0.0;
     }
 
-    public double calculateLot(double lotSize, double minLotSize) {
+    default double calculateLot(double lotSize, double minLotSize) {
         return Math.round(Math.abs(lotSize) * minLotSize) / minLotSize;
     }
 
@@ -144,7 +142,7 @@ public abstract class Common {
         return "USDT";
     }
 
-    public int setLeverageF(SyncRequestClient syncRequestClient, int leverage, String cryptoName) {
+    default int setLeverageF(SyncRequestClient syncRequestClient, int leverage, String cryptoName) {
         try {
             syncRequestClient.changeInitialLeverage(cryptoName, leverage);
             return leverage;
@@ -156,7 +154,7 @@ public abstract class Common {
         return leverage;
     }
 
-    public int getLeverageSource(List<Integer> leverages) {
+    default int getLeverageSource(List<Integer> leverages) {
         int minNonZeroLeverage = Integer.MAX_VALUE;
 
         for (int leverage : leverages) {
@@ -167,19 +165,18 @@ public abstract class Common {
         return minNonZeroLeverage;
     }
 
-    public void setMarginType(SyncRequestClient syncRequestClient, MarginType marginType, String cryptoName) {
+    default void setMarginType(SyncRequestClient syncRequestClient, MarginType marginType, String cryptoName) {
         try {
             syncRequestClient.changeMarginType(cryptoName, marginType.toString());
         } catch (Exception ignored) {
         }
     }
 
-
-    public String getStringFormat(String str, Object... objects) {
+    default String getStringFormat(String str, Object... objects) {
         return String.format(str, objects);
     }
 
-    public double aroundValue(String enterPrice, double div) {
+    default double aroundValue(String enterPrice, double div) {
         String[] result = enterPrice.split("\\.");
         String part2 = result[1];
         double precision;
@@ -198,7 +195,7 @@ public abstract class Common {
         return div;
     }
 
-    public String aroundValueS(String cryptoName, String div) {
+    default String aroundValueS(String cryptoName, String div) {
         int lengthEnter = cryptoName.length();
         if (String.valueOf(div).length() > lengthEnter) {
             return String.valueOf(div).substring(0, lengthEnter);
@@ -206,7 +203,7 @@ public abstract class Common {
         return div;
     }
 
-    public String getTimeStamp() {
+    default String getTimeStamp() {
         LocalDateTime localNow = LocalDateTime.now();
         ZonedDateTime zonedUTC = localNow.atZone(ZoneId.of("UTC"));
         ZonedDateTime zonedIST = zonedUTC.withZoneSameInstant(ZoneId.of("Europe/Warsaw"));
@@ -215,7 +212,7 @@ public abstract class Common {
         return zonedIST.format(formatter);
     }
 
-    public String convertTimestampToDate(Long timestamp) {
+    default String convertTimestampToDate(Long timestamp) {
         Date date = new Date(timestamp);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return dateFormat.format(date);
