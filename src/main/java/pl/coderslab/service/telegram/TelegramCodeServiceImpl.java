@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import pl.coderslab.entity.user.TelegramCode;
 import pl.coderslab.entity.user.User;
 import pl.coderslab.entity.user.UserSetting;
+import pl.coderslab.interfaces.MessageService;
 import pl.coderslab.interfaces.TelegramCodeService;
 import pl.coderslab.repository.TelegramCodeRepository;
 import pl.coderslab.repository.UserSettingRepository;
@@ -22,6 +23,8 @@ import java.util.Random;
 public class TelegramCodeServiceImpl implements TelegramCodeService {
     private final UserSettingRepository userSettingRepository;
     private final TelegramCodeRepository telegramCodeRepository;
+    private final MessageService messageService;
+
 
     private static final Logger logger = LoggerFactory.getLogger(TelegramCodeServiceImpl.class);
 
@@ -44,7 +47,7 @@ public class TelegramCodeServiceImpl implements TelegramCodeService {
                 userSetting.setTelegramChatId(chatId);
                 userSettingRepository.save(userSetting);
                 telegramCodeRepository.deleteById(telegramCode.getId());
-                return String.format("Witaj %s, od dziś będziesz otrzymywać alerty oraz powiadomienia.", user.getFirstName());
+                return String.format(messageService.getTelegramUserAuthConfirm(null), user.getFirstName());
             } else {
                 telegramCode.setTryCount(telegramCode.getTryCount() + 1);
                 if (telegramCode.getTryCount() > 3) {
@@ -54,7 +57,7 @@ public class TelegramCodeServiceImpl implements TelegramCodeService {
                 }
             }
         }
-        return "Użytkownik o podanym loginie nie istnieje lub nie oczekuje na autoryzacje telegrama\nPo 3 próbach, klucz zostanie usunięty";
+        return messageService.getTelegramUserAuthError(null);
     }
 
     /**
@@ -91,12 +94,10 @@ public class TelegramCodeServiceImpl implements TelegramCodeService {
     private String generateRandomCode(int length) {
         Random random = new Random();
         StringBuilder code = new StringBuilder();
-
         for (int i = 0; i < length; i++) {
             int digit = random.nextInt(10);
             code.append(digit);
         }
-
         return code.toString();
     }
 }

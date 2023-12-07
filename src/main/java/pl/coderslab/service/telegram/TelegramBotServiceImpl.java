@@ -63,6 +63,5 @@ public class TelegramBotServiceImpl extends TelegramLongPollingBot implements Te
         } catch (TelegramApiException e) {
             logger.error(e.toString());
         }
-
     }
 }

@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pl.coderslab.entity.user.User;
 import pl.coderslab.entity.user.UserSetting;
+import pl.coderslab.interfaces.MessageService;
 import pl.coderslab.interfaces.TelegramCodeService;
 import pl.coderslab.interfaces.UserService;
 import pl.coderslab.repository.UserRepository;
@@ -21,6 +22,7 @@ public class RequestTelegramService {
     private final UserService userService;
     private final TelegramCodeService telegramCodeService;
     private final UserRepository userRepository;
+    private final MessageService messageService;
 
     private static final Logger logger = LoggerFactory.getLogger(RequestTelegramService.class);
 
@@ -30,10 +32,9 @@ public class RequestTelegramService {
             if (mess.equals("/logout")) {
                 userSetting.setTelegramChatId("");
                 userSettingRepository.save(userSetting);
-                return "Wylogowano";
+                return messageService.getTelegramUserLogout(null);
             }
-            // todo tutaj moze jakies menu z czyms tam zrobic , może z otwieraniem zlecen z palca, z tp i sl itd
-            return "Oczekuj na powiadomienia, menu użytkownika, będzie nie długo dostępne.";
+            return messageService.getTelegramUserWait(null);
         } else {
             String[] split = mess.split(" ");
             if (split.length == 2) {
@@ -43,9 +44,9 @@ public class RequestTelegramService {
                     User user = userService.getUserWithUserSettingsByUserName(username);
                     return telegramCodeService.checkCode(user, code, chatId);
                 }
-                return "Podane dane są błędne, spróbuj ponownie";
+                return messageService.getTelegramUserError(null);
             }
-            return "Użytkownik nie autoryzowany, podaj login i klucz\nnp. \"arek121 333333\"";
+            return messageService.getTelegramUserNotAuthorized(null);
         }
     }
 }
