@@ -176,7 +176,7 @@ public class BinanceServiceImpl implements BinanceService, Common {
                     .filter(s -> s.getSymbol().equals(cryptoName))
                     .findFirst().orElse(null);
             String stopLossStr = aroundValueCryptoName(null, null, String.valueOf(stopLoss), lengthPrice);
-            if (!isNull(positionRisk)) {
+//            if (!isNull(positionRisk)) {
                 String lot = OrderType.MARKET.equals(orderType) ? positionRisk.getPositionAmt().toString().replace("-", "") : orderLot;
                 List<String> lotsTp = getLotsTp(takeProfit.size(), minQty, Double.parseDouble(lot), lever, marketPrice);
                 if (orderType.equals(OrderType.MARKET)) {
@@ -187,7 +187,7 @@ public class BinanceServiceImpl implements BinanceService, Common {
                     String takeProfitLot = aroundValueCryptoName(null, null, takeProfit.get(i).toString(), lengthPrice);
                     syncRequestClient.postOrder(cryptoName, orderCloseSide, positionSide, OrderType.TAKE_PROFIT_MARKET, TimeInForce.GTC,
                             lotsTp.get(i), null, null, null, takeProfitLot, null, NewOrderRespType.ACK);
-                }
+//                }
                 return true;
             }
         } catch (Exception e) {

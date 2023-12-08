@@ -24,7 +24,7 @@ import static java.util.Objects.isNull;
 public interface Common {
 
     default List<String> getLotsTp(int size, double minQty, double lot, int lever, double marketPrice) {
-        int[] partList = new int[]{15, 10, 5};
+        int[] partList = new int[]{15, 10, 5,1,1};
         int sum = Arrays.stream(partList).sum();
         int partLastAdd = partList[0];
         List<String> lots = new ArrayList<>();
