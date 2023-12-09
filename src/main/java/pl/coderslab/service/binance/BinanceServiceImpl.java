@@ -187,9 +187,9 @@ public class BinanceServiceImpl implements BinanceService, Common {
                     String takeProfitLot = aroundValueCryptoName(null, null, takeProfit.get(i).toString(), lengthPrice);
                     syncRequestClient.postOrder(cryptoName, orderCloseSide, positionSide, OrderType.TAKE_PROFIT_MARKET, TimeInForce.GTC,
                             lotsTp.get(i), null, null, null, takeProfitLot, null, NewOrderRespType.ACK);
-//                }
+                }
                 return true;
-            }
+//            }
         } catch (Exception e) {
             logger.info(String.format("Error during cancel order %s", e));
         }
