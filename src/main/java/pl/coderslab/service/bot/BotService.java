@@ -14,18 +14,15 @@ import pl.coderslab.entity.user.User;
 import pl.coderslab.interfaces.*;
 import pl.coderslab.model.BinanceConfirmOrder;
 import pl.coderslab.model.CommonSignal;
-import pl.coderslab.strategy.service.IndicatorsService;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
 public class BotService implements Common {
     private final BinanceBasicService binanceBasicService;
-    private final IndicatorsService indicatorsService;
     private final OrderService orderService;
     private final UserService userService;
     private final SignalService signalService;
