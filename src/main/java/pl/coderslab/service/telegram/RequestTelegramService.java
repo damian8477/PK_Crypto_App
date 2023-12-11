@@ -24,8 +24,6 @@ public class RequestTelegramService {
     private final UserRepository userRepository;
     private final MessageService messageService;
 
-    private static final Logger logger = LoggerFactory.getLogger(RequestTelegramService.class);
-
     public String newMessage(String chatId, String mess) {
         UserSetting userSetting = userSettingRepository.findByTelegramChatId(chatId);
         if (!isNull(userSetting)) {
