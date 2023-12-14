@@ -32,7 +32,7 @@ public class Strategy110Service extends BotService {
 
 
     public Strategy110Service(BinanceBasicService binanceBasicService, IndicatorsService indicatorsService, OrderService orderService, UserService userService, RsiStrategyRepository rsiStrategyRepository, IndicatorsService indicatorsService1, BotService botService, SourceService sourceService, BinanceBasicService binanceBasicService1, OrderService orderService1, SignalService signalService, OpenService openService) {
-        super(binanceBasicService, indicatorsService, orderService, userService, signalService, openService);
+        super(binanceBasicService, orderService, userService, signalService, openService);
         this.rsiStrategyRepository = rsiStrategyRepository;
         this.indicatorsService = indicatorsService1;
         this.botService = botService;

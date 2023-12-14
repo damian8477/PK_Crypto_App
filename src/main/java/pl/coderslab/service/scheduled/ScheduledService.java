@@ -12,6 +12,7 @@ import pl.coderslab.interfaces.CheckUserOrderService;
 import pl.coderslab.interfaces.UserService;
 import pl.coderslab.repository.TelegramCodeRepository;
 import pl.coderslab.repository.UserTokenRepository;
+import pl.coderslab.strategy.indicators.cci.CCIStrategy;
 import pl.coderslab.strategy.service.Strategy110Service;
 
 import java.time.LocalDateTime;
@@ -26,6 +27,7 @@ public class ScheduledService {
     private final UserService userService;
     private final UserTokenRepository userTokenRepository;
     private final Strategy110Service strategy110Service;
+    private final CCIStrategy cciStrategy;
     private static final Logger logger = LoggerFactory.getLogger(ScheduledService.class);
     private static int count = 1;
 
@@ -55,6 +57,7 @@ public class ScheduledService {
         }
         if (count % 5 == 0 || count == 0)
             alertService.checkAlerts();
+            cciStrategy.searchCCI();
         count++;
         if (count > 360) {
             count = 1;
