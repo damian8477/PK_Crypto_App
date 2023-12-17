@@ -29,7 +29,7 @@ public class ScheduledService {
     private final Strategy110Service strategy110Service;
     private final CCIStrategy cciStrategy;
     private static final Logger logger = LoggerFactory.getLogger(ScheduledService.class);
-    private static int count = 1;
+    private int count = 1;
 
     //todo  czasy kiedy co ma być sprawdzane można trzymać w bazie
     //todo pobranie tych czasów np. raz na godzine lub wymuszenie z telegrama
@@ -43,6 +43,7 @@ public class ScheduledService {
         if (count == 1) {
             strategy110Service.downloadCryptoNameList();
             strategy110Service.checkCoinInStrategy();
+            cciStrategy.searchCCI();
         }
         if (count % 1 == 0) {
             checkUserOrderService.checkInActiveOrder(users);
@@ -52,12 +53,14 @@ public class ScheduledService {
             checkTokensExpirationTime();
         }
         if (count % 4 == 0) {
-//            checkBotOrder();//todo co 3 minuty, trzeba sprawdzać świeczki 3 lub 5 minutowe
             strategy110Service.searchNewOrder(null);
         }
-        if (count % 5 == 0 || count == 0)
+        if (count % 5 == 0){
             alertService.checkAlerts();
+        }
+        if (count % 20 == 0){
             cciStrategy.searchCCI();
+        }
         count++;
         if (count > 360) {
             count = 1;
