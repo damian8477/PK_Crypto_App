@@ -64,19 +64,19 @@ public class CCIStrategy {
         BarSeriesManager seriesManager = new BarSeriesManager(series);
         TradingRecord tradingRecord = seriesManager.run(strategy);
         ZonedDateTime time = !isNull(tradingRecord.getCurrentPosition().getEntry()) ? series.getBar(tradingRecord.getCurrentPosition().getEntry().getIndex()).getEndTime() : null;
-        String info = String.format("%n%nSymbol: %s co: %s %n curPos: %s %s%n LastTrade: %s%n LastEntry: %s%n LastExit: %s%n LastPos: %s%n Positions: %s", cryptoName,
-        tradingRecord.getPositionCount(),
-        tradingRecord.getCurrentPosition(),
-        time,
-        tradingRecord.getLastTrade(),
-        tradingRecord.getLastEntry(),
-        tradingRecord.getLastExit(),
-        tradingRecord.getLastPosition(),
-        tradingRecord.getPositions());
-        logger.info(info);
+//        String info = String.format("%n%nSymbol: %s co: %s %n curPos: %s %s%n LastTrade: %s%n LastEntry: %s%n LastExit: %s%n LastPos: %s%n Positions: %s", cryptoName,
+//        tradingRecord.getPositionCount(),
+//        tradingRecord.getCurrentPosition(),
+//        time,
+//        tradingRecord.getLastTrade(),
+//        tradingRecord.getLastEntry(),
+//        tradingRecord.getLastExit(),
+//        tradingRecord.getLastPosition(),
+//        tradingRecord.getPositions());
+        //logger.info(info);
         tradingRecord.getPositions().forEach(position->{
             checkPosition(position, list);
-            logger.info(position.toString());
+            //logger.info(position.toString());
         });
         if(tradingRecord.getCurrentPosition().getEntry() != null){
             currentPosition.put(cryptoName, tradingRecord.getCurrentPosition());
@@ -136,29 +136,27 @@ public class CCIStrategy {
         if(active){
             countActive++;
         }
-//        System.out.println("Price " + candlestickList.get(candlestickList.size()-1).getClose());
-//        System.out.println("Percent " + percents);
-//        System.out.println("TP " + countTP);
-//        System.out.println("SL " + countSL);
-//        System.out.println("cWin " + countWin);
-//        System.out.println("cLoss " + countLoss);
-//        System.out.println("cAct " + countActive);
+//        logger.info("Price " + candlestickList.get(candlestickList.size()-1).getClose());
+//        logger.info("Percent " + percents);
+//        logger.info("TP " + countTP);
+//        logger.info("SL " + countSL);
+//        logger.info("cWin " + countWin);
+//        logger.info("cLoss " + countLoss);
+//        logger.info("cAct " + countActive);
     }
 
     private void checkCurrentPosition(){
         List<CCIOrder> activeOrders = cciOrderRepository.findAllByActive(true);
-        System.out.println("Current positions");
         currentPosition.forEach((symbol, position) -> {
-            System.out.println(symbol + position);
             if(activeOrders.stream().noneMatch(s -> s.getSymbol().equals(symbol))){
                 CCIOrder cciOrder = CCIOrder.builder()
                         .symbol(symbol)
                         .openTime(LocalDateTime.ofInstant(Instant.ofEpochMilli(list.get(position.getEntry().getIndex()).getCloseTime()), ZoneId.systemDefault()))
-                        .openPrice(BigDecimal.valueOf(position.getEntry().getNetPrice().doubleValue()))
+                        .openPrice(position.getEntry().getNetPrice().doubleValue())
+                        .active(true)
                         .build();
                 cciOrderRepository.save(cciOrder);
             }
         });
-
     }
 }

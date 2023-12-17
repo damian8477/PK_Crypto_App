@@ -14,6 +14,7 @@ import pl.coderslab.repository.TelegramCodeRepository;
 import pl.coderslab.repository.UserTokenRepository;
 import pl.coderslab.strategy.indicators.cci.CCIStrategy;
 import pl.coderslab.strategy.service.Strategy110Service;
+import pl.coderslab.strategy.service.Strategy111Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -27,6 +28,7 @@ public class ScheduledService {
     private final UserService userService;
     private final UserTokenRepository userTokenRepository;
     private final Strategy110Service strategy110Service;
+    private final Strategy111Service strategy111Service;
     private final CCIStrategy cciStrategy;
     private static final Logger logger = LoggerFactory.getLogger(ScheduledService.class);
     private int count = 1;
@@ -44,10 +46,12 @@ public class ScheduledService {
             strategy110Service.downloadCryptoNameList();
             strategy110Service.checkCoinInStrategy();
             cciStrategy.searchCCI();
+            strategy111Service.searchNewOrder(null);
         }
         if (count % 1 == 0) {
             checkUserOrderService.checkInActiveOrder(users);
             strategy110Service.checkOrderStatusBot(null);
+            strategy111Service.checkOrderStatusBot(null);
         }
         if (count % 2 == 0) {
             checkTokensExpirationTime();
@@ -58,8 +62,9 @@ public class ScheduledService {
         if (count % 5 == 0){
             alertService.checkAlerts();
         }
-        if (count % 20 == 0){
+        if (count % 15 == 0){
             cciStrategy.searchCCI();
+            strategy111Service.searchNewOrder(null);
         }
         count++;
         if (count > 360) {

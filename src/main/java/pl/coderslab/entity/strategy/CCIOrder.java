@@ -17,13 +17,15 @@ public class CCIOrder {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String symbol;
-    private boolean active;
+    private boolean active = true;
+    private boolean open;
+    private boolean win;
     @Column(name = "open_time")
     private LocalDateTime openTime;
     @Column(name = "open_price")
-    private BigDecimal openPrice;
+    private double openPrice;
     @Column(name = "close_time")
     private LocalDateTime closeTime;
     @Column(name = "close_price")
-    private BigDecimal closePrice;
+    private double closePrice;
 }
