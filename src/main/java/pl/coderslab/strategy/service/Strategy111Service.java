@@ -45,16 +45,19 @@ public class Strategy111Service extends BotService {
     }
 
     public void searchNewOrder(List<Order> orders) {
-        activeOrders = cciOrderRepository.findAllByActive(true);
-        List<CCIOrder> cciOrders = activeOrders.stream().filter(s->!s.isOpen()).toList();
+//        activeOrders = cciOrderRepository.findAllByActive(true);
+        activeOrders = cciOrderRepository.findAll();
+        List<CCIOrder> cciOrders = activeOrders.stream().filter(s->!s.isOpen() && s.isActive()).toList();
         if (isNull(orders)) {
             orders = orderService.findByUserId(1000L);
         }
         List<Order> finalOrders = orders;
         cciOrders.forEach(order -> {
-            openOrder(order, finalOrders);
-            order.setOpen(true);
-            cciOrderRepository.save(order);
+           //if(activeOrders.stream().filter(s->s.getSymbol().equals(order.getSymbol())).filter(s->s.getOpenTime().equals(order.getOpenTime())).toList().isEmpty()){
+                openOrder(order, finalOrders);
+                order.setOpen(true);
+                cciOrderRepository.save(order);
+            //}
         });
     }
 
@@ -116,6 +119,7 @@ public class Strategy111Service extends BotService {
         if(!isNull(cciOrder)){
             cciOrder.setActive(false);
             cciOrder.setOpen(false);
+            cciOrder.setWin(Double.parseDouble(order.getEntry()) > marketPrice);
             cciOrder.setClosePrice(marketPrice);
             cciOrder.setCloseTime(LocalDateTime.now());
             cciOrderRepository.save(cciOrder);

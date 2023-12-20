@@ -148,7 +148,8 @@ public class CCIStrategy {
     private void checkCurrentPosition(){
         List<CCIOrder> activeOrders = cciOrderRepository.findAllByActive(true);
         currentPosition.forEach((symbol, position) -> {
-            if(activeOrders.stream().noneMatch(s -> s.getSymbol().equals(symbol))){
+            boolean newOrder = cciOrderRepository.findAllByOpenTime(LocalDateTime.ofInstant(Instant.ofEpochMilli(list.get(position.getEntry().getIndex()).getCloseTime()), ZoneId.systemDefault())).stream().filter(s->s.getSymbol().equals(symbol)).toList().isEmpty();
+            if(activeOrders.stream().noneMatch(s -> s.getSymbol().equals(symbol)) && newOrder){
                 CCIOrder cciOrder = CCIOrder.builder()
                         .symbol(symbol)
                         .openTime(LocalDateTime.ofInstant(Instant.ofEpochMilli(list.get(position.getEntry().getIndex()).getCloseTime()), ZoneId.systemDefault()))
