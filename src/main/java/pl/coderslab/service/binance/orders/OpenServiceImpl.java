@@ -67,13 +67,13 @@ public class OpenServiceImpl implements OpenService, Common {
         }
     }
 
-    private void openSignal(CommonSignal signal, SyncRequestClient sync, ExchangeInfoEntry exchangeInfoEntry, User user, double marketPrice, Source source, Strategy strategy) {
+    void openSignal(CommonSignal signal, SyncRequestClient sync, ExchangeInfoEntry exchangeInfoEntry, User user, double marketPrice, Source source, Strategy strategy) {
         try {
             boolean okOrder = newOrderForUserSlidingHedge(signal, sync, marketPrice, source, strategy, exchangeInfoEntry, user);
             if (okOrder)
-                logger.info(getStringFormat("%s %s %s %s order", user.getUsername(), getTimeStamp(), signal.getSymbol(),source.getName()));
+                logger.info(getStringFormat("%s %s %s %s %s order", source.getName(), user.getUsername(), getTimeStamp(), signal.getSymbol(),source.getName()));
         } catch (Exception e) {
-            logger.error(getStringFormat("%s %s %s %s order %s", user.getUsername(), getTimeStamp(), signal.getSymbol(), source.getName(), e.getMessage()));
+            logger.error(getStringFormat("%s %s %s %s %s order %s", source.getName(), user.getUsername(), getTimeStamp(), signal.getSymbol(), source.getName(), e.getMessage()));
         }
     }
 
@@ -97,7 +97,7 @@ public class OpenServiceImpl implements OpenService, Common {
             binanceService.sendSlAndTpToAccountMultipleTp(sync, signal.getSymbol(), positionSide, signal.getStopLoss().get(0).toString(),
                     signal.getTakeProfit(), minQty, lever, marketPrice, signal.getOrderType(), lengthPrice, marginLot.getLot());
             orderService.save(user, signal, String.valueOf(marketPrice), marginLot.getLot(), "", "", lever, strategy, isOpen, source, true);
-            telegramBotService.sendMessage(user.getUserSetting().get(0).getTelegramChatId(), String.format(messageService.getOrderOpenSignal(null), Emoticon.OPEN.getLabel(), signal.getSymbol(), Emoticon.valueOf(signal.getPositionSide().toString()), marketPrice, signal.getLot()));
+            telegramBotService.sendMessage(user.getUserSetting().get(0).getTelegramChatId(), String.format(messageService.getOrderOpenSignal(null), source.getName(), Emoticon.OPEN.getLabel(), signal.getSymbol(), Emoticon.valueOf(signal.getPositionSide().toString()), marketPrice, signal.getLot()));
             logger.info(String.format("Username: %s\n%s Zlecenie otwarte! \n%s %s $%s LOT: $%s", user.getUsername(), Emoticon.OPEN.getLabel(), signal.getSymbol(), Emoticon.valueOf(signal.getPositionSide().toString()), marketPrice, signal.getLot()));
             return true;
         }

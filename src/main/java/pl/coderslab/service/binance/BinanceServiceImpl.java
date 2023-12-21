@@ -125,7 +125,7 @@ public class BinanceServiceImpl implements BinanceService, Common {
     public boolean sendSlAndTpToAccount(SyncRequestClient syncRequestClient, String cryptoName, OrderSide orderSide, PositionSide positionSide, String stopLoss, String takeProfit) {
         try {
             OrderSide orderCloseSide = OrderSide.BUY;
-            if (orderSide.equals(OrderSide.BUY)) orderCloseSide = OrderSide.SELL;
+            if (positionSide.equals(PositionSide.LONG)) orderCloseSide = OrderSide.SELL;
             binanceSupport.cancelOpenOrder(syncRequestClient, cryptoName, orderCloseSide);
             PositionRisk positionRisk = syncRequestClient.getPositionRisk().stream()
                     .filter(s -> s.getPositionAmt().doubleValue() != 0)

@@ -1,6 +1,10 @@
 package pl.coderslab.binance.client.model.market;
 
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import pl.coderslab.binance.client.constant.BinanceApiConstants;
 
@@ -8,6 +12,10 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
+
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ExchangeInfoEntry {
 
     private String symbol;
