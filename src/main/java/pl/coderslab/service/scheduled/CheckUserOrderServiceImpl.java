@@ -55,7 +55,7 @@ public class CheckUserOrderServiceImpl implements CheckUserOrderService {
                             .findFirst().orElse(null);
                     double marketPrice = position.getMarkPrice().doubleValue();
                     if (position.getPositionAmt().doubleValue() == 0.0) {
-                        if(!order.isStrategy()){
+                        if (!order.isStrategy()) {
                             closeOrderSignal(syncRequestClient, order, marketPrice, user, "Zlecenie zamknięte samodzielnie! ", Emoticon.OWN_CLOSED.getLabel(), true);
                         } else {
                             closeOrderSignal(syncRequestClient, order, marketPrice, user, "Zlecenie zamknięte! ", Emoticon.CLOSE.getLabel(), false);
@@ -66,15 +66,15 @@ public class CheckUserOrderServiceImpl implements CheckUserOrderService {
                 });
     }
 
-    public void closeOrderSignal(SyncRequestClient syncRequestClient, pl.coderslab.entity.orders.Order order, double marketPrice, User user, String mess, String emoticon, boolean ownClosed){
+    public void closeOrderSignal(SyncRequestClient syncRequestClient, pl.coderslab.entity.orders.Order order, double marketPrice, User user, String mess, String emoticon, boolean ownClosed) {
         cancelAllOpenOrders(syncRequestClient, order.getSymbolName(), order.getPositionSide(), null);
         orderRepository.deleteById(order.getId());
         BinanceConfirmOrder binanceConfirmOrder = binanceService.getBinanceConfirmOrder(syncRequestClient, order, marketPrice);
         binanceConfirmOrder.setEntryPrice(order.getEntry());
         binanceConfirmOrder.setLot(order.getLot());
-        String message = String.format(mess + " %s $%s %s Lot: %s %s", emoticon, order.getSymbolName(), order.getPositionSide(), order.getLot(), binanceConfirmOrder.getRealizedPln() );
+        String message = String.format(mess + " %s $%s %s Lot: %s %s", emoticon, order.getSymbolName(), order.getPositionSide(), order.getLot(), binanceConfirmOrder.getRealizedPln());
         boolean win = false;
-        if(binanceConfirmOrder.getRealizedPln().compareTo(new BigDecimal("0.0")) > 0){
+        if (binanceConfirmOrder.getRealizedPln().compareTo(new BigDecimal("0.0")) > 0) {
             win = true;
         }
         orderService.saveHistoryOrderToDB(user, order, binanceConfirmOrder, ownClosed, win);
