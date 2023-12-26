@@ -1,0 +1,2 @@
+SELECT h.symbol_name, h.close, h.entry, h.win, h.close/h.entry, h.close/h.entry>0  FROM history_orders h join db_crypto.signals s on s.id = h.signal_id join db_crypto.sources s2 on s2.id = s.source_id where s2.id=3 and h.user_id=1000
+SELECT sum(h.close/h.entry-1)  FROM history_orders h join db_crypto.signals s on s.id = h.signal_id join db_crypto.sources s2 on s2.id = s.source_id where s2.id=3 and h.user_id=1000
