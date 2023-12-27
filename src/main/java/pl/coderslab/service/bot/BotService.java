@@ -44,6 +44,9 @@ public class BotService implements Common {
                 double marketPrice = binanceBasicService.getMarketPriceDouble(null, symbol);
                 double stopLoss;
                 double takeProfit;
+                double entryPriceSecond;
+                double entryPriceThird;
+
 
                 if (percentSl > 0.0) stopPercent = percentSl * 0.01;
                 if (percentTp > 0.0) takePercent = (percentTp * 0.01);
@@ -51,8 +54,12 @@ public class BotService implements Common {
                 if (side.equals("LONG")) {
                     stopLoss = aroundValue(candleStick, (1.0 - stopPercent) * marketPrice);
                     takeProfit = aroundValue(candleStick, (1.0 + takePercent) * marketPrice);
+                    entryPriceSecond = aroundValue(candleStick, (0.99 * marketPrice));
+                    entryPriceThird = aroundValue(candleStick, (0.98 * marketPrice));
                 } else {
                     stopLoss = aroundValue(candleStick, (1.0 + stopPercent) * marketPrice);
+                    entryPriceSecond = aroundValue(candleStick, (1.01 * marketPrice));
+                    entryPriceThird = aroundValue(candleStick, (1.02 * marketPrice));
                     takeProfit = aroundValue(candleStick, (1.0 - takePercent) * marketPrice);
                 }
                 if (!tp.equals("0"))
@@ -79,7 +86,7 @@ public class BotService implements Common {
                                     .signal(signal)
                                     .symbol(signal.getSymbol())
                                     .sourceName(signal.getSource().getName())
-                                    .entryPrice(List.of(BigDecimal.valueOf(marketPrice)))
+                                    .entryPrice(List.of(BigDecimal.valueOf(marketPrice), BigDecimal.valueOf(entryPriceSecond), BigDecimal.valueOf(entryPriceThird)))
                                     .takeProfit(List.of(signal.getTakeProfit1()))
                                     .stopLoss(List.of(signal.getStopLoss()))
                             .build());

@@ -94,6 +94,7 @@ public class OpenServiceImpl implements OpenService, Common {
         }
         if (signal.getOrderType().equals(OrderType.MARKET)) isOpen = true;
         if (binanceService.sendOrderToBinance(sync, signal.getSymbol(), orderSide, marginLot.getLot(), String.valueOf(marketPrice), positionSide, signal.getOrderType(), signal.getEntryPrice().get(0).toString())) {
+            sendOtherEntryOrder(isOpen, sync, signal, orderSide, marginLot.getLot(), marketPrice, positionSide);
             binanceService.sendSlAndTpToAccountMultipleTp(sync, signal.getSymbol(), positionSide, signal.getStopLoss().get(0).toString(),
                     signal.getTakeProfit(), minQty, lever, marketPrice, signal.getOrderType(), lengthPrice, marginLot.getLot());
             orderService.save(user, signal, String.valueOf(marketPrice), marginLot.getLot(), "", "", lever, strategy, isOpen, source, true);
@@ -102,5 +103,20 @@ public class OpenServiceImpl implements OpenService, Common {
             return true;
         }
         return false;
+    }
+
+    private void sendOtherEntryOrder(boolean isOpen, SyncRequestClient sync, CommonSignal signal, OrderSide orderSide, String lot, double marketPrice, PositionSide positionSide){
+        try {
+            if(isOpen){
+                if(signal.getEntryPrice().size() > 1){
+                    binanceService.sendOrderToBinance(sync, signal.getSymbol(), orderSide, lot, String.valueOf(marketPrice), positionSide, OrderType.LIMIT, signal.getEntryPrice().get(1).toString());
+                }
+                if(signal.getEntryPrice().size() > 2){
+                    binanceService.sendOrderToBinance(sync, signal.getSymbol(), orderSide, lot, String.valueOf(marketPrice), positionSide, OrderType.LIMIT, signal.getEntryPrice().get(2).toString());
+                }
+            }
+        }catch (Exception e){
+
+        }
     }
 }

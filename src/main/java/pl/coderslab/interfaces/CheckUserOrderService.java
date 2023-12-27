@@ -9,5 +9,5 @@ import java.util.List;
 public interface CheckUserOrderService {
     void checkInActiveOrder(List<User> users);
 
-    void cancelAllOpenOrders(SyncRequestClient syncRequestClient, String symbol, PositionSide positionSide, String type);
+    void cancelAllOpenOrders(SyncRequestClient syncRequestClient, String symbol, PositionSide side, String type, boolean limitOrder);
 }

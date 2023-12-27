@@ -206,6 +206,9 @@ public class BinanceServiceImpl implements BinanceService, Common {
                 if (OrderType.MARKET.equals(orderType)) {
                     syncRequestClient.postOrder(cryptoName, orderSide, positionSide, orderType, null,
                             lot, null, null, cryptoName, null, null, NewOrderRespType.ACK);
+                } else if (OrderType.LIMIT.equals(orderType)) {
+                    syncRequestClient.postOrder(cryptoName, orderSide, positionSide, orderType, TimeInForce.GTC,
+                            lot, entryPrice, null, null, null, null, NewOrderRespType.ACK);
                 } else {
                     syncRequestClient.postOrder(cryptoName, orderSide, positionSide, orderType, TimeInForce.GTC,
                             lot, null, null, null, entryPrice, null, NewOrderRespType.ACK);
