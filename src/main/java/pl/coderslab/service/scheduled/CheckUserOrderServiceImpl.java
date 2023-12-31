@@ -162,13 +162,18 @@ public class CheckUserOrderServiceImpl implements CheckUserOrderService, Common 
                 });
     }
 
-    private String getTp(PositionRisk position, pl.coderslab.entity.orders.Order order){
+    private String getTp(PositionRisk position, pl.coderslab.entity.orders.Order order) {
         double percentTp = getPercentTp(order);
-        return String.valueOf(aroundValue(order.getTp(), (1.0 + percentTp) * position.getMarkPrice().doubleValue()));
+        double newTp = aroundValue(order.getTp(), (1.0 + percentTp) * position.getMarkPrice().doubleValue());
+        if ((newTp < position.getEntryPrice().doubleValue() && position.getPositionSide().equals("LONG")) || newTp > position.getEntryPrice().doubleValue() && position.getPositionSide().equals("SHORT")) {
+            return String.valueOf(aroundValue(order.getTp(), position.getEntryPrice().doubleValue()));
+        } else {
+            return String.valueOf(aroundValue(order.getTp(), (1.0 + percentTp) * position.getMarkPrice().doubleValue()));
+        }
     }
 
-    private double getPercentTp(pl.coderslab.entity.orders.Order order){
-            return Math.abs(1 - Double.parseDouble(order.getTp())/Double.parseDouble(order.getEntry()));
+    private double getPercentTp(pl.coderslab.entity.orders.Order order) {
+        return Math.abs(1 - Double.parseDouble(order.getTp()) / Double.parseDouble(order.getEntry()));
     }
 
 
@@ -179,9 +184,9 @@ public class CheckUserOrderServiceImpl implements CheckUserOrderService, Common 
             List<Order> listOrder = orders.stream()
                     .filter(s -> s.getPositionSide().equals(side.toString()))
                     .toList();
-            if(limitOrder){
+            if (limitOrder) {
                 listOrder = listOrder.stream()
-                        .filter(s->!s.getType().equals("LIMIT"))
+                        .filter(s -> !s.getType().equals("LIMIT"))
                         .toList();
             }
             for (Order order : listOrder) {
