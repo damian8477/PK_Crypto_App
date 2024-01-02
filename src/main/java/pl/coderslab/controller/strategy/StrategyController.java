@@ -44,14 +44,20 @@ public class StrategyController {
     }
 
     @GetMapping("/delete")
-    public String getDeleteStrategy(@RequestParam int strategyId, Model model) {
+    public String getDeleteView(@RequestParam int strategyId, Model model) {
         model.addAttribute("strategyId", strategyId);
         return "/app/strategy/delete";
     }
 
     @PostMapping("/delete")
-    public String deleteStrategy(@RequestParam int strategyId) {
+    public String delete(@RequestParam int strategyId) {
         strategySettingRepository.deleteById(strategyId);
         return "redirect:/app/strategy/list";
+    }
+
+    @GetMapping("/edit")
+    public String getEditView(@RequestParam int strategyId, Model model){
+        model.addAttribute("strategy", strategySettingRepository.findById(strategyId));
+        return "/app/strategy/edit";
     }
 }

@@ -77,6 +77,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User getUserByEmail(String email) {
+        return userRepository.findFirstByEmail(email);
+    }
+
+    @Override
     public void fillUser(User user) {
         if (user != null) {
             Hibernate.initialize(user.getUserSetting());
@@ -84,6 +89,11 @@ public class UserServiceImpl implements UserService {
             Hibernate.initialize(user.getOrders());
             Hibernate.initialize(user.getAlerts());
         }
+    }
+
+    @Override
+    public boolean existByEmail(String email) {
+        return userRepository.existsByEmail(email);
     }
 
 

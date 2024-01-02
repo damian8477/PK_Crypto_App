@@ -18,4 +18,6 @@ public interface MessageService {
     String getTelegramUserError(Locale locale);
 
     String getTelegramUserNotAuthorized(Locale locale);
+
+    String getEmailRemindPasswordSubject(Locale locale);
 }

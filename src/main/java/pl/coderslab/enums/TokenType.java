@@ -2,6 +2,7 @@ package pl.coderslab.enums;
 
 public enum TokenType {
     PASSWORD("password"),
+    PASSWORD_REMIND("password_remind"),
     EMAIL("email");
 
     private final String label;

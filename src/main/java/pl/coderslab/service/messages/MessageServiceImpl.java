@@ -44,4 +44,9 @@ public class MessageServiceImpl implements MessageService {
     public String getTelegramUserNotAuthorized(Locale locale){
         return messageSource.getMessage("telegram.user.not.authorized", null, locale);
     }
+
+    @Override
+    public String getEmailRemindPasswordSubject(Locale locale){
+        return messageSource.getMessage("email.remind.password.subject", null, locale);
+    }
 }

@@ -13,6 +13,7 @@ import pl.coderslab.repository.UserTokenRepository;
 
 import javax.transaction.Transactional;
 import java.util.Random;
+import java.util.UUID;
 
 import static java.util.Objects.isNull;
 
@@ -43,14 +44,43 @@ public class UserTokenServiceImpl implements UserTokenService {
     }
 
     @Override
+    @Transactional
+    public String generateUserTokenRemindPassword(User user){
+        if(!isNull(user.getEmail())){
+            String token = generateRandomCode();
+            userTokenRepository.deleteAllByUserId(user.getId());
+            userTokenRepository.save(UserToken.builder()
+                    .tokenType(TokenType.PASSWORD_REMIND)
+                    .token(token)
+                    .user(user)
+                    .build());
+            return token;
+        }
+        return null;
+    }
+
+    @Override
     public boolean checkUserToken(User user, String token) {
         UserToken userToken = userTokenRepository.findByUserId(user.getId());
         if (userToken.getTokenType().equals(TokenType.PASSWORD) && (userToken.getToken().equals(token))) {
             userTokenRepository.deleteById(userToken.getId());
             return true;
-
         }
         return false;
+    }
+
+    @Override
+    public boolean existsByToken(String token) {
+        return userTokenRepository.existsByToken(token);
+    }
+
+    @Override
+    public UserToken getUserToken(String token) {
+        return userTokenRepository.findByToken(token);
+    }
+
+    private String generateRandomCode() {
+        return UUID.randomUUID().toString();
     }
 
     private String generateRandomCode(int length) {
@@ -63,5 +93,4 @@ public class UserTokenServiceImpl implements UserTokenService {
         }
         return code.toString();
     }
-
 }
