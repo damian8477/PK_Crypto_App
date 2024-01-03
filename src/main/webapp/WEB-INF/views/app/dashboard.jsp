@@ -30,6 +30,12 @@
             <i class="fas fa-angle-right"></i>
         </a>
     </li>
+    <li class="nav-item">
+        <a class="nav-link" href="/app/strategy/my-list">
+            <span>Moje strategie</span>
+            <i class="fas fa-angle-right"></i>
+        </a>
+    </li>
     <sec:authorize access="hasRole('ROLE_ADMIN')">
         <li class="nav-item">
             <a class="nav-link" href="/admin/user-list">

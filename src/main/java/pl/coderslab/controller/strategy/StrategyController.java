@@ -8,16 +8,19 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import pl.coderslab.entity.strategy.Source;
+import pl.coderslab.entity.user.User;
+import pl.coderslab.interfaces.UserService;
 import pl.coderslab.repository.StrategySettingRepository;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Controller
 @RequestMapping("/app/strategy")
 @RequiredArgsConstructor
 public class StrategyController {
     private final StrategySettingRepository strategySettingRepository;
-
+    private final UserService userService;
     @GetMapping("/list")
     public String getStrategyList(Model model) {
         model.addAttribute("strategies", strategySettingRepository.findAll());
@@ -59,5 +62,26 @@ public class StrategyController {
     public String getEditView(@RequestParam int strategyId, Model model){
         model.addAttribute("strategy", strategySettingRepository.findById(strategyId));
         return "/app/strategy/edit";
+    }
+
+    @PostMapping("/edit")
+    public String editStrategy(@Valid @ModelAttribute("strategy") Source strategySetting, BindingResult bindingResult, Model model, @AuthenticationPrincipal UserDetails authenticatedUser) {
+        if (bindingResult.hasErrors()) {
+            return "/app/strategy/edit";
+        }
+        if (authenticatedUser.getAuthorities().stream()
+                .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"))) {
+            strategySetting.setAdminStrategy(true);
+        }
+        strategySettingRepository.save(strategySetting);
+        return "redirect:/app/strategy/list";
+    }
+
+    @GetMapping("/my-list")
+    public String getMyString(Model model, @AuthenticationPrincipal UserDetails authenticatedUser){
+
+        User user = userService.getUserWithUserSettingsByUserName(authenticatedUser.getUsername());
+        model.addAttribute("strategies", user.getStrategies());
+        return "/app/strategy/my-list";
     }
 }

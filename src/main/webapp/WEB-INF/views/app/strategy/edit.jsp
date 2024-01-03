@@ -11,7 +11,7 @@
         <div class="m-4 p-3 width-medium text-color-darker">
             <div class="dashboard-content border-dashed p-3 m-4 view-height">
                 <div class="mt-4 ml-4 mr-4">
-                    <form:form method="post" action="/app/strategy/add" modelAttribute="strategy">
+                    <form:form method="post" modelAttribute="strategy">
                     <div class="schedules-content">
                         <div class="form-group row">
                             <label class="col-sm-2 label-size col-form-label">Name</label>
