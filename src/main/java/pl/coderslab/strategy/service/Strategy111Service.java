@@ -61,12 +61,18 @@ public class Strategy111Service extends BotService {
         });
     }
 
-    private void openOrder(CCIOrder order, List<Order> orders){
+    public void openOrder(CCIOrder order, List<Order> orders){
         Source source = sourceService.findByName(SOURCE_NAME);
         String candleStick = indicatorsService.getCandleStick(order.getSymbol());
         order.setOpen(true);
         cciOrderRepository.save(order);
         botService.newOrder(SOURCE_NAME, order.getSymbol(), "LONG", "0", "0", 3.0, 0.83, "", orders, source, candleStick);
+    }
+
+    public void openOrder(String symbol){
+        Source source = sourceService.findByName(SOURCE_NAME);
+        String candleStick = indicatorsService.getCandleStick(symbol);
+        botService.newOrder(SOURCE_NAME, symbol, "LONG", "0", "0", 3.0, 0.83, "", new ArrayList<>(), source, candleStick);
     }
 
     public void checkOrderStatusBot(List<Order> activeOrdersListArg) {
