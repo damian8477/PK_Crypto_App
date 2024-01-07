@@ -68,7 +68,7 @@ public class BinanceServiceImpl implements BinanceService, Common {
 
     @Override
     public CryptoName getSymbols(int symbolId) {
-        Symbol symbol = symbolRepository.findById(symbolId).orElse(null);
+        Symbol symbol = symbolRepository.findById(symbolId);
         if (symbol != null) {
             List<Candlestick> candlestick = syncService.sync(null).getCandlestick(symbol.getName(), CandlestickInterval.DAILY, null, null, 1);
             if (!candlestick.isEmpty()) {
@@ -236,9 +236,9 @@ public class BinanceServiceImpl implements BinanceService, Common {
         try {
             Timestamp timestamp = new Timestamp(System.currentTimeMillis());
             long time = timestamp.getTime();
-            long diff = time - 20000;
-            List<Income> profitList = syncRequestClient.getIncomeHistory(symbol, IncomeType.REALIZED_PNL, diff, null, 50);
-            List<Income> commissionList = syncRequestClient.getIncomeHistory(symbol, IncomeType.COMMISSION, diff, null, 50);
+            long diff = time - 200000;
+            List<Income> profitList = syncRequestClient.getIncomeHistory(symbol, IncomeType.REALIZED_PNL, diff, null, 1000);
+            List<Income> commissionList = syncRequestClient.getIncomeHistory(symbol, IncomeType.COMMISSION, diff, null, 100);
 
             if (profitList.isEmpty() || commissionList.isEmpty() || profitList.size() != commissionList.size()) {
                 TimeUnit.SECONDS.sleep(2);
