@@ -44,7 +44,7 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<UserSetting> userSetting = new ArrayList<>();
     @ToString.Exclude
-    @ManyToMany(mappedBy = "users")
+    @OneToMany(mappedBy = "user")
     private List<Strategy> strategies = new ArrayList<>();
     @OneToMany(mappedBy = "user")
     private List<Order> orders = new ArrayList<>();

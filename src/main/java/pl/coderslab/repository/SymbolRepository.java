@@ -4,4 +4,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import pl.coderslab.entity.orders.Symbol;
 
 public interface SymbolRepository extends JpaRepository<Symbol, Integer> {
+    Symbol findById(int id);
 }

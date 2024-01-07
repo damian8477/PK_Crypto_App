@@ -2,6 +2,7 @@ package pl.coderslab.entity.strategy;
 
 import lombok.Getter;
 import lombok.Setter;
+import pl.coderslab.entity.orders.Symbol;
 import pl.coderslab.enums.SourceType;
 
 import javax.persistence.*;
@@ -44,5 +45,11 @@ public class Source {
     private BigDecimal basicSlPercent;
     @OneToMany(fetch = FetchType.EAGER)
     private List<Strategy> strategies;
+    @ManyToMany
+    private List<Symbol> symbols;
 
+
+    public void addSymbol(Symbol symbol) {
+        symbols.add(symbol);
+    }
 }

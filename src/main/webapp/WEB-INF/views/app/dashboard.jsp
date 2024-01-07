@@ -25,13 +25,13 @@
         </a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" href="/app/strategy/list">
+        <a class="nav-link" href="/app/source/list">
             <span>Strategie</span>
             <i class="fas fa-angle-right"></i>
         </a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" href="/app/strategy/my-list">
+        <a class="nav-link" href="/app/strategy/list">
             <span>Moje strategie</span>
             <i class="fas fa-angle-right"></i>
         </a>

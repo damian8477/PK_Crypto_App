@@ -51,7 +51,7 @@
                                     <c:if test="${history.realizedPln >= 0}">
                                         <td class="col-1" style="color: green"><c:out value="${history.realizedPln}"/></td>
                                     </c:if>
-                                    <c:if test="${history.profitProcent < 0}">
+                                    <c:if test="${history.realizedPln < 0}">
                                         <td class="col-1" style="color: red"><c:out value="${history.realizedPln}"/></td>
                                     </c:if>
                                 </tr>

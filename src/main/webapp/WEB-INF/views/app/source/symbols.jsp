@@ -24,10 +24,10 @@
             <div class="dashboard-content border-dashed p-3 m-4 view-height">
                 <div class="row border-bottom border-3 p-1 m-1">
                     <div class="col noPadding">
-                        <h3 class="color-header text-uppercase">LISTA STRATEGII UŻYTKOWNIKA</h3>
+                        <h3 class="color-header text-uppercase">Lista Źródeł</h3>
                     </div>
                     <div>
-                        <a href="/app/strategy/add" class="btn btn-success rounded-0 pt-0 pb-0 pr-4 pl-4">Dodaj strategie</a>
+                        <a href="/app/source/add" class="btn btn-success rounded-0 pt-0 pb-0 pr-4 pl-4">Dodaj źródło</a>
                     </div>
                 </div>
 
@@ -37,39 +37,43 @@
                         <tr class="d-flex">
                             <th>Lp</th>
                             <th class="col-1">Nazwa</th>
-                            <th class="col-1">%/$</th>
-                            <th class="col-1">%</th>
-                            <th class="col-1">Aktywno sc</th>
-                            <th class="col-1">Max dźwignia</th>
-                            <th class="col-1">MarginType</th>
-                            <th class="col-1">Pcs</th>
-                            <th class="col-1">Źródło</th>
+                            <th class="col-1">Win</th>
+                            <th class="col-1">Loss</th>
+                            <th class="col-1">Accuracy</th>
+                            <th class="col-1">Bot</th>
                             <th class="col-2 center">AKCJE</th>
                         </tr>
                         </thead>
                         <tbody class="text-color-lighter">
-                        <c:forEach var="strategy" items="${strategies}" varStatus="stat">
+                        <c:forEach var="symbol" items="${symbols}" varStatus="stat">
                             <tr class="d-flex">
                                 <td><c:out value="${stat.index + 1}"/></td>
-                                <td class="col-1"><c:out value="${strategy.name}"/></td>
-                                <td class="col-1"><c:out value="${strategy.percentOfMoney}"/></td>
-                                <td class="col-1"><c:out value="${strategy.percentMoney}"/></td>
-                                <td class="col-1"><c:out value="${strategy.active}"/></td>
-                                <td class="col-1"><c:out value="${strategy.maxLeverage}"/></td>
-                                <td class="col-1"><c:out value="${strategy.marginType}"/></td>
-                                <td class="col-1"><c:out value="${strategy.maxCountOrders}"/></td>
-                                <td class="col-1"><c:out value="${strategy.source.name}"/></td>
+                                <td class="col-1"><c:out value="${symbol.name}"/></td>
                                 <td class="col-2 d-flex align-items-center justify-content-center flex-wrap">
-                                        <a href="/app/strategy/delete?strategyId=${strategy.getId()}"
+                                    <sec:authorize access="hasRole('ADMIN')">
+                                        <a href="/app/source/delete-symbol?sourceId=${symbol.getId()}"
                                            class="btn btn-danger rounded-0 text-light m-1">Usuń</a>
-                                        <a href="/app/strategy/edit?strategyId=${strategy.getId()}"
-                                           class="btn btn-info rounded-0 text-light m-1">Edytuj</a>
+                                    </sec:authorize>
+
                                 </td>
                             </tr>
                         </c:forEach>
                         </tbody>
                     </table>
                 </div>
+
+
+                <form action="/app/source/symboladd" method="post">
+                    <label for="symbol">Wybierz symbol:</label>
+                    <select id="symbol" name="symbolId">
+                        <c:forEach var="symbol" items="${symbolList}">
+                            <option value="${symbol.id}">${symbol.name}</option>
+                        </c:forEach>
+                    </select>
+                    <input type="hidden" name="sourceId" value="${sourceId}"/>--%>
+                    <input type="submit" value="Dodaj">
+                    <sec:csrfInput/>
+                </form>
             </div>
         </div>
     </div>
@@ -79,3 +83,4 @@
 
 </html>
 <%@include file="../../footer.jsp" %>
+

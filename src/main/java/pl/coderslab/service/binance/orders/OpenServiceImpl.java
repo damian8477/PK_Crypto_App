@@ -45,13 +45,11 @@ public class OpenServiceImpl implements OpenService, Common {
         Source source = sourceService.findByName(signal.getSourceName());
         double marketPrice = binanceBasicService.getMarketPriceDouble(null, signal.getSymbol());
         source.getStrategies().forEach(s -> {
-            s.getUsers().forEach(user -> {
-                if (user.isActive() && s.isActive()) {
-                    Strategy strategy = user.getStrategies().stream().filter(k -> k.getSource().getId().equals(source.getId())).findFirst().orElse(null);
+                if (s.getUser().isActive() && s.isActive()) {
+                    Strategy strategy = s.getUser().getStrategies().stream().filter(k -> k.getSource().getId().equals(source.getId())).findFirst().orElse(null);
                     ExchangeInfoEntry exchangeInfoEntry1 = SymbolExchangeService.exchangeInfoEntries.stream().filter(exchangeInfoEntry -> exchangeInfoEntry.getSymbol().equals(signal.getSymbol())).findFirst().orElse(null);
-                    newOrder(signal, user.getOrders(), source, user, marketPrice, exchangeInfoEntry1, strategy);
+                    newOrder(signal, s.getUser().getOrders(), source, s.getUser(), marketPrice, exchangeInfoEntry1, strategy);
                 }
-            });
         });
     }
 

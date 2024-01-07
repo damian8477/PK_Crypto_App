@@ -37,7 +37,7 @@ public class OrderController {
         User user = userService.getUserWithUserSettingsByUserName(authenticatedUser.getUsername());
         List<Order> orderList = orderService.prepareOrderList(user, user.getOrders());
         model.addAttribute("orders", orderList);
-        return "/app/binance/orders/order-list";
+        return "/app/binance/orders/list";
     }
 
     @GetMapping("/close-order")

@@ -12,6 +12,8 @@ import pl.coderslab.interfaces.SymbolService;
 import pl.coderslab.model.AlertSetting;
 import pl.coderslab.repository.SymbolRepository;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class SymbolServiceImpl implements SymbolService {
@@ -42,5 +44,10 @@ public class SymbolServiceImpl implements SymbolService {
                 .symbol(symbol)
                 .marketPrice(binanceUserService.getMarketPriceBigDecimal(null, symbol))
                 .build();
+    }
+
+    @Override
+    public List<Symbol> findAll() {
+        return symbolRepository.findAll();
     }
 }

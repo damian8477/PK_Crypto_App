@@ -2,6 +2,7 @@ package pl.coderslab.entity.strategy;
 
 import lombok.Getter;
 import lombok.Setter;
+import pl.coderslab.entity.orders.Symbol;
 import pl.coderslab.entity.user.User;
 import pl.coderslab.enums.MarginType;
 
@@ -24,12 +25,15 @@ public class Strategy {
     private boolean active;
     @Column(name = "max_leverage")
     private int maxLeverage;
+    @Column(name = "margin_type")
     private MarginType marginType;
+    @Column(name = "max_count_orders")
+    private Integer maxCountOrders;
     @ManyToOne
     private Source source;
-    @ManyToMany//(fetch = FetchType.EAGER)
-//    @JoinTable(name = "user_strategy",
-//            joinColumns = @JoinColumn(name = "user_id"),
-//            inverseJoinColumns = @JoinColumn(name = "strategy_id"))
-    private List<User> users;
+    @ManyToOne
+    private User user;
+    @ManyToMany
+    private List<Symbol> symbols;
+
 }

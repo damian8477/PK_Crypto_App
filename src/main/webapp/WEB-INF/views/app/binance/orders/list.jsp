@@ -48,7 +48,7 @@
                                     <td class="col-1"><c:out value="${order.sl}"/></td>
                                     <td class="col-1"><c:out value="${order.lot}"/></td>
                                     <td class="col-1"><c:out value="${order.amount}"/></td>
-                                    <td class="col-1"><c:out value="${order.side}"/></td>
+                                    <td class="col-1"><c:out value="${order.positionSide}"/></td>
                                     <c:if test="${order.profitProcent >= 0}">
                                         <td class="col-1" style="color: green"><c:out
                                                 value="${order.profitProcent}"/></td>
