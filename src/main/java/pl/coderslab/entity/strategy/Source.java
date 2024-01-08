@@ -45,11 +45,17 @@ public class Source {
     private BigDecimal basicSlPercent;
     @OneToMany(fetch = FetchType.EAGER)
     private List<Strategy> strategies;
-    @ManyToMany
+    @OneToMany
     private List<Symbol> symbols;
-
 
     public void addSymbol(Symbol symbol) {
         symbols.add(symbol);
+    }
+
+    public void deleteSymbol(Symbol symbol) {
+        symbols.stream()
+                .filter(s -> s.getName().equals(symbol.getName()))
+                .toList()
+                .forEach(sym -> symbols.remove(sym));
     }
 }

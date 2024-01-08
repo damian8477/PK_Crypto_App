@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import pl.coderslab.binance.client.SyncRequestClient;
 import pl.coderslab.binance.client.model.enums.*;
 import pl.coderslab.binance.client.model.market.Candlestick;
+import pl.coderslab.binance.client.model.market.ExchangeInfoEntry;
 import pl.coderslab.binance.client.model.trade.Income;
 import pl.coderslab.binance.client.model.trade.Order;
 import pl.coderslab.binance.client.model.trade.PositionRisk;
@@ -64,6 +65,13 @@ public class BinanceServiceImpl implements BinanceService, Common {
             }
         });
         return cryptoNameList;
+    }
+
+    @Override
+    public List<String> getAllSymbol() {
+        SyncRequestClient syncRequestClient = syncService.sync(null);
+        return syncRequestClient.getExchangeInformation().getSymbols().stream()
+                .map(ExchangeInfoEntry::getSymbol).toList();
     }
 
     @Override

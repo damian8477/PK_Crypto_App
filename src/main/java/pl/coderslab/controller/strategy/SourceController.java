@@ -94,15 +94,24 @@ public class SourceController {
     public String addSymbolsView(@RequestParam int sourceId, @RequestParam int symbolId, Model model) {
         Source source = sourceService.findById(sourceId);
         Symbol symbol = symbolService.findById(symbolId);
-//        symbolService.findAll().toArray(new Symbol[0]);
         if (!isNull(source) && !isNull(symbol)) {
-            source.addSymbol(symbol);
-            sourceService.save(source);
-            model.addAttribute("sourceId", sourceId);
+            if(source.getSymbols().stream().filter(s -> s.getName().equals(symbol.getName())).toList().isEmpty()){
+                source.addSymbol(symbol);
+                sourceService.save(source);
+            }
+            return "redirect:/app/source/symbols?sourceId=" + sourceId;
         } else {
             return "redirect:/app/source/list";
         }
-        return "redirect:/app/source/symbols";
+    }
+
+    @PostMapping("/delete-symbol")
+    public String deleteSymbol(@RequestParam int symbolId, @RequestParam int sourceId){
+        Source source = sourceService.findById(sourceId);
+        Symbol symbol = symbolService.findById(symbolId);
+        source.deleteSymbol(symbol);
+        sourceService.save(source);
+        return "redirect:/app/source/symbols?sourceId=" + sourceId;
     }
 
 

@@ -37,10 +37,10 @@
                         <tr class="d-flex">
                             <th>Lp</th>
                             <th class="col-1">Nazwa</th>
-                            <th class="col-1">Win</th>
-                            <th class="col-1">Loss</th>
-                            <th class="col-1">Accuracy</th>
-                            <th class="col-1">Bot</th>
+<%--                            <th class="col-1">Win</th>--%>
+<%--                            <th class="col-1">Loss</th>--%>
+<%--                            <th class="col-1">Accuracy</th>--%>
+<%--                            <th class="col-1">Bot</th>--%>
                             <th class="col-2 center">AKCJE</th>
                         </tr>
                         </thead>
@@ -51,10 +51,13 @@
                                 <td class="col-1"><c:out value="${symbol.name}"/></td>
                                 <td class="col-2 d-flex align-items-center justify-content-center flex-wrap">
                                     <sec:authorize access="hasRole('ADMIN')">
-                                        <a href="/app/source/delete-symbol?sourceId=${symbol.getId()}"
-                                           class="btn btn-danger rounded-0 text-light m-1">Usuń</a>
+                                        <form method="post" action="/app/source/delete-symbol">
+                                            <input type="hidden" name="sourceId" value="${sourceId}"/>
+                                            <input type="hidden" name="symbolId" value="${symbol.id}"/>
+                                            <button type="submit" class="btn btn-danger rounded-0 text-light m-1">Usuń</button>
+                                            <sec:csrfInput/>
+                                        </form>
                                     </sec:authorize>
-
                                 </td>
                             </tr>
                         </c:forEach>
@@ -70,7 +73,7 @@
                             <option value="${symbol.id}">${symbol.name}</option>
                         </c:forEach>
                     </select>
-                    <input type="hidden" name="sourceId" value="${sourceId}"/>--%>
+                    <input type="hidden" name="sourceId" value="${sourceId}"/>
                     <input type="submit" value="Dodaj">
                     <sec:csrfInput/>
                 </form>

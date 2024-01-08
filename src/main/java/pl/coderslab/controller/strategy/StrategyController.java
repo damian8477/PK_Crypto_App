@@ -77,6 +77,7 @@ public class StrategyController {
         return "redirect:/app/strategy/list";
     }
 
+
     @ModelAttribute("marginTypes")
     public MarginType[] marginTypes() {
         return MarginType.values();

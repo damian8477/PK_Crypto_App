@@ -40,6 +40,7 @@ public class BinanceController {
     public String getSymbolList(Model model) {
         model.addAttribute("symbol", new Symbol());
         model.addAttribute("symbols", binanceService.getSymbols());
+        model.addAttribute("symbolList", binanceService.getAllSymbol());
         return "app/binance/symbol/symbol-list";
     }
 
