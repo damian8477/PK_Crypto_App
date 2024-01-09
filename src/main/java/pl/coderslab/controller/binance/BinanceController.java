@@ -22,6 +22,7 @@ import pl.coderslab.model.CommonSignal;
 import pl.coderslab.model.CryptoName;
 import pl.coderslab.model.OwnSignal;
 import pl.coderslab.repository.SymbolRepository;
+
 import javax.validation.Valid;
 
 import java.util.Arrays;
@@ -45,22 +46,12 @@ public class BinanceController {
     }
 
     @PostMapping("/add-symbol")
-    public String addSymbol(@Valid @ModelAttribute("symbol") Symbol symbol, BindingResult bindingResult, Model model) {
-        if (bindingResult.hasErrors()) {
-            model.addAttribute("symbol", symbol);
-            model.addAttribute("symbols", binanceService.getSymbols());
-            return "app/binance/symbol/symbol-list";
-        }
-        try {
-            symbolService.checkSymbol(symbol);
-            symbolRepository.save(symbol);
-            return "redirect:/app/binance/symbol-list";
-        } catch (IllegalArgumentException e) {
-            model.addAttribute("symbol", symbol);
-            bindingResult.rejectValue("name", e.getMessage(), e.getMessage());
-            model.addAttribute("symbols", binanceService.getSymbols());
-            return "app/binance/symbol/symbol-list";
-        }
+    public String addSymbol(@RequestParam String symbolName) {
+        Symbol symbol = new Symbol();
+        symbol.setName(symbolName);
+        symbolService.checkSymbol(symbol);
+        symbolRepository.save(symbol);
+        return "redirect:/app/binance/symbol-list";
     }
 
     @GetMapping("/delete-symbol")

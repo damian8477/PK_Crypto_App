@@ -18,29 +18,27 @@
                         <h3 class="color-header text-uppercase">LISTA KRYPTOWALUT</h3>
                     </div>
 
-
-<%--                    <form:form action="/app/binance/add-symbol" method="post">--%>
-<%--                        <form:select id="symbol" path="symbol"--%>
-<%--                                     cssClass="col-sm-10 label-size col-form-label">--%>
-<%--                            <form:options items="${symbolList}" itemLabel="name"/><form:errors--%>
-<%--                                path="symbol"/>--%>
-<%--                        </form:select>--%>
-<%--                        <form:button--%>
-<%--                                class="btn btn-success rounded-0 pt-0 pb-0 pr-4 pl-4">Dodaj symbol</form:button>--%>
-<%--                    </form:form>--%>
-
-
                     <div class="col d-flex justify-content-end mb-2 noPadding">
-                        <form:form method="post" action="/app/binance/add-symbol" modelAttribute="symbol">
-                            <form:hidden path="id"/>
-                            Symbol: <form:input path="name"/>
-                            <form:button
-                                    class="btn btn-success rounded-0 pt-0 pb-0 pr-4 pl-4">Dodaj symbol</form:button>
-                            <br>
-                            <form:errors path="name" cssStyle="color: red"/>
-                        </form:form>
-
+                    <form action="/app/binance/add-symbol" method="post">
+                        <label for="symbol">Dodaj symbol:</label>
+                        <select id="symbol" name="symbolName">
+                            <c:forEach var="sym" items="${symbolList}">
+                                <option value="${sym}">${sym}</option>
+                            </c:forEach>
+                        </select>
+                        <input type="submit" value="Dodaj" class="btn btn-success rounded-0 pt-0 pb-0 pr-4 pl-4">
+                        <sec:csrfInput/>
+                    </form>
                     </div>
+<%--                    <div class="col d-flex justify-content-end mb-2 noPadding">--%>
+<%--                        <form:form method="post" action="/app/binance/add-symbol" modelAttribute="symbol">--%>
+<%--                            <form:hidden path="id"/>Symbol: <form:input path="name"/>--%>
+<%--                            <form:button--%>
+<%--                                    class="btn btn-success rounded-0 pt-0 pb-0 pr-4 pl-4">Dodaj symbol</form:button>--%>
+<%--                            <br>--%>
+<%--                            <form:errors path="name" cssStyle="color: red"/>--%>
+<%--                        </form:form>--%>
+<%--                    </div>--%>
                 </div>
 
                 <div class="schedules-content">

@@ -50,4 +50,10 @@
             <i class="fas fa-angle-right"></i>
         </a>
     </li>
+    <li class="nav-item">
+        <a class="nav-link" href="/app/user/statistic">
+            <span>Statystyki</span>
+            <i class="fas fa-angle-right"></i>
+        </a>
+    </li>
 </ul>
