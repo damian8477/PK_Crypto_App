@@ -213,7 +213,7 @@ public class BinanceServiceImpl implements BinanceService, Common {
             try {
                 if (OrderType.MARKET.equals(orderType)) {
                     syncRequestClient.postOrder(cryptoName, orderSide, positionSide, orderType, null,
-                            lot, null, null, cryptoName, null, null, NewOrderRespType.ACK);
+                            lot, null, null, null, null, null, NewOrderRespType.ACK);
                 } else if (OrderType.LIMIT.equals(orderType)) {
                     syncRequestClient.postOrder(cryptoName, orderSide, positionSide, orderType, TimeInForce.GTC,
                             lot, entryPrice, null, null, null, null, NewOrderRespType.ACK);
@@ -229,6 +229,7 @@ public class BinanceServiceImpl implements BinanceService, Common {
                 if (Double.parseDouble(lot) * Double.parseDouble(marketPrice) < 5.0) {
                     throw new IllegalArgumentException("zlecenie poniżej 5$");
                 }
+                logger.info(e.getMessage());
 
             }
         }
