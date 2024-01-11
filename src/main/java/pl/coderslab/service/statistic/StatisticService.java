@@ -14,7 +14,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Service
 public class StatisticService {
 
-    public SourceStat getSourceStatistic(List<HistoryOrder> historyOrderList){
+    public SourceStat getSourceStatistic(List<HistoryOrder> historyOrderList) {
         SourceStat sourceStat = new SourceStat();
         sourceStat.setAccuracy(getAccuracy(historyOrderList));
         sourceStat.setSymbolStat(getSymbolStat(historyOrderList));
@@ -22,18 +22,18 @@ public class StatisticService {
         return sourceStat;
     }
 
-    private BigDecimal getAccuracy(List<HistoryOrder> historyOrderList){
+    private BigDecimal getAccuracy(List<HistoryOrder> historyOrderList) {
         AtomicInteger win = new AtomicInteger();
         AtomicInteger loss = new AtomicInteger();
-        historyOrderList.forEach(s-> {
-            if(s.getSide().equals("LONG")){
-                if(Double.parseDouble(s.getClose())/Double.parseDouble(s.getEntry())-1 > 0 ){
+        historyOrderList.forEach(s -> {
+            if (s.getSide().equals("LONG")) {
+                if (Double.parseDouble(s.getClose()) / Double.parseDouble(s.getEntry()) - 1 > 0) {
                     win.getAndIncrement();
                 } else {
                     loss.getAndIncrement();
                 }
             } else {
-                if(s.getSide().equals("SHORT") && Double.parseDouble(s.getEntry())/Double.parseDouble(s.getClose())-1 > 0 ){
+                if (s.getSide().equals("SHORT") && Double.parseDouble(s.getEntry()) / Double.parseDouble(s.getClose()) - 1 > 0) {
                     win.getAndIncrement();
                 } else {
                     loss.getAndIncrement();
@@ -45,11 +45,11 @@ public class StatisticService {
         return BigDecimal.valueOf((win.doubleValue() / (loss.doubleValue() + win.doubleValue()) * 100)).setScale(2, RoundingMode.HALF_UP);
     }
 
-    private List<SymbolStat> getSymbolStat(List<HistoryOrder> historyOrderList){
+    private List<SymbolStat> getSymbolStat(List<HistoryOrder> historyOrderList) {
         List<String> symbolList = historyOrderList.stream().map(HistoryOrder::getSymbol).distinct().toList();
         List<SymbolStat> symbolStats = new ArrayList<>();
-        symbolList.forEach(s->{
-            List<HistoryOrder> symbolHistory = historyOrderList.stream().filter(symbol->symbol.getSymbol().equals(s)).toList();
+        symbolList.forEach(s -> {
+            List<HistoryOrder> symbolHistory = historyOrderList.stream().filter(symbol -> symbol.getSymbol().equals(s)).toList();
             BigDecimal accuracy = getAccuracy(symbolHistory);
             SymbolStat symbolStat = new SymbolStat();
             symbolStat.setCryptoName(s);

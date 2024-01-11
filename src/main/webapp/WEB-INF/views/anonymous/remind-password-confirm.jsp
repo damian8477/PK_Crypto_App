@@ -27,12 +27,13 @@
                 <div class="container">
                     <div class="row" style="margin-top: 40px">
                         <div class="col-1"></div>
-                        <div class="col-10" style="padding-bottom: 20px"><h2>Jeśli email jest poprawny to został na niego wysłany link</h2></div>
+                        <div class="col-10" style="padding-bottom: 20px"><h2>Jeśli email jest poprawny to został na
+                            niego wysłany link</h2></div>
                         <div class="col-1"></div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 </section>
 </body>
 <%@include file="footer.jsp" %>

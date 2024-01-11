@@ -95,7 +95,7 @@ public class SourceController {
         Source source = sourceService.findById(sourceId);
         Symbol symbol = symbolService.findById(symbolId);
         if (!isNull(source) && !isNull(symbol)) {
-            if(source.getSymbols().stream().filter(s -> s.getName().equals(symbol.getName())).toList().isEmpty()){
+            if (source.getSymbols().stream().filter(s -> s.getName().equals(symbol.getName())).toList().isEmpty()) {
                 source.addSymbol(symbol);
                 sourceService.save(source);
             }
@@ -106,7 +106,7 @@ public class SourceController {
     }
 
     @PostMapping("/delete-symbol")
-    public String deleteSymbol(@RequestParam int symbolId, @RequestParam int sourceId){
+    public String deleteSymbol(@RequestParam int symbolId, @RequestParam int sourceId) {
         Source source = sourceService.findById(sourceId);
         Symbol symbol = symbolService.findById(symbolId);
         source.deleteSymbol(symbol);

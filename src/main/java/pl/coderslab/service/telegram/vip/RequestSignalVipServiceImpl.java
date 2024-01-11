@@ -26,8 +26,8 @@ public class RequestSignalVipServiceImpl {
 
     private static final Logger logger = LoggerFactory.getLogger(RequestSignalVipServiceImpl.class);
 
-    public void newMessage(String message){
-        if(message.contains("BUY") || message.contains("SELL")){
+    public void newMessage(String message) {
+        if (message.contains("BUY") || message.contains("SELL")) {
             CommonSignal signal = vipSignalParserService.parseSignalMessage(message);
             //signal = changeSignal(signal);
             logger.info("Signal Vip: " + signal);
@@ -37,8 +37,8 @@ public class RequestSignalVipServiceImpl {
         }
     }
 
-    private CommonSignal changeSignal(CommonSignal signal){
-        if(signal.getPositionSide().toString().equals("LONG")){
+    private CommonSignal changeSignal(CommonSignal signal) {
+        if (signal.getPositionSide().toString().equals("LONG")) {
             Double marketPrice = binanceBasicService.getMarketPriceDouble(null, signal.getSymbol());
             signal.setPositionSide(PositionSide.SHORT);
             signal.setOrderType(OrderType.MARKET);
@@ -51,20 +51,21 @@ public class RequestSignalVipServiceImpl {
         return signal;
     }
 
-    private List<BigDecimal> getTakeProfits(CommonSignal signal, Double marketPrice){
+    private List<BigDecimal> getTakeProfits(CommonSignal signal, Double marketPrice) {
         BigDecimal tp = signal.getTakeProfit().get(2);
         List<BigDecimal> takeProfit = new ArrayList<>();
         double percent = 0.75;
-        for (int i = 1; i <= 5; i++){
+        for (int i = 1; i <= 5; i++) {
             takeProfit.add(BigDecimal.valueOf(aroundValue(String.valueOf(tp), marketPrice * ((100.0 - (percent * i)) / 100))));
         }
         return takeProfit;
     }
 
-    private List<BigDecimal> getStopLoss(CommonSignal signal){
+    private List<BigDecimal> getStopLoss(CommonSignal signal) {
         return List.of(signal.getTakeProfit().get(2));
     }
-    private List<BigDecimal> getEntryPrice(CommonSignal signal){
+
+    private List<BigDecimal> getEntryPrice(CommonSignal signal) {
         return List.of(signal.getEntryPrice().get(0));
     }
 
@@ -81,7 +82,6 @@ public class RequestSignalVipServiceImpl {
         div = div / precision;
         return div;
     }
-
 
 
 }

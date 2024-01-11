@@ -34,7 +34,7 @@ public class RegistrationController {
 
     @PostMapping
     public String processRegistrationPage2(@Valid User user, BindingResult bindingResult, Model model) {
-        if(bindingResult.hasErrors()){
+        if (bindingResult.hasErrors()) {
             model.addAttribute("user", user);
             return "anonymous/registration-page";
         }

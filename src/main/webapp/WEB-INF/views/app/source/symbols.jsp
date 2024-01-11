@@ -37,10 +37,10 @@
                         <tr class="d-flex">
                             <th>Lp</th>
                             <th class="col-1">Nazwa</th>
-<%--                            <th class="col-1">Win</th>--%>
-<%--                            <th class="col-1">Loss</th>--%>
-<%--                            <th class="col-1">Accuracy</th>--%>
-<%--                            <th class="col-1">Bot</th>--%>
+                            <%--                            <th class="col-1">Win</th>--%>
+                            <%--                            <th class="col-1">Loss</th>--%>
+                            <%--                            <th class="col-1">Accuracy</th>--%>
+                            <%--                            <th class="col-1">Bot</th>--%>
                             <th class="col-2 center">AKCJE</th>
                         </tr>
                         </thead>
@@ -54,7 +54,8 @@
                                         <form method="post" action="/app/source/delete-symbol">
                                             <input type="hidden" name="sourceId" value="${sourceId}"/>
                                             <input type="hidden" name="symbolId" value="${symbol.id}"/>
-                                            <button type="submit" class="btn btn-danger rounded-0 text-light m-1">Usuń</button>
+                                            <button type="submit" class="btn btn-danger rounded-0 text-light m-1">Usuń
+                                            </button>
                                             <sec:csrfInput/>
                                         </form>
                                     </sec:authorize>

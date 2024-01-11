@@ -45,7 +45,7 @@
                                     <form:password path="pass2" class="form-control"/><form:errors path="pass2"
                                                                                                    cssClass="error"/>
                                 </div>
-<%--                                <form:hidden path="token" class="form-control"/>--%>
+                                <%--                                <form:hidden path="token" class="form-control"/>--%>
                                 <form:button class="btn btn-primary" type="submit">Zmień hasło</form:button>
                                 <form:button class="btn btn-secondary" type="reset">Wyczyść dane</form:button>
                                 <sec:csrfInput/>

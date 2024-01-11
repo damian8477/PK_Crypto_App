@@ -70,7 +70,8 @@
                         <div class="form-group row">
                             <label class="col-sm-2 label-size col-form-label">Maksymalna liczba zleceń</label>
                             <div class="col-sm-10">
-                                <form:input path="maxCountOrders" class="form-control"/><form:errors path="maxCountOrders"/>
+                                <form:input path="maxCountOrders" class="form-control"/><form:errors
+                                    path="maxCountOrders"/>
                             </div>
                         </div>
                         <div class="form-group row">

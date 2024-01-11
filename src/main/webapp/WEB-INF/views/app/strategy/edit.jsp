@@ -66,18 +66,19 @@
                         <div class="form-group row">
                             <label class="col-sm-2 label-size col-form-label">Maksymalna liczba zleceń</label>
                             <div class="col-sm-10">
-                                <form:input path="maxCountOrders" class="form-control"/><form:errors path="maxCountOrders"/>
+                                <form:input path="maxCountOrders" class="form-control"/><form:errors
+                                    path="maxCountOrders"/>
                             </div>
                         </div>
                         <div class="form-group row">
                             <label class="col-sm-2 label-size col-form-label">MarginType</label>
-                        <div class="col-sm-10">
-                            <form:select id="marginType" path="marginType"
-                                         cssClass="col-sm-10 label-size col-form-label">
-                                <form:options items="${marginTypes}" itemLabel="name"/><form:errors
-                                    path="marginType"/>
-                            </form:select>
-                        </div>
+                            <div class="col-sm-10">
+                                <form:select id="marginType" path="marginType"
+                                             cssClass="col-sm-10 label-size col-form-label">
+                                    <form:options items="${marginTypes}" itemLabel="name"/><form:errors
+                                        path="marginType"/>
+                                </form:select>
+                            </div>
                         </div>
 
                         <form:hidden path="id"/><form:errors path="id"/><br>

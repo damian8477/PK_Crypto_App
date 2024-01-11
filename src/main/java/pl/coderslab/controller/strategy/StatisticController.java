@@ -24,13 +24,13 @@ public class StatisticController {
     public final SourceService sourceService;
 
     @GetMapping("/data")
-    public String getData(){
+    public String getData() {
         List<HistoryOrder> historyOrderList = historyOrderRepository.findAllBySourceAndUserId(3, 1000L);
         return "/app/statistic/data";
     }
 
     @GetMapping("/source")
-    public String getSource(@RequestParam int sourceId, Model model){
+    public String getSource(@RequestParam int sourceId, Model model) {
         List<HistoryOrder> historyOrderList = historyOrderRepository.findAllBySourceAndUserId(sourceId, 1000L);
         Source source = sourceService.findById(sourceId);
         SourceStat sourceStat = statisticService.getSourceStatistic(historyOrderList);

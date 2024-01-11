@@ -49,19 +49,19 @@ public class LoginController {
     }
 
     @GetMapping("/remind-password")
-    public String remindPassword(){
+    public String remindPassword() {
         return "anonymous/remind-password";
     }
 
     @PostMapping("/remind-password")
-    public String remindPassword(String email, Locale locale){
+    public String remindPassword(String email, Locale locale) {
         remindPasswordService.remindPassword(email, locale);
         return "anonymous/remind-password-confirm";
     }
 
     @GetMapping("/remind-pass")
-    public String remindPass(@RequestParam String token, Model model){
-        if(userTokenService.existsByToken(token)){
+    public String remindPass(@RequestParam String token, Model model) {
+        if (userTokenService.existsByToken(token)) {
             System.out.println(token);
             model.addAttribute("newPassword", new NewPassword(token));
             NewPassword newPassword = new NewPassword(token);
@@ -70,6 +70,7 @@ public class LoginController {
         }
         return "redirect:/login";
     }
+
     @PostMapping("/remind-pass")
     public String processRegistrationPage2(@Valid NewPassword newPassword, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors() || !newPassword.getPass1().equals(newPassword.getPass2())) {

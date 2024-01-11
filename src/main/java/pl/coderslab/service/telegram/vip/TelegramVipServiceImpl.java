@@ -12,7 +12,7 @@ import pl.coderslab.configuration.properties.VipSignalConfigProperties;
 
 @Service
 @RequiredArgsConstructor
-public class TelegramVipServiceImpl extends TelegramLongPollingBot{
+public class TelegramVipServiceImpl extends TelegramLongPollingBot {
     private final RequestSignalVipServiceImpl requestSignalVipService;
     private final VipSignalConfigProperties vipSignalConfigProperties;
     private static final Logger logger = LoggerFactory.getLogger(TelegramVipServiceImpl.class);

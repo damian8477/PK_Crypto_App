@@ -20,8 +20,8 @@ public class RsiStrategyController {
 
     @PostMapping("/add")
     @ResponseBody
-    public String addSymbol(@Valid RsiStrategy rsiStrategy, BindingResult bindingResult, Model model){
-        if(bindingResult.hasErrors()){
+    public String addSymbol(@Valid RsiStrategy rsiStrategy, BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
             model.addAttribute("rsiStrategy", rsiStrategy);
         }
         rsiStrategy.setSymbol(rsiStrategy.getSymbol().toUpperCase());

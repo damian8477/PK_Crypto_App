@@ -26,20 +26,21 @@ public class StrategyController {
     private final SourceRepository sourceRepository;
 
     @GetMapping("/list")
-    public String getMyString(Model model, @AuthenticationPrincipal UserDetails authenticatedUser){
+    public String getMyString(Model model, @AuthenticationPrincipal UserDetails authenticatedUser) {
         User user = userService.getUserWithUserSettingsByUserName(authenticatedUser.getUsername());
         model.addAttribute("strategies", user.getStrategies());
         return "/app/strategy/list";
     }
 
     @GetMapping("/edit")
-    public String getEditMyListView(@RequestParam int strategyId, Model model, @AuthenticationPrincipal UserDetails authenticatedUser){
+    public String getEditMyListView(@RequestParam int strategyId, Model model, @AuthenticationPrincipal UserDetails authenticatedUser) {
         User user = userService.getUserWithUserSettingsByUserName(authenticatedUser.getUsername());
-        model.addAttribute("strategy", user.getStrategies().stream().filter(s->s.getId()==strategyId).findFirst().orElse(null));
+        model.addAttribute("strategy", user.getStrategies().stream().filter(s -> s.getId() == strategyId).findFirst().orElse(null));
         return "/app/strategy/edit";
     }
+
     @PostMapping("/edit")
-    public String getEditMyListView(@Valid @ModelAttribute("strategy") Strategy strategy, BindingResult bindingResult, Model model, @AuthenticationPrincipal UserDetails authenticatedUser){
+    public String getEditMyListView(@Valid @ModelAttribute("strategy") Strategy strategy, BindingResult bindingResult, Model model, @AuthenticationPrincipal UserDetails authenticatedUser) {
         if (bindingResult.hasErrors()) {
             return "app/strategy/edit";
         }
@@ -50,12 +51,13 @@ public class StrategyController {
     }
 
     @GetMapping("/add")
-    public String getAddStrategy(Model model, @AuthenticationPrincipal UserDetails authenticatedUser){
+    public String getAddStrategy(Model model, @AuthenticationPrincipal UserDetails authenticatedUser) {
         model.addAttribute("strategy", new Strategy());
         return "/app/strategy/add";
     }
+
     @PostMapping("/add")
-    public String addStrategy(@Valid @ModelAttribute("strategy") Strategy strategy, BindingResult bindingResult, Model model, @AuthenticationPrincipal UserDetails authenticatedUser){
+    public String addStrategy(@Valid @ModelAttribute("strategy") Strategy strategy, BindingResult bindingResult, Model model, @AuthenticationPrincipal UserDetails authenticatedUser) {
         if (bindingResult.hasErrors()) {
             return "app/strategy/add";
         }
@@ -84,7 +86,7 @@ public class StrategyController {
     }
 
     @ModelAttribute("sourceList")
-    public Source[] sourceList(){
+    public Source[] sourceList() {
         return sourceRepository.findAll().toArray(new Source[0]);
     }
 }

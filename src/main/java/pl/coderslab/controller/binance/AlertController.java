@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import static java.util.Objects.isNull;
+
 /**
  * Controller class handling alert-related operations in the Binance application.
  */
@@ -35,6 +36,7 @@ public class AlertController {
     private final UserService userService;
     private final AlertService alertService;
     private final AlertRepository alertRepository;
+
     /**
      * Displays the list of alerts for the current user.
      *
@@ -49,6 +51,7 @@ public class AlertController {
         model.addAttribute("alerts", alertList);
         return "/app/binance/alert/alert-list";
     }
+
     /**
      * Displays the form for adding a new alert for a specific symbol.
      *
@@ -66,12 +69,13 @@ public class AlertController {
         //todo dodac i wyswietlic info na widoku
         return "redirect:/app/binance/symbol-list";
     }
+
     /**
      * Handles the form submission for adding a new alert.
      *
-     * @param alert              the alert data from the form
-     * @param bindingResult      the result of the form validation
-     * @param model              the model to be used in the view
+     * @param alert             the alert data from the form
+     * @param bindingResult     the result of the form validation
+     * @param model             the model to be used in the view
      * @param authenticatedUser the currently authenticated user
      * @return the view name or a redirect URL
      */
@@ -89,6 +93,7 @@ public class AlertController {
         }
         return "redirect:/app/binance/symbol-list";
     }
+
     /**
      * Displays the view for deleting a specific alert.
      *
@@ -105,10 +110,11 @@ public class AlertController {
         model.addAttribute("alert", alert);
         return "/app/binance/alert/delete";
     }
+
     /**
      * Handles the form submission for deleting a specific alert.
      *
-     * @param alertId            the ID of the alert to be deleted
+     * @param alertId the ID of the alert to be deleted
      * @return a redirect URL
      */
     @PostMapping("/delete")
@@ -116,6 +122,7 @@ public class AlertController {
         alertRepository.deleteById(alertId);
         return "redirect:/app/alerts/list";
     }
+
     /**
      * Provides the position sides for the alert form.
      *
