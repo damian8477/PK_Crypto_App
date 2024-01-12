@@ -12,8 +12,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 public interface UserTokenRepository extends JpaRepository<UserToken, Long> {
     UserToken findByUserId(Long userId);
+
     UserToken findByToken(String token);
+
     void deleteAllByUserId(Long userId);
+
     boolean existsByToken(String token);
 
     @Transactional

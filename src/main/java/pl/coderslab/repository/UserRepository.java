@@ -9,11 +9,13 @@ import java.util.List;
 public interface UserRepository extends JpaRepository<User, Long> {
 
     User findByUsername(String username);
+
     User findFirstByEmail(String email);
 
     List<User> findAllByActive(boolean active);
 
     boolean existsByUsername(String username);
+
     boolean existsByEmail(String email);
 
     @Query("select u.id from User u where u.username = ?1")

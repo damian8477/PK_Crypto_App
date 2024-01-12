@@ -14,7 +14,7 @@ public interface UserSettingRepository extends JpaRepository<UserSetting, Intege
 
     List<UserSetting> findAllByUserId(long userId);
 
-    void    deleteAllByUserId(long userId);
+    void deleteAllByUserId(long userId);
 
 
 }
