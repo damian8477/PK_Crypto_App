@@ -12,10 +12,12 @@ import pl.coderslab.binance.client.model.market.ExchangeInfoEntry;
 import pl.coderslab.binance.client.model.trade.MarginLot;
 import pl.coderslab.binance.client.model.trade.PositionRisk;
 import pl.coderslab.binance.common.Common;
+import pl.coderslab.entity.orders.HistoryOrder;
 import pl.coderslab.entity.orders.Order;
 import pl.coderslab.entity.strategy.Source;
 import pl.coderslab.entity.strategy.Strategy;
 import pl.coderslab.entity.user.User;
+import pl.coderslab.entity.user.UserSetting;
 import pl.coderslab.enums.Emoticon;
 import pl.coderslab.interfaces.*;
 import pl.coderslab.model.CommonSignal;
@@ -23,6 +25,7 @@ import pl.coderslab.service.binance.SymbolExchangeService;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Objects;
 
 import static java.util.Objects.isNull;
 
@@ -45,12 +48,27 @@ public class OpenServiceImpl implements OpenService, Common {
         Source source = sourceService.findByName(signal.getSourceName());
         double marketPrice = binanceBasicService.getMarketPriceDouble(null, signal.getSymbol());
         source.getStrategies().forEach(s -> {
-                if (s.getUser().isActive() && s.isActive()) {
-                    Strategy strategy = s.getUser().getStrategies().stream().filter(k -> k.getSource().getId().equals(source.getId())).findFirst().orElse(null);
-                    ExchangeInfoEntry exchangeInfoEntry1 = SymbolExchangeService.exchangeInfoEntries.stream().filter(exchangeInfoEntry -> exchangeInfoEntry.getSymbol().equals(signal.getSymbol())).findFirst().orElse(null);
-                    newOrder(signal, s.getUser().getOrders(), source, s.getUser(), marketPrice, exchangeInfoEntry1, strategy);
-                }
+            if (isActive(s.getUser(), s) && maxCountOrderIsOk(s)) {
+                Strategy strategy = s.getUser().getStrategies().stream().filter(k -> k.getSource().getId().equals(source.getId())).findFirst().orElse(null);
+                ExchangeInfoEntry exchangeInfoEntry1 = SymbolExchangeService.exchangeInfoEntries.stream().filter(exchangeInfoEntry -> exchangeInfoEntry.getSymbol().equals(signal.getSymbol())).findFirst().orElse(null);
+                newOrder(signal, s.getUser().getOrders(), source, s.getUser(), marketPrice, exchangeInfoEntry1, strategy);
+            } else {
+                telegramBotService.sendMessage(s.getUser().getUserSetting().stream().findFirst().get().getTelegramChatId(),
+                        String.format("%s nie otwarto zlecenia dla %s", s.getSource().getName(), signal.getSymbol()));
+            }
         });
+    }
+
+    private boolean isActive(User user, Strategy strategy) {
+        return user.isActive() && strategy.isActive() && user.getUserSetting().stream().findFirst().get().isActive() && user.getUserSetting().stream().findFirst().get().isActiveSignal();
+    }
+
+    private boolean maxCountOrderIsOk(Strategy strategy) {
+        UserSetting userSetting = strategy.getUser().getUserSetting().stream().findFirst().get();
+        List<Order> orders = strategy.getUser().getOrders();
+        int sizeSource = orders.stream().filter(s -> Objects.equals(s.getSource().getId(), strategy.getSource().getId())).toList().size();
+        int sizeAll = orders.size();
+        return userSetting.getMaxCountOrder() < sizeAll && strategy.getMaxCountOrders() < sizeSource;
     }
 
     private void newOrder(CommonSignal signal, List<Order> orderList, Source source, User user, Double marketPrice, ExchangeInfoEntry exchangeInfoEntry, Strategy strategy) {
@@ -69,7 +87,7 @@ public class OpenServiceImpl implements OpenService, Common {
         try {
             boolean okOrder = newOrderForUserSlidingHedge(signal, sync, marketPrice, source, strategy, exchangeInfoEntry, user);
             if (okOrder)
-                logger.info(getStringFormat("%s %s %s %s %s order", source.getName(), user.getUsername(), getTimeStamp(), signal.getSymbol(),source.getName()));
+                logger.info(getStringFormat("%s %s %s %s %s order", source.getName(), user.getUsername(), getTimeStamp(), signal.getSymbol(), source.getName()));
         } catch (Exception e) {
             logger.error(getStringFormat("%s %s %s %s %s order %s", source.getName(), user.getUsername(), getTimeStamp(), signal.getSymbol(), source.getName(), e.getMessage()));
         }
@@ -103,17 +121,17 @@ public class OpenServiceImpl implements OpenService, Common {
         return false;
     }
 
-    private void sendOtherEntryOrder(boolean isOpen, SyncRequestClient sync, CommonSignal signal, OrderSide orderSide, String lot, double marketPrice, PositionSide positionSide){
+    private void sendOtherEntryOrder(boolean isOpen, SyncRequestClient sync, CommonSignal signal, OrderSide orderSide, String lot, double marketPrice, PositionSide positionSide) {
         try {
-            if(isOpen){
-                if(signal.getEntryPrice().size() > 1){
+            if (isOpen) {
+                if (signal.getEntryPrice().size() > 1) {
                     binanceService.sendOrderToBinance(sync, signal.getSymbol(), orderSide, lot, String.valueOf(marketPrice), positionSide, OrderType.LIMIT, signal.getEntryPrice().get(1).toString());
                 }
-                if(signal.getEntryPrice().size() > 2){
+                if (signal.getEntryPrice().size() > 2) {
                     binanceService.sendOrderToBinance(sync, signal.getSymbol(), orderSide, lot, String.valueOf(marketPrice), positionSide, OrderType.LIMIT, signal.getEntryPrice().get(2).toString());
                 }
             }
-        }catch (Exception e){
+        } catch (Exception e) {
 
         }
     }

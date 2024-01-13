@@ -52,6 +52,7 @@
                             <th class="col-2">binanceSecret</th>
                             <th class="col-2">Active</th>
                             <th class="col-2">Signal</th>
+                            <th class="col-1">Max zleceń</th>
                             <th class="col-2 center">AKCJE</th>
                         </tr>
                         </thead>
@@ -63,6 +64,7 @@
                                 <td class="col-2 secret-column"><c:out value="${setting.binanceSecret}"/></td>
                                 <td class="col-2"><c:out value="${setting.active}"/></td>
                                 <td class="col-2"><c:out value="${setting.activeSignal}"/></td>
+                                <td class="col-1"><c:out value="${setting.maxCountOrder}"/></td>
                                 <td class="col-2 d-flex align-items-center justify-content-center flex-wrap">
                                     <a href="/app/user/delete-user-setting?settingId=${setting.getId()}"
                                        class="btn btn-danger rounded-0 text-light m-1">Usuń</a>

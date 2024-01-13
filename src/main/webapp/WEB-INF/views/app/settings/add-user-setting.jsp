@@ -43,6 +43,12 @@
                             <form:checkbox path="activeSignal" class="form-control"/>
                         </div>
                     </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 label-size col-form-label">Max liczba zleceń dla konta</label>
+                        <div class="col-sm-10">
+                            <form:input path="maxCountOrder" class="form-control"/><form:errors path="maxCountOrder"/>
+                        </div>
+                    </div>
                     <form:hidden path="telegramChatId"/>
                     <form:hidden path="id"/>
                     <form:hidden path="user"/>
