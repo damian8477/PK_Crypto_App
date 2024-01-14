@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import pl.coderslab.entity.strategy.CCIOrder;
 import pl.coderslab.entity.user.TelegramCode;
 import pl.coderslab.entity.user.User;
 import pl.coderslab.interfaces.AlertService;
@@ -17,6 +18,7 @@ import pl.coderslab.strategy.service.Strategy110Service;
 import pl.coderslab.strategy.service.Strategy111Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -41,7 +43,9 @@ public class ScheduledService {
     @Scheduled(fixedDelay = 60000, initialDelay = 1000)
     public void check() {
         List<User> users = userService.getActiveUsers();
-        logger.info("Scheduled counter: " + count + " " + LocalDateTime.now());
+        if(count % 60 == 0){
+            logger.info("Scheduled counter: " + count + " " + LocalDateTime.now());
+        }
         if (count == 1) {
             strategy110Service.downloadCryptoNameList();
             strategy110Service.checkCoinInStrategy();

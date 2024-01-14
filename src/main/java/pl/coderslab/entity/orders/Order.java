@@ -40,6 +40,7 @@ public class  Order {
     private boolean open;
     @Column(name = "app_order")
     private boolean appOrder;
+    private boolean be;
     @Column(updatable = false)
     private LocalDateTime created;
     private LocalDateTime updated;

@@ -2,6 +2,7 @@ package pl.coderslab.interfaces;
 
 import pl.coderslab.binance.client.SyncRequestClient;
 import pl.coderslab.binance.client.model.enums.OrderSide;
+import pl.coderslab.binance.client.model.enums.OrderType;
 import pl.coderslab.binance.client.model.enums.PositionSide;
 import pl.coderslab.binance.client.model.trade.MarginLot;
 import pl.coderslab.binance.client.model.trade.PositionRisk;
@@ -31,7 +32,7 @@ public interface BinanceBasicService {
 
     String aroundValueCryptoName(SyncRequestClient syncRequestClient, String cryptoName, String div);
 
-    void cancelOpenOrder(SyncRequestClient syncRequestClient, String symbol, OrderSide orderSide);
+    void cancelOpenOrder(SyncRequestClient syncRequestClient, String symbol, OrderSide orderSide, OrderType orderType);
 
     MarginLot calculateLotSizeQuantityMargin(String symbol, double amountInUSDT, int leverage, SyncRequestClient syncRequestClient, double marketPrice);
 

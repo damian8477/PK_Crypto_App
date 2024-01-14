@@ -9,7 +9,6 @@ import pl.coderslab.binance.client.model.enums.*;
 import pl.coderslab.binance.client.model.market.Candlestick;
 import pl.coderslab.binance.client.model.market.ExchangeInfoEntry;
 import pl.coderslab.binance.client.model.trade.Income;
-import pl.coderslab.binance.client.model.trade.Order;
 import pl.coderslab.binance.client.model.trade.PositionRisk;
 import pl.coderslab.binance.common.Common;
 import pl.coderslab.entity.orders.Symbol;
@@ -132,9 +131,8 @@ public class BinanceServiceImpl implements BinanceService, Common {
     @Override
     public boolean sendSlAndTpToAccount(SyncRequestClient syncRequestClient, String cryptoName, OrderSide orderSide, PositionSide positionSide, String stopLoss, String takeProfit) {
         try {
-            OrderSide orderCloseSide = OrderSide.BUY;
-            if (positionSide.equals(PositionSide.LONG)) orderCloseSide = OrderSide.SELL;
-            binanceSupport.cancelOpenOrder(syncRequestClient, cryptoName, orderCloseSide);
+            OrderSide orderCloseSide = getOrderSideClose(positionSide);
+            binanceSupport.cancelOpenOrder(syncRequestClient, cryptoName, orderCloseSide, null);
             PositionRisk positionRisk = syncRequestClient.getPositionRisk().stream()
                     .filter(s -> s.getPositionAmt().doubleValue() != 0)
                     .filter(s -> s.getSymbol().equals(cryptoName))
@@ -158,8 +156,7 @@ public class BinanceServiceImpl implements BinanceService, Common {
     @Override
     public boolean sendSlToAccount(SyncRequestClient syncRequestClient, String cryptoName, PositionSide positionSide, String stopLoss, String lot) {
         try {
-            OrderSide orderCloseSide = OrderSide.BUY;
-            if (positionSide.equals(PositionSide.LONG)) orderCloseSide = OrderSide.SELL;
+            OrderSide orderCloseSide = getOrderSideClose(positionSide);
             String stopLossStr = binanceSupport.aroundValueCryptoName(syncRequestClient, cryptoName, String.valueOf(stopLoss));
             syncRequestClient.postOrder(cryptoName, orderCloseSide, positionSide, OrderType.STOP_MARKET, TimeInForce.GTC,
                     lot, null, null, null, stopLossStr, null, NewOrderRespType.ACK);
@@ -173,31 +170,25 @@ public class BinanceServiceImpl implements BinanceService, Common {
     @Override
     public boolean sendSlAndTpToAccountMultipleTp(SyncRequestClient syncRequestClient, String cryptoName, PositionSide positionSide, String stopLoss, List<BigDecimal> takeProfit, double minQty, int lever, double marketPrice, OrderType orderType, int lengthPrice, String orderLot) {
         try {
-            OrderSide orderCloseSide;
-            if (positionSide.equals(PositionSide.LONG)) orderCloseSide = OrderSide.SELL;
-            else {
-                orderCloseSide = OrderSide.BUY;
-            }
-            binanceSupport.cancelOpenOrder(syncRequestClient, cryptoName, orderCloseSide);
+            OrderSide orderCloseSide = getOrderSideClose(positionSide);
+            binanceSupport.cancelOpenOrder(syncRequestClient, cryptoName, orderCloseSide, null);
             PositionRisk positionRisk = syncRequestClient.getPositionRisk().stream()
                     .filter(s -> s.getPositionAmt().doubleValue() != 0)
                     .filter(s -> s.getSymbol().equals(cryptoName))
                     .findFirst().orElse(null);
             String stopLossStr = aroundValueCryptoName(null, null, String.valueOf(stopLoss), lengthPrice);
-//            if (!isNull(positionRisk)) {
-                String lot = OrderType.MARKET.equals(orderType) ? positionRisk.getPositionAmt().toString().replace("-", "") : orderLot;
-                List<String> lotsTp = getLotsTp(takeProfit.size(), minQty, Double.parseDouble(lot), lever, marketPrice);
-                if (orderType.equals(OrderType.MARKET)) {
-                    syncRequestClient.postOrder(cryptoName, orderCloseSide, positionSide, OrderType.STOP_MARKET, TimeInForce.GTC,
-                            lot, null, null, null, stopLossStr, null, NewOrderRespType.ACK);
-                }
-                for (int i = 0; i < lotsTp.size(); i++) {
-                    String takeProfitLot = aroundValueCryptoName(null, null, takeProfit.get(i).toString(), lengthPrice);
-                    syncRequestClient.postOrder(cryptoName, orderCloseSide, positionSide, OrderType.TAKE_PROFIT_MARKET, TimeInForce.GTC,
-                            lotsTp.get(i), null, null, null, takeProfitLot, null, NewOrderRespType.ACK);
-                }
-                return true;
-//            }
+            String lot = OrderType.MARKET.equals(orderType) ? positionRisk.getPositionAmt().toString().replace("-", "") : orderLot;
+            List<String> lotsTp = getLotsTp(takeProfit.size(), minQty, Double.parseDouble(lot), lever, marketPrice);
+            if (orderType.equals(OrderType.MARKET)) {
+                syncRequestClient.postOrder(cryptoName, orderCloseSide, positionSide, OrderType.STOP_MARKET, TimeInForce.GTC,
+                        lot, null, null, null, stopLossStr, null, NewOrderRespType.ACK);
+            }
+            for (int i = 0; i < lotsTp.size(); i++) {
+                String takeProfitLot = aroundValueCryptoName(null, null, takeProfit.get(i).toString(), lengthPrice);
+                syncRequestClient.postOrder(cryptoName, orderCloseSide, positionSide, OrderType.TAKE_PROFIT_MARKET, TimeInForce.GTC,
+                        lotsTp.get(i), null, null, null, takeProfitLot, null, NewOrderRespType.ACK);
+            }
+            return true;
         } catch (Exception e) {
             logger.info(String.format("Error during cancel order %s", e));
         }
@@ -276,5 +267,18 @@ public class BinanceServiceImpl implements BinanceService, Common {
                 .build();
     }
 
+    @Override
+    public void changeStopLoss(SyncRequestClient syncRequestClient, pl.coderslab.entity.orders.Order order, String lot, double slPrice) {
+        binanceSupport.cancelOpenOrder(syncRequestClient, order.getSymbolName(), getOrderSideClose(order.getPositionSide()), OrderType.STOP_MARKET);
+        sendSlToAccount(syncRequestClient, order.getSymbolName(), order.getPositionSide(), String.valueOf(slPrice), lot);
+    }
+
+    private OrderSide getOrderSideClose(PositionSide positionSide) {
+        if (positionSide.equals(PositionSide.LONG)) {
+            return OrderSide.SELL;
+        } else {
+            return OrderSide.BUY;
+        }
+    }
 
 }

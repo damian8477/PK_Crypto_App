@@ -45,7 +45,6 @@ public class Strategy111Service extends BotService {
     }
 
     public void searchNewOrder(List<Order> orders) {
-//        activeOrders = cciOrderRepository.findAllByActive(true);
         activeOrders = cciOrderRepository.findAll();
         List<CCIOrder> cciOrders = activeOrders.stream().filter(s->!s.isOpen() && s.isActive()).toList();
         if (isNull(orders)) {
@@ -53,11 +52,18 @@ public class Strategy111Service extends BotService {
         }
         List<Order> finalOrders = orders;
         cciOrders.forEach(order -> {
-           //if(activeOrders.stream().filter(s->s.getSymbol().equals(order.getSymbol())).filter(s->s.getOpenTime().equals(order.getOpenTime())).toList().isEmpty()){
+           double avRsi = indicatorsService.getAvrRsi(order.getSymbol(), 14);
+            if(avRsi < 52.0){
                 openOrder(order, finalOrders);
                 order.setOpen(true);
                 cciOrderRepository.save(order);
-            //}
+                logger.error(LocalDateTime.now() + " OPEN " + order.getSymbol() + avRsi);
+            } else if(avRsi > 75.0){
+                order.setOpen(true);
+                logger.error(LocalDateTime.now() + " delete order " + order.getSymbol() + " " + order.toString() + " " + avRsi);
+            } else {
+                logger.error(LocalDateTime.now() + " " + order.getSymbol() + " waiting " + avRsi);
+            }
         });
     }
 
@@ -66,7 +72,9 @@ public class Strategy111Service extends BotService {
         String candleStick = indicatorsService.getCandleStick(order.getSymbol());
         order.setOpen(true);
         cciOrderRepository.save(order);
-        botService.newOrder(SOURCE_NAME, order.getSymbol(), "LONG", "0", "0", 3.0, 0.83, "", orders, source, candleStick);
+        botService.newOrder(SOURCE_NAME, order.getSymbol(), "LONG", "0", "0", 2.4, 1.23, "", orders, source, candleStick);
+//        botService.newOrder(SOURCE_NAME, order.getSymbol(), "LONG", "0", "0", 3.0, 0.83, "", orders, source, candleStick);
+//        botService.newOrder(SOURCE_NAME, order.getSymbol(), "SHORT", "0", "0", 1.5, 2.5, "", orders, source, candleStick);
     }
 
     public void openOrder(String symbol){

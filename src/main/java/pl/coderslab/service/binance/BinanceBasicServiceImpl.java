@@ -5,10 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pl.coderslab.binance.client.SyncRequestClient;
-import pl.coderslab.binance.client.model.enums.CandlestickInterval;
-import pl.coderslab.binance.client.model.enums.IncomeType;
-import pl.coderslab.binance.client.model.enums.OrderSide;
-import pl.coderslab.binance.client.model.enums.PositionSide;
+import pl.coderslab.binance.client.model.enums.*;
 import pl.coderslab.binance.client.model.market.Candlestick;
 import pl.coderslab.binance.client.model.market.ExchangeInfoEntry;
 import pl.coderslab.binance.client.model.market.ExchangeInformation;
@@ -130,12 +127,15 @@ public class BinanceBasicServiceImpl implements BinanceBasicService {
     }
 
     @Override
-    public void cancelOpenOrder(SyncRequestClient syncRequestClient, String symbol, OrderSide orderSide) {
+    public void cancelOpenOrder(SyncRequestClient syncRequestClient, String symbol, OrderSide orderSide, OrderType orderType) {
         try {
             String side = orderSide.toString();
             List<Order> listOrder = syncRequestClient.getOpenOrders(symbol).stream()
                     .filter(s -> s.getSide().equals(side))
                     .toList();
+            if(!isNull(orderType)){
+                listOrder = listOrder.stream().filter(s->s.getType().equals(orderType.toString())).toList();
+            }
             for (Order order : listOrder) {
                 syncRequestClient.cancelOrder(symbol, order.getOrderId(), order.getClientOrderId());
             }

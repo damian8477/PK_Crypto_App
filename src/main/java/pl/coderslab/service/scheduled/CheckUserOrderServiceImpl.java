@@ -30,6 +30,7 @@ public class CheckUserOrderServiceImpl implements CheckUserOrderService, Common 
     private final OrderRepository orderRepository;
     private final OrderService orderService;
     private final UserSettingService userSettingService;
+    private final BEService beService;
     private static final Logger logger = LoggerFactory.getLogger(CheckUserOrderServiceImpl.class);
 
     @Override
@@ -156,6 +157,7 @@ public class CheckUserOrderServiceImpl implements CheckUserOrderService, Common 
                             String tp = getTp(position, order);
                             binanceService.sendSlAndTpToAccount(syncRequestClient, order.getSymbolName(), null, order.getPositionSide(), order.getSl(), tp);
                         }
+                        beService.checkBE(syncRequestClient, position, order);
                     } else {
                         cancelAllOpenOrders(syncRequestClient, order.getSymbolName(), order.getPositionSide(), null, true);
                     }

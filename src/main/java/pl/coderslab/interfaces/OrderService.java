@@ -19,7 +19,10 @@ public interface OrderService {
 
     void save(User user, CommonSignal commonSignal, String entryPrice, String lot,
               String amount, String startProfit, int lev, Strategy strategy, boolean isOpen, Source source, boolean isStrategy);
+
     void save(User user, Signal signal, String lot, String amount, String startProfit, int lev, Strategy strategy, boolean isOpen, Source source, boolean isStrategy);
+
+    void save(Order order);
 
     void update(Order order);
 

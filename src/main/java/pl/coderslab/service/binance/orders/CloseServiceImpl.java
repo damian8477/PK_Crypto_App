@@ -90,7 +90,7 @@ public class CloseServiceImpl implements CloseService {
                             lot, null, lot, null, null, null, NewOrderRespType.ACK);
                 }
             }
-            binanceSupport.cancelOpenOrder(syncRequestClient, position.getSymbol(), orderSide);
+            binanceSupport.cancelOpenOrder(syncRequestClient, position.getSymbol(), orderSide, null);
         } catch (Exception e) {
             logger.error(String.format("Error during kill order %s", e));
         }

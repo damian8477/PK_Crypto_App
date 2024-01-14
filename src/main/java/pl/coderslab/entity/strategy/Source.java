@@ -45,7 +45,7 @@ public class Source {
     private BigDecimal basicSlPercent;
     @OneToMany(fetch = FetchType.EAGER)
     private List<Strategy> strategies;
-    @OneToMany
+    @ManyToMany
     private List<Symbol> symbols;
 
     public void addSymbol(Symbol symbol) {

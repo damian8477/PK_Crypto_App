@@ -37,4 +37,5 @@ public interface BinanceService {
 
     BinanceConfirmOrder getBinanceConfirmOrder(SyncRequestClient syncRequestClient, Order order, double marketPrice);
 
+    void changeStopLoss(SyncRequestClient syncRequestClient, Order order, String lot, double slPrice);
 }
