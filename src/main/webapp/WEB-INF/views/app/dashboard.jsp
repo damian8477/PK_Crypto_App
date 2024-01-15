@@ -51,7 +51,7 @@
         </a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" href="/app/user/statistic">
+        <a class="nav-link" href="/app/statistic/menu">
             <span>Statystyki</span>
             <i class="fas fa-angle-right"></i>
         </a>

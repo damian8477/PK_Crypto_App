@@ -10,5 +10,8 @@ import java.util.List;
 public class SourceStat {
     private Source source;
     private BigDecimal accuracy;
+    private int countWin;
+    private int countTrade;
     private List<SymbolStat> symbolStat;
+    private List<ShiftTrade> shiftTrades;
 }

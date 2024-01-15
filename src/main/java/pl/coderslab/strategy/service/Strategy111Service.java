@@ -3,6 +3,7 @@ package pl.coderslab.strategy.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import pl.coderslab.binance.client.model.enums.CandlestickInterval;
 import pl.coderslab.entity.orders.Order;
 import pl.coderslab.entity.strategy.CCIOrder;
 import pl.coderslab.entity.strategy.Source;
@@ -53,6 +54,7 @@ public class Strategy111Service extends BotService {
         List<Order> finalOrders = orders;
         cciOrders.forEach(order -> {
            double avRsi = indicatorsService.getAvrRsi(order.getSymbol(), 14);
+           avRsi = indicatorsService.getRSI(15, order.getSymbol(), 14);
             if(avRsi < 52.0){
                 openOrder(order, finalOrders);
                 order.setOpen(true);

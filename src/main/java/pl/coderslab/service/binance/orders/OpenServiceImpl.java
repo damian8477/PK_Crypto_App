@@ -68,7 +68,7 @@ public class OpenServiceImpl implements OpenService, Common {
         List<Order> orders = strategy.getUser().getOrders();
         int sizeSource = orders.stream().filter(s -> Objects.equals(s.getSource().getId(), strategy.getSource().getId())).toList().size();
         int sizeAll = orders.size();
-        return userSetting.getMaxCountOrder() < sizeAll && strategy.getMaxCountOrders() < sizeSource;
+        return userSetting.getMaxCountOrder() > sizeAll && strategy.getMaxCountOrders() > sizeSource;
     }
 
     private void newOrder(CommonSignal signal, List<Order> orderList, Source source, User user, Double marketPrice, ExchangeInfoEntry exchangeInfoEntry, Strategy strategy) {

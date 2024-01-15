@@ -16,23 +16,20 @@
             <div class="dashboard-content border-dashed p-3 m-4 view-height">
                 <div class="row border-bottom border-3 p-1 m-1">
                     <div class="col noPadding">
-                        <h3 class="color-header text-uppercase">Wybierz statystyke</h3>
+                        <h3 class="color-header text-uppercase">Statystyki</h3>
                     </div>
 
                 </div>
 
                 <div class="schedules-content">
                     <div>
-                        <form action="app/statistic/source" method="get">
-                            <div class="form-group row">
-                                <label class="col-sm-2 label-size col-form-label">Maksymalna liczba zleceń</label>
-                                <div class="col-sm-10">
-                                    <input type="number" name="sourceId" class="form-control">
-                                </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 label-size col-form-label">Accuracy</label>
+                            <div class="col-sm-10">
+                                <input type="number" name="" class="form-control">
                             </div>
-                        </form>
+                        </div>
                     </div>
-
                 </div>
             </div>
         </div>

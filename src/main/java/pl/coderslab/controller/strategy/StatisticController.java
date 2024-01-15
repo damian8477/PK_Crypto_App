@@ -4,9 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import pl.coderslab.entity.orders.HistoryOrder;
+import pl.coderslab.entity.orders.Symbol;
 import pl.coderslab.entity.strategy.Source;
 import pl.coderslab.interfaces.SourceService;
 import pl.coderslab.model.statistic.SourceStat;
@@ -29,12 +31,24 @@ public class StatisticController {
         return "/app/statistic/data";
     }
 
+    @GetMapping("/menu")
+    public String getMenuView(){
+        return "/app/statistic/menu";
+    }
+
     @GetMapping("/source")
     public String getSource(@RequestParam int sourceId, Model model) {
         List<HistoryOrder> historyOrderList = historyOrderRepository.findAllBySourceAndUserId(sourceId, 1000L);
         Source source = sourceService.findById(sourceId);
         SourceStat sourceStat = statisticService.getSourceStatistic(historyOrderList);
-        return "/app/statistic/data";
+        model.addAttribute("sourceStat", sourceStat);
+        model.addAttribute("source", source);
+        return "/app/statistic/source";
+    }
+
+    @ModelAttribute("sourceList")
+    public Source[] sourceList() {
+        return sourceService.findAll().toArray(new Source[0]);
     }
 
 
