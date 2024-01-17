@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pl.coderslab.entity.orders.Order;
+import pl.coderslab.entity.orders.Symbol;
 import pl.coderslab.entity.strategy.Source;
 import pl.coderslab.entity.strategy.rsi.RsiStrategy;
 import pl.coderslab.interfaces.*;
@@ -11,7 +12,6 @@ import pl.coderslab.model.BinanceConfirmOrder;
 import pl.coderslab.repository.RsiStrategyRepository;
 import pl.coderslab.service.bot.BotService;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +19,7 @@ import java.util.Map;
 import static java.util.Objects.isNull;
 
 @Service
-public class Strategy110Service extends BotService {
+public class Strategy110Service extends BotService implements StrategyService {
     private static final String SOURCE_NAME = "RSI";
     private final RsiStrategyRepository rsiStrategyRepository;
     private final IndicatorsService indicatorsService;
@@ -28,6 +28,7 @@ public class Strategy110Service extends BotService {
     private final BinanceBasicService binanceBasicService;
     private final OrderService orderService;
     private List<RsiStrategy> cryptoNames = new ArrayList<>();
+    public static List<String> symbolList = new ArrayList<>();
     private static final Logger logger = LoggerFactory.getLogger(Strategy110Service.class);
 
 
@@ -57,12 +58,16 @@ public class Strategy110Service extends BotService {
         }
     }
 
+
+    @Override
     public void searchNewOrder(List<Order> orders) {
         downloadCryptoNameList();
         if (isNull(orders)) {
             orders = orderService.findByUserId(1000L);
         }
-        for (RsiStrategy coin : cryptoNames) {
+        List<RsiStrategy> cryptoNameList = cryptoNames.stream()
+                .filter(s -> symbolList.contains(s.getSymbol())).toList();
+        for (RsiStrategy coin : cryptoNameList) {
             double avRsi = indicatorsService.getAvrRsi(coin.getSymbol(), 14);
             String candleStick = indicatorsService.getCandleStick(coin.getSymbol());
             String avRsiString = String.valueOf(aroundValueS("1.11", String.valueOf(avRsi)));
@@ -113,6 +118,7 @@ public class Strategy110Service extends BotService {
         }
     }
 
+    @Override
     public void checkOrderStatusBot(List<Order> activeOrdersListArg) {
         if (isNull(activeOrdersListArg)) {
             activeOrdersListArg = orderService.findByUserId(1000L);
@@ -142,6 +148,7 @@ public class Strategy110Service extends BotService {
         }
     }
 
+
     @Override
     public void killOrder(Order order, double marketPrice) {
         orderService.deleteById(order.getId());
@@ -149,21 +156,49 @@ public class Strategy110Service extends BotService {
         updateCountWinLoss(order, String.valueOf(totalPercentValue));
         BinanceConfirmOrder binanceConfirmOrder = getBinanceConfirmOrder(order, marketPrice, totalPercentValue);
         boolean win = false;
-        if(totalPercentValue > 0){
+        if (totalPercentValue > 0) {
             win = true;
         }
         orderService.saveHistoryOrderToDB(order.getUser(), order, binanceConfirmOrder, false, win);
     }
 
-    public void checkCoinInStrategy(){
+    public void checkCoinInStrategy() {
         List<String> symbolOfBinance = binanceBasicService.getSymbolList();
         List<RsiStrategy> rsiSymbols = rsiStrategyRepository.findAll();
-        rsiSymbols.forEach(s->{
-            if(!symbolOfBinance.contains(s.getSymbol())){
+        rsiSymbols.forEach(s -> {
+            if (!symbolOfBinance.contains(s.getSymbol())) {
                 rsiStrategyRepository.delete(s);
             }
         });
     }
 
+    @Override
+    public void downloadSymbols() {
+        Source source = sourceService.findByNameWithSymbols(SOURCE_NAME);
+        if (!isNull(source)) {
+            symbolList = source.getSymbols().stream().map(Symbol::getName).toList();
+        }
+        updateStrategyDb();
+    }
+
+    @Override
+    public void updateStrategyDb() {
+        List<RsiStrategy> rsiSymbols = rsiStrategyRepository.findAll();
+        symbolList.forEach(s -> {
+            if (rsiSymbols.stream().filter(rsi -> rsi.getSymbol().equals(s)).toList().isEmpty()) {
+                rsiStrategyRepository.save(RsiStrategy.builder()
+                        .active(false)
+                        .countLossTrade(0)
+                        .down(false).up(false)
+                        .longRsiTrigger(30)
+                        .sellRsiTrigger(80)
+                        .procentSl(2.0)
+                        .procentTp(0.85)
+                        .sumRsi("0.0")
+                        .symbol(s)
+                        .build());
+            }
+        });
+    }
 
 }

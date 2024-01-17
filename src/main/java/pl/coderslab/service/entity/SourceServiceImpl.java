@@ -16,9 +16,16 @@ public class SourceServiceImpl implements SourceService {
     private final SourceRepository sourceRepository;
 
     @Override
-    @Transactional
     public Source findByName(String name) {
         return sourceRepository.findByName(name);
+    }
+
+    @Override
+    @Transactional
+    public Source findByNameWithSymbols(String name) {
+        Source source = sourceRepository.findByName(name);
+        Hibernate.initialize(source.getSymbols());
+        return source;
     }
 
     @Override

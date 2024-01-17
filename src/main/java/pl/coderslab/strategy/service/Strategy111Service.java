@@ -3,18 +3,15 @@ package pl.coderslab.strategy.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import pl.coderslab.binance.client.model.enums.CandlestickInterval;
 import pl.coderslab.entity.orders.Order;
+import pl.coderslab.entity.orders.Symbol;
 import pl.coderslab.entity.strategy.CCIOrder;
 import pl.coderslab.entity.strategy.Source;
-import pl.coderslab.entity.strategy.rsi.RsiStrategy;
 import pl.coderslab.interfaces.*;
 import pl.coderslab.model.BinanceConfirmOrder;
 import pl.coderslab.repository.CCIOrderRepository;
-import pl.coderslab.repository.RsiStrategyRepository;
 import pl.coderslab.service.bot.BotService;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +20,7 @@ import java.util.Map;
 import static java.util.Objects.isNull;
 
 @Service
-public class Strategy111Service extends BotService {
+public class Strategy111Service extends BotService implements StrategyService {
     private static final String SOURCE_NAME = "CCI";
     private final IndicatorsService indicatorsService;
     private final CCIOrderRepository cciOrderRepository;
@@ -31,6 +28,7 @@ public class Strategy111Service extends BotService {
     private final SourceService sourceService;
     private final BinanceBasicService binanceBasicService;
     private final OrderService orderService;
+    public static List<String> symbolList = new ArrayList<>();
     private List<CCIOrder> activeOrders = new ArrayList<>();
     private static final Logger logger = LoggerFactory.getLogger(Strategy111Service.class);
 
@@ -45,22 +43,26 @@ public class Strategy111Service extends BotService {
         this.cciOrderRepository = cciOrderRepository;
     }
 
+    @Override
     public void searchNewOrder(List<Order> orders) {
         activeOrders = cciOrderRepository.findAll();
-        List<CCIOrder> cciOrders = activeOrders.stream().filter(s->!s.isOpen() && s.isActive()).toList();
+        List<CCIOrder> cciOrders = activeOrders.stream()
+                .filter(s -> !s.isOpen() && s.isActive())
+                .filter(s -> symbolList.contains(s.getSymbol()))
+                        .toList();
         if (isNull(orders)) {
             orders = orderService.findByUserId(1000L);
         }
         List<Order> finalOrders = orders;
         cciOrders.forEach(order -> {
-           double avRsi = indicatorsService.getAvrRsi(order.getSymbol(), 14);
-           avRsi = indicatorsService.getRSI(15, order.getSymbol(), 14);
-            if(avRsi < 52.0){
+            double avRsi;// = indicatorsService.getAvrRsi(order.getSymbol(), 14);
+            avRsi = indicatorsService.getRSI(15, order.getSymbol(), 14);
+            if (avRsi < 52.0) {
                 openOrder(order, finalOrders);
                 order.setOpen(true);
                 cciOrderRepository.save(order);
                 logger.error(LocalDateTime.now() + " OPEN " + order.getSymbol() + avRsi);
-            } else if(avRsi > 75.0){
+            } else if (avRsi > 75.0) {
                 order.setOpen(true);
                 logger.error(LocalDateTime.now() + " delete order " + order.getSymbol() + " " + order.toString() + " " + avRsi);
             } else {
@@ -69,7 +71,7 @@ public class Strategy111Service extends BotService {
         });
     }
 
-    public void openOrder(CCIOrder order, List<Order> orders){
+    public void openOrder(CCIOrder order, List<Order> orders) {
         Source source = sourceService.findByName(SOURCE_NAME);
         String candleStick = indicatorsService.getCandleStick(order.getSymbol());
         order.setOpen(true);
@@ -79,12 +81,7 @@ public class Strategy111Service extends BotService {
 //        botService.newOrder(SOURCE_NAME, order.getSymbol(), "SHORT", "0", "0", 1.5, 2.5, "", orders, source, candleStick);
     }
 
-    public void openOrder(String symbol){
-        Source source = sourceService.findByName(SOURCE_NAME);
-        String candleStick = indicatorsService.getCandleStick(symbol);
-        botService.newOrder(SOURCE_NAME, symbol, "LONG", "0", "0", 3.0, 0.83, "", new ArrayList<>(), source, candleStick);
-    }
-
+    @Override
     public void checkOrderStatusBot(List<Order> activeOrdersListArg) {
         if (isNull(activeOrdersListArg)) {
             activeOrdersListArg = orderService.findByUserId(1000L);
@@ -121,18 +118,18 @@ public class Strategy111Service extends BotService {
         Double totalPercentValue = aroundValue("1.11", percentProfitBot(marketPrice, order));
         BinanceConfirmOrder binanceConfirmOrder = getBinanceConfirmOrder(order, marketPrice, totalPercentValue);
         boolean win = false;
-        if(totalPercentValue > 0){
+        if (totalPercentValue > 0) {
             win = true;
         }
         orderService.saveHistoryOrderToDB(order.getUser(), order, binanceConfirmOrder, false, win);
         cciOrderUpdateKill(order, marketPrice);
     }
 
-    private void cciOrderUpdateKill(Order order, double marketPrice){
+    private void cciOrderUpdateKill(Order order, double marketPrice) {
         CCIOrder cciOrder = activeOrders.stream()
                 .filter(s -> s.getSymbol().equals(order.getSymbolName()))
                 .findFirst().orElse(null);
-        if(!isNull(cciOrder)){
+        if (!isNull(cciOrder)) {
             cciOrder.setActive(false);
             cciOrder.setOpen(false);
             cciOrder.setWin(Double.parseDouble(order.getEntry()) > marketPrice);
@@ -140,6 +137,18 @@ public class Strategy111Service extends BotService {
             cciOrder.setCloseTime(LocalDateTime.now());
             cciOrderRepository.save(cciOrder);
         }
+    }
+
+    @Override
+    public void downloadSymbols(){
+        Source source = sourceService.findByNameWithSymbols(SOURCE_NAME);
+        if(!isNull(source)){
+            symbolList = source.getSymbols().stream().map(Symbol::getName).toList();
+        }
+    }
+
+    @Override
+    public void updateStrategyDb() {
 
     }
 }

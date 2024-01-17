@@ -47,6 +47,7 @@ public class ScheduledService {
             logger.info("Scheduled counter: " + count + " " + LocalDateTime.now());
         }
         if (count == 1) {
+            downloadSymbolsForStrategy();
             strategy110Service.downloadCryptoNameList();
             strategy110Service.checkCoinInStrategy();
             cciStrategy.searchCCI();
@@ -80,5 +81,10 @@ public class ScheduledService {
         List<TelegramCode> telegramCodes = telegramCodeRepository.findAllByExpiredCode(LocalDateTime.now().minusMinutes(15L));
         telegramCodeRepository.deleteAll(telegramCodes);
         userTokenRepository.deleteAllByExpiredCode(LocalDateTime.now().minusMinutes(15L));
+    }
+
+    private void downloadSymbolsForStrategy(){
+        strategy111Service.downloadSymbols();
+        strategy110Service.downloadSymbols();
     }
 }
