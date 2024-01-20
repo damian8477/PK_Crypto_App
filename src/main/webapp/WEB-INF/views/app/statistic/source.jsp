@@ -22,14 +22,96 @@
                 </div>
 
                 <div class="schedules-content">
-                    <div>
-                        <div class="form-group row">
-                            <label class="col-sm-2 label-size col-form-label">Accuracy</label>
-                            <div class="col-sm-10">
-                                <input type="number" name="" class="form-control">
+                    <div class="schedules-content">
+                        <div class="schedules-content-header">
+                            <div class="form-group row">
+                                <span class="col-sm-2 label-size col-form-label">
+                                    Nazwa źródła
+                                </span>
+                                <div class="col-sm-10">
+                                    <p class="schedules-text"><c:out value="${source.name}" default="null" /></p>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <span class="col-sm-2 label-size col-form-label">
+                                    Accuracy
+                                </span>
+                                <div class="col-sm-10">
+                                    <p class="schedules-text">
+                                        <c:out value="${sourceStat.accuracy}" default="null" />
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <span class="col-sm-2 label-size col-form-label">
+                                    Count win trade
+                                </span>
+                                <div class="col-sm-10">
+                                    <p class="schedules-text">
+                                        <c:out value="${sourceStat.countWin}" default="null" />
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <span class="col-sm-2 label-size col-form-label">
+                                    Count trade
+                                </span>
+                                <div class="col-sm-10">
+                                    <p class="schedules-text">
+                                        <c:out value="${sourceStat.countTrade}" default="null" />
+                                    </p>
+                                </div>
                             </div>
                         </div>
+                            <table class="table">
+                                <thead>
+                                <tr class="d-flex">
+                                    <th class="col-1">Symbol</th>
+                                    <th class="col-1">Accuracy</th>
+                                    <th class="col-1">Win pcs</th>
+                                    <th class="col-1">Trade pcs</th>
+                                    <th class="col-1">Akcje</th>
+                                </tr>
+                                </thead>
+                                <tbody class="text-color-lighter">
+                                <c:forEach var="symbol" items="${sourceStat.symbolStat}">
+                                    <tr class="d-flex">
+                                        <td class="col-1">${symbol.cryptoName}</td>
+                                        <td class="col-1">${symbol.accuracy}</td>
+                                        <td class="col-1">${symbol.countWin}</td>
+                                        <td class="col-1">${symbol.countTrade}</td>
+                                        <td class="col-1 center">
+                                            <a href="/app/statistic/symbol-details?sourceId=${source.id}&symbolName=${symbol.cryptoName}" class="btn btn-danger rounded-0 text-light m-1">Szczegóły</a>
+                                        </td>
+                                    </tr>
+                                </c:forEach>
+                                </tbody>
+                            </table>
                     </div>
+
+
+                </div>
+                <table class="table">
+                    <thead>
+                    <tr class="d-flex">
+                        <th class="col-1">Zmiana</th>
+                        <th class="col-1">Accuracy</th>
+                        <th class="col-1">Win pcs</th>
+                        <th class="col-1">Trade pcs</th>
+                    </tr>
+                    </thead>
+                    <tbody class="text-color-lighter">
+                    <c:forEach var="shift" items="${sourceStat.shiftTrades}">
+                        <tr class="d-flex">
+                            <td class="col-1">${shift.shift}</td>
+                            <td class="col-1">${shift.accuracy}</td>
+                            <td class="col-1">${shift.countWin}</td>
+                            <td class="col-1">${shift.countTrade}</td>
+                        </tr>
+                    </c:forEach>
+                    </tbody>
+                </table>
+            </div>
                 </div>
             </div>
         </div>

@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Data
-public class SourceStat {
+public class SourceStat implements CommonStatInterface{
     private Source source;
     private BigDecimal accuracy;
     private int countWin;

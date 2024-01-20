@@ -21,16 +21,16 @@ public class TelegramConfiguration {
     private final TokenConfigProperties tokenConfigProperties;
     private final VipSignalConfigProperties vipSignalConfigProperties;
     private final RequestSignalVipServiceImpl requestSignalVipService;
-    @Bean
-    public void telegramBotsApi() throws TelegramApiException {
-        TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
-        telegramBotsApi.registerBot(new TelegramBotServiceImpl(requestTelegramService, tokenConfigProperties));
-    }
-
-    @Bean
-    public void telegramVip() throws TelegramApiException {
-        TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
-        telegramBotsApi.registerBot(new TelegramVipServiceImpl(requestSignalVipService, vipSignalConfigProperties));
-    }
+//    @Bean
+//    public void telegramBotsApi() throws TelegramApiException {
+//        TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
+//        telegramBotsApi.registerBot(new TelegramBotServiceImpl(requestTelegramService, tokenConfigProperties));
+//    }
+//
+//    @Bean
+//    public void telegramVip() throws TelegramApiException {
+//        TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
+//        telegramBotsApi.registerBot(new TelegramVipServiceImpl(requestSignalVipService, vipSignalConfigProperties));
+//    }
 
 }
