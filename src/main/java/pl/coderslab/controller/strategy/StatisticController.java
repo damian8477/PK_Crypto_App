@@ -32,7 +32,7 @@ public class StatisticController {
     }
 
     @GetMapping("/menu")
-    public String getMenuView(){
+    public String getMenuView() {
         return "/app/statistic/menu";
     }
 
