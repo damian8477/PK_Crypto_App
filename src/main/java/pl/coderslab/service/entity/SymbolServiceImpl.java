@@ -28,14 +28,16 @@ public class SymbolServiceImpl implements SymbolService {
     }
 
     @Override
-    public void checkSymbol(Symbol symbol) {
+    public boolean checkSymbol(Symbol symbol) {
         symbol.setName(symbol.getName().toUpperCase());
         if (binanceService.getSymbols().stream().anyMatch(s -> s.getSymbol().equals(symbol.getName()))) {
-            throw new IllegalArgumentException("Symbol znajduje się już na liście");
+//            throw new IllegalArgumentException("Symbol znajduje się już na liście");
+            return false;
         }
         if (!binanceService.getSymbolNames().contains(symbol.getName())) {
             throw new IllegalArgumentException("Nie ma takiego symbolu na giełdzie binance");
         }
+        return true;
     }
 
     @Override

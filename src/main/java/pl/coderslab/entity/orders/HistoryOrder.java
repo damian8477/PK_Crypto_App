@@ -35,6 +35,8 @@ public class HistoryOrder {
     private BigDecimal realizedPln;
     @Column(name = "profit_procent")
     private BigDecimal profitPercent;
+    @Column(name = "open_time")
+    private LocalDateTime openTime;
     @Column(updatable = false)
     private LocalDateTime created;
     @ManyToOne

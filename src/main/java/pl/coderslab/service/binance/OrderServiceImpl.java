@@ -128,6 +128,7 @@ public class OrderServiceImpl implements OrderService {
                         .ownClosed(ownClosed)
                         .signal(order.getSignal())
                         .win(win)
+                        .openTime(order.getCreated())
                         .build());
     }
 

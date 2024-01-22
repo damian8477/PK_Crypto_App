@@ -21,6 +21,7 @@ public class StatisticService {
         getAccuracy(historyOrderList, sourceStat);
         sourceStat.setSymbolStat(getSymbolStat(historyOrderList));
         sourceStat.setShiftTrades(getShiftTrades(historyOrderList));
+        sourceStat.setHourTrades(getHourTrades(historyOrderList));
         return sourceStat;
     }
 
@@ -69,14 +70,21 @@ public class StatisticService {
 
     private List<ShiftTrade> getShiftTrades(List<HistoryOrder> historyOrderList){
         List<ShiftTrade> shiftTrades = new ArrayList<>();
-        shiftTrades.add(getShiftTrade(1, historyOrderList));
-        shiftTrades.add(getShiftTrade(2, historyOrderList));
-        shiftTrades.add(getShiftTrade(3, historyOrderList));
+        shiftTrades.add(getShiftTrade(1, historyOrderList, false));
+        shiftTrades.add(getShiftTrade(2, historyOrderList, false));
+        shiftTrades.add(getShiftTrade(3, historyOrderList, false));
         return shiftTrades;
     }
+    private List<ShiftTrade> getHourTrades(List<HistoryOrder> historyOrderList){
+        List<ShiftTrade> hourTrades = new ArrayList<>();
+        for (int i = 0; i < 24; i++) {
+            hourTrades.add(getShiftTrade(i, historyOrderList, true));
+        }
+        return hourTrades;
+    }
 
-    private ShiftTrade getShiftTrade(int shift, List<HistoryOrder> historyOrderList){
-        List<HistoryOrder> historyOrders = getHistoryForShift(shift, historyOrderList);
+    private ShiftTrade getShiftTrade(int shift, List<HistoryOrder> historyOrderList, boolean hour){
+        List<HistoryOrder> historyOrders = getHistoryForShift(shift, historyOrderList, hour);
         SourceStat sourceStat = new SourceStat();
         getAccuracy(historyOrders, sourceStat);
         ShiftTrade shiftTrade = new ShiftTrade();
@@ -84,15 +92,28 @@ public class StatisticService {
         shiftTrade.setCountTrade(sourceStat.getCountTrade());
         shiftTrade.setCountWin(sourceStat.getCountWin());
         shiftTrade.setAccuracy(sourceStat.getAccuracy());
-        return null;
+        return shiftTrade;
     }
 
-    private List<HistoryOrder> getHistoryForShift(int shift, List<HistoryOrder> historyOrderList){
-        int startH = getStartHour(shift);
-        int stopH = getStopHour(shift);
+    private List<HistoryOrder> getHistoryForShift(int shift, List<HistoryOrder> historyOrderList, boolean shiftHour){
+        int startH;
+        int stopH;
+        if(!shiftHour){
+            startH = getStartHour(shift);
+            stopH = getStopHour(shift);
+        } else {
+            startH = shift;
+            stopH = shift + 1;
+            if(stopH >= 24){
+                stopH = 0;
+            }
+        }
 
+        int finalStopH = stopH;
+        int finalStopH1 = stopH;
         return historyOrderList.stream()
-                .filter(s->(s.getCreated().getHour() >= startH && s.getCreated().getHour() < stopH))
+                .filter(s->((s.getCreated().getHour() >= startH && s.getCreated().getHour() < finalStopH) || startH > finalStopH))
+                .filter(s->((s.getCreated().getHour() >= startH || s.getCreated().getHour() < finalStopH1) || startH < finalStopH1))
                 .toList();
     }
 

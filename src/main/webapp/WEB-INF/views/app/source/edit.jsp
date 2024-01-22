@@ -59,6 +59,7 @@
                             </div>
                         </div>
                         <form:hidden path="id"/><form:errors path="id"/><br>
+                        <form:hidden path="symbols"/>
                             <%--                    <form:hidden path="strategies"/><form:errors path="strategies"/><br>--%>
                         <form:hidden path="adminStrategy"/><form:errors path="adminStrategy"/><br>
                         <form:button class="btn btn-color rounded-0 pt-0 pb-0 pr-4 pl-4">Zapisz</form:button>

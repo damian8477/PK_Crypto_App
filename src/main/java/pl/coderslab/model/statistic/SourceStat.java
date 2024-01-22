@@ -14,4 +14,5 @@ public class SourceStat implements CommonStatInterface{
     private int countTrade;
     private List<SymbolStat> symbolStat;
     private List<ShiftTrade> shiftTrades;
+    private List<ShiftTrade> hourTrades;
 }

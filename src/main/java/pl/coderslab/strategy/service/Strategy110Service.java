@@ -65,8 +65,9 @@ public class Strategy110Service extends BotService implements StrategyService {
         if (isNull(orders)) {
             orders = orderService.findByUserId(1000L);
         }
-        List<RsiStrategy> cryptoNameList = cryptoNames.stream()
-                .filter(s -> symbolList.contains(s.getSymbol())).toList();
+//        List<RsiStrategy> cryptoNameList = cryptoNames.stream()
+//                .filter(s -> symbolList.contains(s.getSymbol())).toList();
+        List<RsiStrategy> cryptoNameList = cryptoNames;
         for (RsiStrategy coin : cryptoNameList) {
             double avRsi = indicatorsService.getAvrRsi(coin.getSymbol(), 14);
             String candleStick = indicatorsService.getCandleStick(coin.getSymbol());
