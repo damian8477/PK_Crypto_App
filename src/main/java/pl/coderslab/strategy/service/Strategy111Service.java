@@ -14,6 +14,7 @@ import pl.coderslab.service.bot.BotService;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -30,6 +31,7 @@ public class Strategy111Service extends BotService implements StrategyService {
     private final OrderService orderService;
     public static List<String> symbolList = new ArrayList<>();
     private List<CCIOrder> activeOrders = new ArrayList<>();
+    private Map<String, Double> waitingSymbol = new HashMap<>();
     private static final Logger logger = LoggerFactory.getLogger(Strategy111Service.class);
 
 
@@ -57,20 +59,31 @@ public class Strategy111Service extends BotService implements StrategyService {
         cciOrders.forEach(order -> {
             double avRsi;// = indicatorsService.getAvrRsi(order.getSymbol(), 14);
             avRsi = indicatorsService.getRSI(15, order.getSymbol(), 14);
-            if (avRsi < 52.0) {
-                openOrder(order, finalOrders);
-                order.setOpen(true);
-                cciOrderRepository.save(order);
-                logger.error(LocalDateTime.now() + " OPEN " + order.getSymbol() + avRsi);
+            if (avRsi < 50.0) {
+                openProcess(order, finalOrders, avRsi);
             } else if (avRsi > 75.0) {
                 order.setOpen(true);
                 logger.error(LocalDateTime.now() + " delete order " + order.getSymbol() + " " + order.toString() + " " + avRsi);
+                waitingSymbol.remove(order.getSymbol());
             } else {
+                if(!waitingSymbol.containsKey(order.getSymbol())){
+                    waitingSymbol.put(order.getSymbol(), avRsi);
+                }
+                if(waitingSymbol.get(order.getSymbol()) - 5.0 > avRsi){
+                    openProcess(order, finalOrders, avRsi);
+                }
                 logger.error(LocalDateTime.now() + " " + order.getSymbol() + " waiting " + avRsi);
             }
         });
     }
 
+    public void openProcess(CCIOrder order, List<Order> orders, double rsi){
+        openOrder(order, orders);
+        order.setOpen(true);
+        cciOrderRepository.save(order);
+        logger.error(LocalDateTime.now() + " OPEN " + order.getSymbol() + rsi);
+        waitingSymbol.remove(order.getSymbol());
+    }
     public void openOrder(CCIOrder order, List<Order> orders) {
         Source source = sourceService.findByName(SOURCE_NAME);
         String candleStick = indicatorsService.getCandleStick(order.getSymbol());

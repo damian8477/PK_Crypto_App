@@ -47,10 +47,13 @@ public class BinanceController {
 
     @PostMapping("/add-symbol")
     public String addSymbol(@RequestParam String symbolName) {
-        Symbol symbol = new Symbol();
-        symbol.setName(symbolName);
-        if(symbolService.checkSymbol(symbol)) {
-            symbolRepository.save(symbol);
+        String[] symbols = symbolName.split(",");
+        for (String name : symbols) {
+            Symbol symbol = new Symbol();
+            symbol.setName(name);
+            if(symbolService.checkSymbol(symbol)) {
+                symbolRepository.save(symbol);
+            }
         }
         return "redirect:/app/binance/symbol-list";
     }

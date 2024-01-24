@@ -32,13 +32,12 @@
                     </div>
                     <br>
                     <div class="col d-flex justify-content-end mb-2 noPadding">
-                        <form:form method="post" action="/app/binance/add-symbol" modelAttribute="symbol">
-                            <form:hidden path="id"/>Symbol: <form:input path="name"/>
-                            <form:button
-                                    class="btn btn-success rounded-0 pt-0 pb-0 pr-4 pl-4">Dodaj symbol</form:button>
+                        <form method="post" action="/app/binance/add-symbol">
+                            Symbol: <input type="text" name="symbolName"/>
+                            <input type="submit" value="Dodaj" class="btn btn-success rounded-0 pt-0 pb-0 pr-4 pl-4">
                             <br>
-                            <form:errors path="name" cssStyle="color: red"/>
-                        </form:form>
+                            <sec:csrfInput/>
+                        </form>
                     </div>
                 </div>
 

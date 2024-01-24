@@ -18,9 +18,14 @@
                     <div class="col noPadding">
                         <h3 class="color-header text-uppercase">Statystyki</h3>
                     </div>
-
                 </div>
-
+                <form action="/app/statistic/source-date" method="get">
+                    <label for="startDate">Data początkowa:</label>
+                    <input type="date" id="startDate" name="startDate">
+                    <label for="stopDate">Data końcowa:</label>
+                    <input type="date" id="stopDate" name="stopDate">
+                    <input type="submit" value="Odśwież">
+                </form>
                 <div class="schedules-content">
                     <div class="schedules-content">
                         <div class="schedules-content-header">
@@ -77,7 +82,14 @@
                             <c:forEach var="symbol" items="${sourceStat.symbolStat}">
                                 <tr class="d-flex">
                                     <td class="col-1">${symbol.cryptoName}</td>
-                                    <td class="col-1">${symbol.accuracy}</td>
+                                    <c:if test="${symbol.accuracy >= 75}">
+                                        <td class="col-1 color-price-increase"><c:out
+                                                value="${symbol.accuracy}"/></td>
+                                    </c:if>
+                                    <c:if test="${symbol.accuracy < 75}">
+                                        <td class="col-1 color-price-degrease"><c:out
+                                                value="${symbol.accuracy}"/></td>
+                                    </c:if>
                                     <td class="col-1">${symbol.countWin}</td>
                                     <td class="col-1">${symbol.countTrade}</td>
                                     <td class="col-1 center">
@@ -105,7 +117,14 @@
                     <c:forEach var="shift" items="${sourceStat.shiftTrades}">
                         <tr class="d-flex">
                             <td class="col-1">${shift.shift}</td>
-                            <td class="col-1">${shift.accuracy}</td>
+                            <c:if test="${shift.accuracy >= 75}">
+                                <td class="col-1 color-price-increase"><c:out
+                                        value="${shift.accuracy}"/></td>
+                            </c:if>
+                            <c:if test="${shift.accuracy < 75}">
+                                <td class="col-1 color-price-degrease"><c:out
+                                        value="${shift.accuracy}"/></td>
+                            </c:if>
                             <td class="col-1">${shift.countWin}</td>
                             <td class="col-1">${shift.countTrade}</td>
                         </tr>
@@ -127,7 +146,14 @@
                     <c:forEach var="shift" items="${sourceStat.hourTrades}">
                         <tr class="d-flex">
                             <td class="col-1">${shift.shift}</td>
-                            <td class="col-1">${shift.accuracy}</td>
+                            <c:if test="${shift.accuracy >= 75}">
+                                <td class="col-1 color-price-increase"><c:out
+                                        value="${shift.accuracy}"/></td>
+                            </c:if>
+                            <c:if test="${shift.accuracy < 75}">
+                                <td class="col-1 color-price-degrease"><c:out
+                                        value="${shift.accuracy}"/></td>
+                            </c:if>
                             <td class="col-1">${shift.countWin}</td>
                             <td class="col-1">${shift.countTrade}</td>
                         </tr>

@@ -2,6 +2,8 @@ package pl.coderslab.service.statistic;
 
 import org.springframework.stereotype.Service;
 import pl.coderslab.entity.orders.HistoryOrder;
+import pl.coderslab.entity.orders.Symbol;
+import pl.coderslab.entity.strategy.Source;
 import pl.coderslab.model.statistic.CommonStatInterface;
 import pl.coderslab.model.statistic.ShiftTrade;
 import pl.coderslab.model.statistic.SourceStat;
@@ -16,7 +18,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Service
 public class StatisticService {
 
-    public SourceStat getSourceStatistic(List<HistoryOrder> historyOrderList) {
+    public SourceStat getSourceStatistic(List<HistoryOrder> historyOrderList, Source source) {
+        historyOrderList = historyOrderList.stream().filter(s->source.getSymbols().stream().map(Symbol::getName).toList().contains(s.getSymbol())).toList();
         SourceStat sourceStat = new SourceStat();
         getAccuracy(historyOrderList, sourceStat);
         sourceStat.setSymbolStat(getSymbolStat(historyOrderList));
