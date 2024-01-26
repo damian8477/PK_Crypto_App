@@ -48,7 +48,25 @@ Poniżej znajdziesz instrukcje, jak uruchomić projekt na swoim lokalnym środow
       - spring.mail.username
       - spring.mail.password
 
-
+### Uruchomienie w konsoli
+1. Stwórz plik jar `mvn clean compile package`
+2. Utwórz dwa telegram boty
+3. Stwórz email administratora np. gmail
+4. Stwórz baze danych mysql 
+2. Wystartuj aplikacje `java 
+                        -Dbinance.api.var.api-key=apikey
+                        -Dbinance.api.var.secret-key=secretkey
+                        -Dspring.datasource.password=password
+                        -Dspring.datasource.url=jdbc:mysql://localhost:3306/db
+                        -Dspring.mail.password=password
+                        -Dspring.mail.username=email@gmail.com 
+                        -Dtelegram.token.var.name=PkCryptoAppInfo
+                        -Dtelegram.token.var.token=token
+                        -DTELEGRAM_NAME=PkCryptoApp 
+                        -DTELEGRAM_TOKEN=token
+                        -Dtelegram.token.vip.name=SignalRead 
+                        -Dtelegram.token.vip.token=token
+                        -jar /path/PK_Crypto_App-0.0.1-SNAPSHOT.jar`
 
 ## Użycie
 
