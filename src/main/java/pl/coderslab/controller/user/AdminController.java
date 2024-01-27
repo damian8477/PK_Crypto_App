@@ -16,6 +16,7 @@ public class AdminController {
     private final UserRepository userRepository;
     private final UserService userService;
 
+    private static final String REDIRECT = "redirect:/admin/user-list";
     @GetMapping("/user-list")
     public String getUserList(Model model) {
         model.addAttribute("users", userRepository.findAll());
@@ -31,7 +32,7 @@ public class AdminController {
     @PostMapping("/edit")
     public String postEditView(User user) {
         userRepository.save(user);
-        return "redirect:/admin/user-list";
+        return REDIRECT;
     }
 
     @GetMapping("/delete")
@@ -43,12 +44,12 @@ public class AdminController {
     @PostMapping("/delete")
     public String postEditView(@RequestParam Long userId) {
         userRepository.deleteById(userId);
-        return "redirect:/admin/user-list";
+        return REDIRECT;
     }
 
     @PostMapping("/deletet")
     public String postEditViedw(@RequestParam Long userId) {
         userService.deleteById(userId);
-        return "redirect:/admin/user-list";
+        return REDIRECT;
     }
 }

@@ -38,6 +38,8 @@ public class UsersController {
     private final UserTokenService userTokenService;
     private final PasswordEncoder passwordEncoder;
 
+    private final String REDIRECT = "redirect:/app/user/settings";
+
     @GetMapping("/change-pass")
     public String getChangePasswordView(Model model, @AuthenticationPrincipal UserDetails authenticatedUser) {
         User user = userService.getUserBasic(authenticatedUser.getUsername());
@@ -46,7 +48,7 @@ public class UsersController {
             return "/app/settings/change-password";
         }
         //todo dorobic jakies info ze nie ma maila czy cos
-        return "redirect:/app/user/settings";
+        return REDIRECT;
     }
 
     @PostMapping("/change-pass")
@@ -64,7 +66,7 @@ public class UsersController {
             user.setPassword(encodedPassword);
             userRepository.save(user);
         }
-        return "redirect:/app/user/settings";
+        return REDIRECT;
     }
 
     @GetMapping("/edit")
@@ -83,13 +85,11 @@ public class UsersController {
         }
         userRepository.save(user);
         if (userDb.getUsername().equals(user.getUsername())) {
-            return "redirect:/app/user/settings";
+            return REDIRECT;
         } else {
-            if (authenticatedUser != null) {
-                Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-                if (auth != null) {
-                    new SecurityContextLogoutHandler().logout(request, response, auth);
-                }
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            if (auth != null) {
+                new SecurityContextLogoutHandler().logout(request, response, auth);
             }
             return "redirect:/login";
         }
@@ -145,7 +145,7 @@ public class UsersController {
         String userName = SecurityContextHolder.getContext().getAuthentication().getName();
         userSetting.setUser(userService.getUserWithUserSettingsByUserName(userName));
         userSettingRepository.save(userSetting);
-        return "redirect:/app/user/settings";
+        return REDIRECT;
     }
 
 
@@ -158,7 +158,7 @@ public class UsersController {
     @PostMapping("/delete-user-setting")
     public String deleteUserSetting(@RequestParam int settingId) {
         userSettingRepository.deleteById(settingId);
-        return "redirect:/app/user/settings";
+        return REDIRECT;
     }
 
 

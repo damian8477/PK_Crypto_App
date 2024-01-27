@@ -10,6 +10,7 @@ import pl.coderslab.binance.client.model.enums.OrderSide;
 import pl.coderslab.binance.client.model.enums.OrderType;
 import pl.coderslab.binance.client.model.enums.PositionSide;
 import pl.coderslab.binance.client.model.trade.PositionRisk;
+import pl.coderslab.binance.common.Common;
 import pl.coderslab.entity.orders.Order;
 import pl.coderslab.entity.user.User;
 import pl.coderslab.enums.Emoticon;
@@ -24,7 +25,7 @@ import static java.util.Objects.isNull;
 
 @Service
 @RequiredArgsConstructor
-public class CloseServiceImpl implements CloseService {
+public class CloseServiceImpl implements CloseService, Common {
     private final SyncService syncService;
     private final BinanceBasicService binanceSupport;
     private final BinanceService binanceService;
@@ -67,7 +68,7 @@ public class CloseServiceImpl implements CloseService {
                     }
                     orderService.saveHistoryOrderToDB(user, order, binanceConfirmOrder, false, win);
                     telegramBotService.sendMessage(user.getUserSetting().get(0).getTelegramChatId(), String.format(messageService.getOrderCloseOwn(null), Emoticon.CLOSE.getLabel(), order.getSymbolName(), order.getPositionSide(), position.getMarkPrice(), Emoticon.getWinLoss(binanceConfirmOrder.getRealizedPln()), binanceConfirmOrder.getRealizedPln()));
-                    logger.info(String.format(messageService.getOrderCloseOwn(null), Emoticon.CLOSE.getLabel(), order.getSymbolName(), order.getPositionSide(), position.getMarkPrice(), Emoticon.getWinLoss(binanceConfirmOrder.getRealizedPln()), binanceConfirmOrder.getRealizedPln()));
+                    logger.info(getStringFormat(messageService.getOrderCloseOwn(null), Emoticon.CLOSE.getLabel(), order.getSymbolName(), order.getPositionSide(), position.getMarkPrice(), Emoticon.getWinLoss(binanceConfirmOrder.getRealizedPln()), binanceConfirmOrder.getRealizedPln()));
                 }
                 return true;
             }
@@ -77,18 +78,15 @@ public class CloseServiceImpl implements CloseService {
     @Override
     public void killSymbol(SyncRequestClient syncRequestClient, PositionRisk position, String lotSize) {
         String lot = String.valueOf(Math.abs(position.getPositionAmt().doubleValue()));
-        if (lotSize != null) {
-            if (Double.parseDouble(lotSize) <= Double.parseDouble(lot))
-                lot = lotSize;
+        if (lotSize != null && (Double.parseDouble(lotSize) <= Double.parseDouble(lot)))
+                {lot = lotSize;
         }
         PositionSide positionSide = PositionSide.valueOf(position.getPositionSide());
         OrderSide orderSide = binanceSupport.getOrderSideForClose(positionSide);
         try {
             if (!binanceService.sendOrderToBinance(syncRequestClient, position.getSymbol(), orderSide, lot, position.getMarkPrice().toString(), positionSide, OrderType.MARKET, null)) {
-                if (!binanceService.sendOrderToBinance(syncRequestClient, position.getSymbol(), orderSide, lot, position.getMarkPrice().toString(), positionSide, OrderType.MARKET, null)) {
                     syncRequestClient.postOrder(position.getSymbol(), orderSide, positionSide, OrderType.MARKET, null,
                             lot, null, lot, null, null, null, NewOrderRespType.ACK);
-                }
             }
             binanceSupport.cancelOpenOrder(syncRequestClient, position.getSymbol(), orderSide, null);
         } catch (Exception e) {

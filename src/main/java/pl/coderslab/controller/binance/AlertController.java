@@ -66,7 +66,6 @@ public class AlertController {
             model.addAttribute("alert", symbolService.getBasicAlert(symbol.getName()));
             return "/app/binance/alert/add-alert";
         }
-        //todo dodac i wyswietlic info na widoku
         return "redirect:/app/binance/symbol-list";
     }
 
@@ -103,7 +102,7 @@ public class AlertController {
      */
     @GetMapping("/delete")
     public String getDeleteView(@RequestParam Long alertId, Model model) {
-        Alert alert = alertRepository.findById(alertId).get();
+        Alert alert = alertRepository.findById(alertId).orElse(null);
         if (isNull(alert)) {
             return "redirect:/app/alerts/list";
         }

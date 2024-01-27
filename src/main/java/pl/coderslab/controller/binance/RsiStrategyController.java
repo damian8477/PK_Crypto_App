@@ -26,6 +26,6 @@ public class RsiStrategyController {
         }
         rsiStrategy.setSymbol(rsiStrategy.getSymbol().toUpperCase());
         rsiStrategyRepository.save(rsiStrategy);
-        return "symbol dodany";
+        return "Symbol added";
     }
 }

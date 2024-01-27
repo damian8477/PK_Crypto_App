@@ -14,8 +14,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import pl.coderslab.entity.user.User;
 import pl.coderslab.entity.user.UserToken;
-import pl.coderslab.interfaces.EmailService;
-import pl.coderslab.interfaces.UserService;
 import pl.coderslab.interfaces.UserTokenService;
 import pl.coderslab.model.NewPassword;
 import pl.coderslab.repository.UserRepository;
@@ -62,10 +60,7 @@ public class LoginController {
     @GetMapping("/remind-pass")
     public String remindPass(@RequestParam String token, Model model) {
         if (userTokenService.existsByToken(token)) {
-            System.out.println(token);
             model.addAttribute("newPassword", new NewPassword(token));
-            NewPassword newPassword = new NewPassword(token);
-            System.out.println(newPassword);
             return "anonymous/reset-password";
         }
         return "redirect:/login";
@@ -80,7 +75,6 @@ public class LoginController {
             model.addAttribute("newPassword", newPassword);
             return "/app/settings/change-password";
         }
-        System.out.println(newPassword.getToken());
         String encodedPassword = passwordEncoder.encode(newPassword.getPass1());
         UserToken userToken = userTokenService.getUserToken(newPassword.getToken());
         User user = userToken.getUser();
@@ -88,7 +82,7 @@ public class LoginController {
         userRepository.save(user);
 
         logger.info("Password has changed!");
-        logger.info(user.getUsername() + " " + user.getFirstName() + " " + user.getLastName() + " " + user.getEmail());
+        logger.info(String.format("%s %s %s %s", user.getUsername(), user.getFirstName(), user.getLastName(), user.getEmail()));
 
         return "redirect:/login";
     }

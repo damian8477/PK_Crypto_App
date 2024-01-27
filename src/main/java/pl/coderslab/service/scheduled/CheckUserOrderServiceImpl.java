@@ -54,6 +54,7 @@ public class CheckUserOrderServiceImpl implements CheckUserOrderService, Common 
                             .filter(s -> s.getSymbol().equals(order.getSymbolName()))
                             .filter(s -> s.getPositionSide().equals(order.getPositionSide().toString()))
                             .findFirst().orElse(null);
+                    assert position != null;
                     double marketPrice = position.getMarkPrice().doubleValue();
                     if (position.getPositionAmt().doubleValue() == 0.0) {
                         if (!order.isStrategy()) {
@@ -62,7 +63,7 @@ public class CheckUserOrderServiceImpl implements CheckUserOrderService, Common 
                             closeOrderSignal(syncRequestClient, order, marketPrice, user, "Zlecenie zamknięte! ", Emoticon.CLOSE.getLabel(), false);
                         }
                     } else {
-                        checkStopLoss(syncRequestClient, user, position, order);
+                        checkStopLoss(syncRequestClient, position, order);
                     }
                 });
     }
@@ -73,16 +74,13 @@ public class CheckUserOrderServiceImpl implements CheckUserOrderService, Common 
         BinanceConfirmOrder binanceConfirmOrder = binanceService.getBinanceConfirmOrder(syncRequestClient, order, marketPrice);
         binanceConfirmOrder.setEntryPrice(order.getEntry());
         binanceConfirmOrder.setLot(order.getLot());
-        String message = String.format(mess + " %s $%s %s Lot: %s %s", emoticon, order.getSymbolName(), order.getPositionSide(), order.getLot(), binanceConfirmOrder.getRealizedPln());
-        boolean win = false;
-        if (binanceConfirmOrder.getRealizedPln().compareTo(new BigDecimal("0.0")) > 0) {
-            win = true;
-        }
+        String message = getStringFormat(mess + " %s $%s %s Lot: %s %s", emoticon, order.getSymbolName(), order.getPositionSide(), order.getLot(), binanceConfirmOrder.getRealizedPln());
+        boolean win = binanceConfirmOrder.getRealizedPln().compareTo(new BigDecimal("0.0")) > 0;
         orderService.saveHistoryOrderToDB(user, order, binanceConfirmOrder, ownClosed, win);
         telegramBotService.sendMessage(user.getUserSetting().get(0).getTelegramChatId(), message);
     }
 
-    public void checkStopLoss(SyncRequestClient sync, User user, PositionRisk position, pl.coderslab.entity.orders.Order order) {
+    public void checkStopLoss(SyncRequestClient sync, PositionRisk position, pl.coderslab.entity.orders.Order order) {
         List<Order> orders = sync.getOpenOrders(position.getSymbol());
         String orderType = OrderType.STOP_MARKET.toString();
         double stopLossLot = orders.stream()

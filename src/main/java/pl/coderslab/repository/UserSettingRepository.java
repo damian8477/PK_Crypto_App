@@ -8,8 +8,6 @@ import java.util.List;
 public interface UserSettingRepository extends JpaRepository<UserSetting, Integer> {
     UserSetting findById(int id);
 
-    boolean existsByTelegramChatId(String chatId);
-
     UserSetting findByTelegramChatId(String telegramChatId);
 
     List<UserSetting> findAllByUserId(long userId);

@@ -19,16 +19,16 @@
                     </div>
 
                     <div class="col d-flex justify-content-end mb-2 noPadding">
-                    <form action="/app/binance/add-symbol" method="post">
-                        <label for="symbol">Dodaj symbol:</label>
-                        <select id="symbol" name="symbolName">
-                            <c:forEach var="sym" items="${symbolList}">
-                                <option value="${sym}">${sym}</option>
-                            </c:forEach>
-                        </select>
-                        <input type="submit" value="Dodaj" class="btn btn-success rounded-0 pt-0 pb-0 pr-4 pl-4">
-                        <sec:csrfInput/>
-                    </form>
+                        <form action="/app/binance/add-symbol" method="post">
+                            <label for="symbol">Dodaj symbol:</label>
+                            <select id="symbol" name="symbolName">
+                                <c:forEach var="sym" items="${symbolList}">
+                                    <option value="${sym}">${sym}</option>
+                                </c:forEach>
+                            </select>
+                            <input type="submit" value="Dodaj" class="btn btn-success rounded-0 pt-0 pb-0 pr-4 pl-4">
+                            <sec:csrfInput/>
+                        </form>
                     </div>
                     <br>
                     <div class="col d-flex justify-content-end mb-2 noPadding">

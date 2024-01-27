@@ -117,7 +117,7 @@ public class BinanceServiceImpl implements BinanceService, Common {
             }
             orderService.save(user, signal, marketPrice, lot, "", "", lever, null, isOpen, null, false);
             telegramBotService.sendMessage(user.getUserSetting().get(0).getTelegramChatId(), String.format(messageService.getOrderOpenSignal(null), Emoticon.OPEN.getLabel(), signal.getSymbol(), Emoticon.valueOf(signal.getPositionSide().toString()), marketPrice, signal.getLot()));
-            logger.info(String.format("Username: %s%n%s Zlecenie otwarte! %n%s %s $%s LOT: $%s", user.getUsername(), Emoticon.OPEN.getLabel(), signal.getSymbol(), Emoticon.valueOf(signal.getPositionSide().toString()), marketPrice, signal.getLot()));
+            logger.info(getStringFormat("Username: %s%n%s Zlecenie otwarte! %n%s %s $%s LOT: $%s", user.getUsername(), Emoticon.OPEN.getLabel(), signal.getSymbol(), Emoticon.valueOf(signal.getPositionSide().toString()), marketPrice, signal.getLot()));
             return true;
         }
         return false;
@@ -253,7 +253,7 @@ public class BinanceServiceImpl implements BinanceService, Common {
                 sumCommission += commission.getIncome().doubleValue();
             }
             sumCommission *= 2;
-        } catch (Exception e) {
+        } catch (InterruptedException e) {
             logger.error(String.format("getBinanceConfirmOrder() %s", e));
         }
         return BinanceConfirmOrder.builder()
@@ -273,12 +273,6 @@ public class BinanceServiceImpl implements BinanceService, Common {
         sendSlToAccount(syncRequestClient, order.getSymbolName(), order.getPositionSide(), String.valueOf(slPrice), lot);
     }
 
-    private OrderSide getOrderSideClose(PositionSide positionSide) {
-        if (positionSide.equals(PositionSide.LONG)) {
-            return OrderSide.SELL;
-        } else {
-            return OrderSide.BUY;
-        }
-    }
+
 
 }

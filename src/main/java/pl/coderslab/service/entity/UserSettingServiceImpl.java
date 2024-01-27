@@ -30,11 +30,6 @@ public class UserSettingServiceImpl implements UserSettingService {
 
     @Override
     public boolean userSettingExist(List<UserSetting> userSetting) {
-        if (!isNull(userSetting)) {
-            if (!userSetting.isEmpty()) {
-                return true;
-            }
-        }
-        return false;
+        return !isNull(userSetting) && (!userSetting.isEmpty());
     }
 }

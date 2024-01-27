@@ -9,7 +9,6 @@ import pl.coderslab.interfaces.SignalService;
 import pl.coderslab.repository.SourceRepository;
 import pl.coderslab.model.CommonSignal;
 import pl.coderslab.repository.SignalRepository;
-import pl.coderslab.service.telegram.RequestTelegramService;
 
 @Service
 @RequiredArgsConstructor
@@ -17,7 +16,7 @@ public class SignalServiceImpl implements SignalService {
     private final SignalRepository signalRepository;
     private final SourceRepository sourceRepository;
 
-    private static final Logger logger = LoggerFactory.getLogger(RequestTelegramService.class);
+    private static final Logger logger = LoggerFactory.getLogger(SignalServiceImpl.class);
 
     @Override
     public void save(Signal signal) {

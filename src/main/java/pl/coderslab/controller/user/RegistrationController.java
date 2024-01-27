@@ -43,10 +43,8 @@ public class RegistrationController {
         user.setActive(true);
         user.setRole("ROLE_USER");
         userRepository.save(user);
-
         logger.info("New user register!");
         logger.info(user.getUsername() + " " + user.getFirstName() + " " + user.getLastName() + " " + user.getEmail());
-
         return "redirect:/login";
     }
 

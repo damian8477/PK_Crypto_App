@@ -3,8 +3,8 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
-<%@include file="../../../head.jsp"%>
-<%@include file="../../../header.jsp"%>
+<%@include file="../../../head.jsp" %>
+<%@include file="../../../header.jsp" %>
 <body>
 
 <section class="dashboard-section">
@@ -38,23 +38,23 @@
                         </thead>
                         <tbody class="text-color-lighter">
                         <c:forEach var="history" items="${historyOrders}" varStatus="stat">
-                                <tr class="d-flex">
-                                    <td><c:out value="${stat.index  + 1}"/></td>
-                                    <td class="col-1"><c:out value="${history.symbol}"/></td>
-                                    <td class="col-1"><c:out value="${history.entry}"/></td>
-                                    <td class="col-1"><c:out value="${history.close}"/></td>
-                                    <td class="col-1"><c:out value="${history.lot}"/></td>
-                                    <td class="col-1"><c:out value="${history.amount}"/></td>
-                                    <td class="col-1"><c:out value="${history.side}"/></td>
-                                    <td class="col-1"><c:out value="${history.leverage}"/></td>
-                                    <td class="col-1 dateTime"><c:out value="${history.created}"/></td>
-                                    <c:if test="${history.realizedPln >= 0}">
-                                        <td class="col-1" style="color: green"><c:out value="${history.realizedPln}"/></td>
-                                    </c:if>
-                                    <c:if test="${history.realizedPln < 0}">
-                                        <td class="col-1" style="color: red"><c:out value="${history.realizedPln}"/></td>
-                                    </c:if>
-                                </tr>
+                            <tr class="d-flex">
+                                <td><c:out value="${stat.index  + 1}"/></td>
+                                <td class="col-1"><c:out value="${history.symbol}"/></td>
+                                <td class="col-1"><c:out value="${history.entry}"/></td>
+                                <td class="col-1"><c:out value="${history.close}"/></td>
+                                <td class="col-1"><c:out value="${history.lot}"/></td>
+                                <td class="col-1"><c:out value="${history.amount}"/></td>
+                                <td class="col-1"><c:out value="${history.side}"/></td>
+                                <td class="col-1"><c:out value="${history.leverage}"/></td>
+                                <td class="col-1 dateTime"><c:out value="${history.created}"/></td>
+                                <c:if test="${history.realizedPln >= 0}">
+                                    <td class="col-1" style="color: green"><c:out value="${history.realizedPln}"/></td>
+                                </c:if>
+                                <c:if test="${history.realizedPln < 0}">
+                                    <td class="col-1" style="color: red"><c:out value="${history.realizedPln}"/></td>
+                                </c:if>
+                            </tr>
                         </c:forEach>
                         </tbody>
                     </table>
@@ -87,4 +87,4 @@
 </body>
 
 </html>
-<%@include file="../../../footer.jsp"%>
+<%@include file="../../../footer.jsp" %>

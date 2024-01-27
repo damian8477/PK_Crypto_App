@@ -95,7 +95,6 @@ public class BinanceController {
         } catch (IllegalArgumentException e) {
             //todo komunikaty co jest nie tak
         }
-        //todo sprawdzenie sygnalu, nastepnie wsystawienie i przeniesienie  na liste zlecen uzytkownika
         return "redirect:/app/binance/symbol-list";
     }
 

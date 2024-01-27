@@ -20,34 +20,19 @@
                     </div>
 
                 </div>
-
                 <div class="schedules-content">
-<%--                    <div>--%>
-<%--                        <form action="app/statistic/source" method="get">--%>
-<%--                            <div class="form-group row">--%>
-<%--                                <label class="col-sm-2 label-size col-form-label"></label>--%>
-<%--                                <div class="col-sm-10">--%>
-<%--                                    <input type="number" name="sourceId" class="form-control">--%>
-<%--                                </div>--%>
-<%--                            </div>--%>
-<%--                        </form>--%>
-<%--                    </div>--%>
-                    <div class="col d-flex justify-content-end mb-2 noPadding">
-                        <form action="/app/statistic/source" method="get">
-                            <select id="source" name="sourceId">
-                                <c:forEach var="source" items="${sourceList}">
-                                    <option value="${source.id}">${source.name}</option>
-                                </c:forEach>
-                            </select>
-                            <label>Statystyki bota</label>
-                            <input type="checkbox" name="userBot">
-                            <input type="submit" value="Wybierz" class="btn btn-success rounded-0 pt-0 pb-0 pr-4 pl-4">
-                            <sec:csrfInput/>
-                        </form>
-                    </div>
-
+                    <form action="/app/statistic/source" method="get">
+                        <select id="source" name="sourceId">
+                            <c:forEach var="source" items="${sourceList}">
+                                <option value="${source.id}">${source.name}</option>
+                            </c:forEach>
+                        </select>
+                        <label>Statystyki bota</label>
+                        <input type="checkbox" name="userBot">
+                        <input type="submit" value="Wybierz" class="btn btn-success rounded-0 pt-0 pb-0 pr-4 pl-4">
+                        <sec:csrfInput/>
+                    </form>
                 </div>
-
             </div>
         </div>
     </div>

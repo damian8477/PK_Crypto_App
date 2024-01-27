@@ -54,13 +54,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/login").permitAll()
-                .antMatchers("/logout", "/remind-password", "/remind-pass").permitAll()
+                .antMatchers("/logout", "/remind-password", "/remind-pass", "/login", "/register").permitAll()
                 .antMatchers("/admin/*").hasRole("ADMIN")
                 .antMatchers("/starter").hasAnyRole("ADMIN", "USER")
                 .antMatchers("/app/**").hasAnyRole("ADMIN", "USER")
                 .antMatchers("/css/style.css").permitAll()
-                .antMatchers("/register").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
@@ -81,8 +79,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                 .csrf()
                 .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
-//                .and()
-//                .csrf().disable();
     }
 
 }

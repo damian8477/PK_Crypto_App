@@ -11,32 +11,32 @@ public interface RsiStrategyRepository extends JpaRepository<RsiStrategy, Long> 
     @Transactional
     @Modifying(clearAutomatically = true)
     @Query("UPDATE RsiStrategy c SET c.sumRsi = :sumRsi WHERE c.id = :id")
-    int updateRsiFun(@Param("id") int id, @Param("sumRsi") String sumRsi);
+    void updateRsiFun(@Param("id") int id, @Param("sumRsi") String sumRsi);
 
     @Transactional
     @Modifying(clearAutomatically = true)
     @Query("UPDATE RsiStrategy c SET c.countWinTrade = :countWinTrade WHERE c.id = :id")
-    int updateCountWin(@Param("id") int id, @Param("countWinTrade") int countWinTrade);
+    void updateCountWin(@Param("id") int id, @Param("countWinTrade") int countWinTrade);
 
     @Transactional
     @Modifying(clearAutomatically = true)
     @Query("UPDATE RsiStrategy c SET c.countLossTrade = :countLossTrade WHERE c.id = :id")
-    int updateCountLoss(@Param("id") int id, @Param("countLossTrade") int countLossTrade);
+    void updateCountLoss(@Param("id") int id, @Param("countLossTrade") int countLossTrade);
 
     @Transactional
     @Modifying(clearAutomatically = true)
     @Query("UPDATE RsiStrategy c SET c.active = :active WHERE c.id = :id")
-    int updateActive(@Param("id") int id, @Param("active") boolean active);
+    void updateActive(@Param("id") int id, @Param("active") boolean active);
 
     @Transactional
     @Modifying(clearAutomatically = true)
     @Query("UPDATE RsiStrategy c SET c.up = :up WHERE c.id = :id")
-    int updateUp(@Param("id") int id, @Param("up") boolean up);
+    void updateUp(@Param("id") int id, @Param("up") boolean up);
 
     @Transactional
     @Modifying(clearAutomatically = true)
     @Query("UPDATE RsiStrategy c SET c.down = :down WHERE c.id = :id")
-    int updateDown(@Param("id") int id, @Param("down") boolean down);
+    void updateDown(@Param("id") int id, @Param("down") boolean down);
 
 
     RsiStrategy findBySymbol(String symbol);

@@ -93,7 +93,7 @@ public class BotService implements Common {
                 }
             }
         } catch (Exception e) {
-            logger.info(symbol + " " + getTimeStamp() + "error in newOrder" + e);
+            logger.info(getStringFormat("%s %s error in newOrder %s", symbol, getTimeStamp(), e));
         }
     }
 

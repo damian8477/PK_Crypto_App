@@ -40,7 +40,7 @@ public class SourceController {
     }
 
     @PostMapping("/add")
-    public String addStrategy(@Valid @ModelAttribute("source") Source source, BindingResult bindingResult, Model model, @AuthenticationPrincipal UserDetails authenticatedUser) {
+    public String addStrategy(@Valid @ModelAttribute("source") Source source, BindingResult bindingResult, @AuthenticationPrincipal UserDetails authenticatedUser) {
         if (bindingResult.hasErrors()) {
             return "app/source/add";
         }
@@ -71,7 +71,7 @@ public class SourceController {
     }
 
     @PostMapping("/edit")
-    public String editStrategy(@Valid @ModelAttribute("source") Source source, BindingResult bindingResult, Model model, @AuthenticationPrincipal UserDetails authenticatedUser) {
+    public String editStrategy(@Valid @ModelAttribute("source") Source source, BindingResult bindingResult, @AuthenticationPrincipal UserDetails authenticatedUser) {
         if (bindingResult.hasErrors()) {
             return "app/source/edit";
         }
@@ -91,7 +91,7 @@ public class SourceController {
     }
 
     @PostMapping("/symboladd")
-    public String addSymbolsView(@RequestParam int sourceId, @RequestParam int symbolId, Model model) {
+    public String addSymbolsView(@RequestParam int sourceId, @RequestParam int symbolId) {
         Source source = sourceService.findById(sourceId);
         Symbol symbol = symbolService.findById(symbolId);
         if (!isNull(source) && !isNull(symbol)) {

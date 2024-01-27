@@ -25,6 +25,8 @@ public class StrategyController {
     private final StrategyRepository strategyRepository;
     private final SourceRepository sourceRepository;
 
+    private static final String REDIRECT = "redirect:/app/strategy/list";
+
     @GetMapping("/list")
     public String getMyString(Model model, @AuthenticationPrincipal UserDetails authenticatedUser) {
         User user = userService.getUserWithUserSettingsByUserName(authenticatedUser.getUsername());
@@ -40,31 +42,31 @@ public class StrategyController {
     }
 
     @PostMapping("/edit")
-    public String getEditMyListView(@Valid @ModelAttribute("strategy") Strategy strategy, BindingResult bindingResult, Model model, @AuthenticationPrincipal UserDetails authenticatedUser) {
+    public String getEditMyListView(@Valid @ModelAttribute("strategy") Strategy strategy, BindingResult bindingResult, @AuthenticationPrincipal UserDetails authenticatedUser) {
         if (bindingResult.hasErrors()) {
             return "app/strategy/edit";
         }
         User user = userService.getUserWithUserSettingsByUserName(authenticatedUser.getUsername());
         strategy.setUser(user);
         strategyRepository.save(strategy);
-        return "redirect:/app/strategy/list";
+        return REDIRECT;
     }
 
     @GetMapping("/add")
-    public String getAddStrategy(Model model, @AuthenticationPrincipal UserDetails authenticatedUser) {
+    public String getAddStrategy(Model model) {
         model.addAttribute("strategy", new Strategy());
         return "/app/strategy/add";
     }
 
     @PostMapping("/add")
-    public String addStrategy(@Valid @ModelAttribute("strategy") Strategy strategy, BindingResult bindingResult, Model model, @AuthenticationPrincipal UserDetails authenticatedUser) {
+    public String addStrategy(@Valid @ModelAttribute("strategy") Strategy strategy, BindingResult bindingResult, @AuthenticationPrincipal UserDetails authenticatedUser) {
         if (bindingResult.hasErrors()) {
             return "app/strategy/add";
         }
         User user = userService.getUserWithUserSettingsByUserName(authenticatedUser.getUsername());
         strategy.setUser(user);
         strategyRepository.save(strategy);
-        return "redirect:/app/strategy/list";
+        return REDIRECT;
     }
 
     @GetMapping("/delete")
@@ -76,7 +78,7 @@ public class StrategyController {
     @PostMapping("/delete")
     public String deleteUserStrategy(@RequestParam long strategyId) {
         strategyRepository.deleteById(strategyId);
-        return "redirect:/app/strategy/list";
+        return REDIRECT;
     }
 
 

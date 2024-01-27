@@ -2,6 +2,8 @@ package pl.coderslab.binance.common;
 
 import pl.coderslab.binance.client.SyncRequestClient;
 import pl.coderslab.binance.client.model.enums.CandlestickInterval;
+import pl.coderslab.binance.client.model.enums.OrderSide;
+import pl.coderslab.binance.client.model.enums.PositionSide;
 import pl.coderslab.binance.client.model.market.Candlestick;
 import pl.coderslab.binance.client.model.market.ExchangeInfoEntry;
 import pl.coderslab.binance.client.model.market.ExchangeInformation;
@@ -217,5 +219,15 @@ public interface Common {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return dateFormat.format(date);
     }
+
+    default OrderSide getOrderSideClose(PositionSide positionSide) {
+        if (positionSide.equals(PositionSide.LONG)) {
+            return OrderSide.SELL;
+        } else {
+            return OrderSide.BUY;
+        }
+    }
+
+
 
 }

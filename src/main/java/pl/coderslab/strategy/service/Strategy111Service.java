@@ -81,7 +81,7 @@ public class Strategy111Service extends BotService implements StrategyService {
         openOrder(order, orders);
         order.setOpen(true);
         cciOrderRepository.save(order);
-        logger.error(LocalDateTime.now() + " OPEN " + order.getSymbol() + rsi);
+        logger.error(String.format("%s OPEN %s %s", LocalDateTime.now(), order.getSymbol(), rsi));
         waitingSymbol.remove(order.getSymbol());
     }
     public void openOrder(CCIOrder order, List<Order> orders) {

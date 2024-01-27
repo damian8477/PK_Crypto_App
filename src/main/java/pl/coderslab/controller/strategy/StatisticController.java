@@ -35,12 +35,6 @@ public class StatisticController {
     public final SourceService sourceService;
     private final UserService userService;
 
-    @GetMapping("/data")
-    public String getData() {
-        List<HistoryOrder> historyOrderList = historyOrderRepository.findAllBySourceAndUserId(3, 1000L);
-        return "/app/statistic/data";
-    }
-
     @GetMapping("/menu")
     public String getMenuView() {
         return "/app/statistic/menu";
@@ -66,9 +60,7 @@ public class StatisticController {
     @GetMapping("/source-date")
     public String getSourceDate(@RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
                                 @RequestParam("stopDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate stopDate,
-                                Model model,
-                                @AuthenticationPrincipal UserDetails authenticatedUser,
-                                HttpSession session) {
+                                Model model, HttpSession session) {
         long userId = (Long) session.getAttribute("userId");
         int sourceId = (Integer) session.getAttribute("sourceId");
         LocalDateTime startDateTime = convertToLocalDateTimeStartOfDay(startDate);
