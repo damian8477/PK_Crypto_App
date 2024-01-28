@@ -14,7 +14,7 @@
     <name>PK_Crypto_App</name>
     <description>PK_Crypto_App</description>
     <properties>
-        <java.version>20</java.version>
+        <java.version>17</java.version>
         <okhttp3.version>3.12.1</okhttp3.version>
         <fastjson.version>1.2.83</fastjson.version>
         <spring-security.version>5.3.4.RELEASE</spring-security.version>
