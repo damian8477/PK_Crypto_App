@@ -6,6 +6,7 @@ import pl.coderslab.configuration.DatabaseConverter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 
@@ -35,7 +36,7 @@ public class UserSetting {
     @Column(name = "active_signal")
     private boolean activeSignal;
     @Column(name = "max_count_order")
-    @NotBlank
+    @NotNull
     private Integer maxCountOrder;
     @ManyToOne
     private User user;

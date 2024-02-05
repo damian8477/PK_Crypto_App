@@ -25,6 +25,7 @@ public class TestFixtures {
                 .telegramChatId("012345678901")
                 .binanceKey("NWtuZVbCa8esr4VG6usHzS0Ms1aMz7NwLBjPcUmU0SGRb6uXKvpiK77HM1ntHoMx")
                 .binanceSecret("clf59olo5MjQeQ8Qxe6RnPC4ePjxZsAeTdxZgdWedBtWt1f4Z7zohD2qEIYOgXdk")
+                .maxCountOrder(10)
                 .build();
     }
 
