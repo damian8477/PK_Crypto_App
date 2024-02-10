@@ -6,6 +6,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.ActiveProfiles;
 import pl.coderslab.TestFixtures;
+import pl.coderslab.entity.alert.Alert;
 import pl.coderslab.entity.user.User;
 import pl.coderslab.entity.user.UserSetting;
 

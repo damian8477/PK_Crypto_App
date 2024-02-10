@@ -1,8 +1,13 @@
 package pl.coderslab;
 
 
+import pl.coderslab.binance.client.model.enums.PositionSide;
+import pl.coderslab.entity.alert.Alert;
 import pl.coderslab.entity.user.User;
 import pl.coderslab.entity.user.UserSetting;
+import pl.coderslab.enums.Direction;
+
+import java.math.BigDecimal;
 
 
 public class TestFixtures {
@@ -36,6 +41,17 @@ public class TestFixtures {
                 .telegramChatId("0123456789")
                 .binanceKey("0123456789012345678")
                 .binanceSecret("01234567890123451234567890123")
+                .build();
+    }
+
+    public static Alert alert(){
+        return Alert.builder()
+                .id(123L)
+                .user(user())
+                .symbolName("BTDUSDT")
+                .price(BigDecimal.valueOf(48100.0))
+                .direction(Direction.DOWN)
+                .positionSide(PositionSide.LONG)
                 .build();
     }
 
