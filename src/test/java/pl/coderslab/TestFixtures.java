@@ -46,7 +46,6 @@ public class TestFixtures {
 
     public static Alert alert(){
         return Alert.builder()
-                .id(123L)
                 .user(user())
                 .symbolName("BTDUSDT")
                 .price(BigDecimal.valueOf(48100.0))

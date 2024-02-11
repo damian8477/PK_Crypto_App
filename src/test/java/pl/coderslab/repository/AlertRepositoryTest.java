@@ -9,7 +9,9 @@ import pl.coderslab.TestFixtures;
 import pl.coderslab.entity.alert.Alert;
 import pl.coderslab.entity.user.User;
 
+import javax.transaction.Transactional;
 import java.math.BigDecimal;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -29,28 +31,37 @@ class AlertRepositoryTest {
     @Test
     void deleteAlertShouldBePossible(){
         Alert alert = TestFixtures.alert();
-        entityManager.merge(alert);
-        entityManager.flush();
-        //authorRepository.delete(alert);
-
-        assertTrue(alertRepository.existsById(alert.getId()));
-
-    }
-
-    @Test
-    void findByUsername_ShouldReturnUser() {
-        // Given
         User user = TestFixtures.user();
         user.setUsername("testuser");
         entityManager.persist(user);
+        alert.setUser(user);
+        entityManager.persist(alert);
         entityManager.flush();
 
-        // When
-        User found = userRepository.findByUsername("testuser");
+        alertRepository.delete(alert);
 
-        // Then
-        assertThat(found).isNotNull();
-        assertThat(found.getUsername()).isEqualTo(user.getUsername());
+        assertFalse(alertRepository.existsById(alert.getId()));
+    }
+
+    @Test
+    void deleteAllByUserShouldBeAbleToRemoveAllAlertForUser(){
+        Alert alert = TestFixtures.alert();
+        Alert alert1 = alert;
+        Alert alert2 = alert;
+        alert2.setSymbolName("ETHUSDT");
+        User user = TestFixtures.user();
+        user.setUsername("testuser");
+        entityManager.persist(user);
+        alert1.setUser(user);
+        alert2.setUser(user);
+        entityManager.persist(alert1);
+        entityManager.persist(alert2);
+        entityManager.flush();
+
+       /// alertRepository.deleteAllByUserId(user.getId());
+
+        List<Alert> alerts = alertRepository.findAll();
+        assertFalse(alerts.stream().anyMatch(s->s.getUser().getId().equals(user.getId())));
     }
 
 }
