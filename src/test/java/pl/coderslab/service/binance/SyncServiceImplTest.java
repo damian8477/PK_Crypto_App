@@ -46,15 +46,15 @@ class SyncServiceImplTest {
 
     @Test
     void sync_withNonNullUserSetting_shouldUseUserSetting() {
-        // Arrange
+        //given
         UserSetting userSetting = getTestUserSetting();
         when(binanceConfigProperties.getApiKey()).thenReturn("configApiKey");
         when(binanceConfigProperties.getSecretKey()).thenReturn("configSecretKey");
 
-        // Act
+        //when
         SyncRequestClient result = syncService.sync(userSetting);
 
-        // Assert
+        //then
         assertNotNull(result);
         verify(logger, never()).info(anyString());
         verify(logger, never()).info(contains("Error during connecting to binance"));
@@ -62,16 +62,16 @@ class SyncServiceImplTest {
 
     @Test
     void sync_withExceptionDuringSync_shouldRetry() {
-        // Arrange
+        //given
         UserSetting userSetting = getTestUserSetting();
         when(binanceConfigProperties.getApiKey()).thenReturn("configApiKey");
         when(binanceConfigProperties.getSecretKey()).thenReturn("configSecretKey");
         doThrow(new RuntimeException("Simulated exception")).doNothing().when(logger).info(contains("Error during connecting to binance"));
 
-        // Act
+        //when
         SyncRequestClient result = syncService.sync(userSetting);
 
-        // Assert
+        //then
         assertNotNull(result);
         //verify(logger, atLeast(2)).info(contains("Error during connecting to binance"));
     }

@@ -1,6 +1,8 @@
 package pl.coderslab.entity.strategy;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pl.coderslab.entity.orders.Symbol;
 import pl.coderslab.enums.SourceType;
@@ -15,6 +17,8 @@ import java.util.List;
 @Table(name = "sources")
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Source {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

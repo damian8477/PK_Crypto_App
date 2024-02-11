@@ -18,8 +18,12 @@ public class DatabaseConverter implements AttributeConverter<String, String> {
     private final Key key;
     private final Cipher cipher;
 
+//    public DatabaseConverter(EnvironmentVariable environment) throws Exception {
+//        key = new SecretKeySpec(environment.getBinanceSecret().getBytes(), AES);
+//        cipher = Cipher.getInstance(AES);
+//    }
     public DatabaseConverter() throws Exception {
-        key = new SecretKeySpec(System.getenv("BINANCE_SECRET_ENCRYPTION_KEY").getBytes(), AES);
+        key = new SecretKeySpec("Secret-Crypto-12".getBytes(), AES);
         cipher = Cipher.getInstance(AES);
 
     }
