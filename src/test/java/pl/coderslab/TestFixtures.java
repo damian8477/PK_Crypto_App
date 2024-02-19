@@ -19,6 +19,7 @@ public class TestFixtures {
                 .username("username")
                 .firstName("Andrzej")
                 .lastName("Pajda")
+                .email("test@wp.pl")
                 .password("{noop}password")
                 .build();
     }

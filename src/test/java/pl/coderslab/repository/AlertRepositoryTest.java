@@ -58,7 +58,7 @@ class AlertRepositoryTest {
         entityManager.persist(alert2);
         entityManager.flush();
 
-       /// alertRepository.deleteAllByUserId(user.getId());
+        alertRepository.deleteAllByUserId(user.getId());
 
         List<Alert> alerts = alertRepository.findAll();
         assertFalse(alerts.stream().anyMatch(s->s.getUser().getId().equals(user.getId())));
