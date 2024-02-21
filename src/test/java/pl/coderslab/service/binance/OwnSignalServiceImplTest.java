@@ -6,6 +6,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import pl.coderslab.binance.client.SyncRequestClient;
+import pl.coderslab.entity.strategy.Strategy;
 import pl.coderslab.enums.CashType;
 import pl.coderslab.interfaces.BinanceBasicService;
 import pl.coderslab.model.OwnSignal;
@@ -43,6 +44,15 @@ class OwnSignalServiceImplTest {
         ownSignalService.checkOwnSignal(signal, syncRequestClient);
 
         verify(binanceSupport, times(1)).getMarketPriceBigDecimal(syncRequestClient, "BTCUSDT");
+    }
 
+    @Test
+    void checkOwnSignal_WithNotNullStrategySetting_ShouldNotCheckTpAndSl(){
+        OwnSignal signal = new OwnSignal();
+        signal.setStrategySetting(new Strategy());
+
+        ownSignalService.checkOwnSignal(signal, syncRequestClient);
+
+        verify(binanceSupport, times(0)).getMarketPriceBigDecimal(syncRequestClient, "BTCUSDT");
     }
 }
