@@ -3,22 +3,22 @@ package pl.coderslab.service.telegram;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import pl.coderslab.configuration.properties.InfoBotConfigProperties;
 import pl.coderslab.configuration.properties.TokenConfigProperties;
 import pl.coderslab.interfaces.TelegramBotService;
 
 @Service
 @RequiredArgsConstructor
-@Primary
-public class TelegramBotServiceImpl extends TelegramLongPollingBot implements TelegramBotService {
+public class TelegramInfoServiceImpl extends TelegramLongPollingBot implements TelegramBotService {
     private final RequestTelegramService requestTelegramService;
-    private final TokenConfigProperties tokenConfigProperties;
-    private static final Logger logger = LoggerFactory.getLogger(TelegramBotServiceImpl.class);
+    private final InfoBotConfigProperties tokenConfigProperties;
+    private String chatId = null;
+    private static final Logger logger = LoggerFactory.getLogger(TelegramInfoServiceImpl.class);
 
     @Override
     public String getBotUsername() {
@@ -36,8 +36,11 @@ public class TelegramBotServiceImpl extends TelegramLongPollingBot implements Te
         SendMessage response = new SendMessage();
         response.setChatId(update.getMessage().getChatId().toString());
         String chatId = update.getMessage().getChatId().toString();
-        String mess = requestTelegramService.newMessage(chatId, message);
-        response.setText(mess);
+        if(message.contains("9513")){
+            this.chatId = chatId;
+            response.setText("Chat is added");
+            sendMessage(null, "sendMessage is work");
+        }
         try {
             execute(response);
         } catch (TelegramApiException e) {
@@ -48,18 +51,20 @@ public class TelegramBotServiceImpl extends TelegramLongPollingBot implements Te
     @Override
     public void sendMessage(String chatId, String message) {
         try {
-            SendMessage response = new SendMessage();
-            response.setChatId(chatId);
-            if (message.length() < 1500) {
-                response.setText(message);
-                execute(response);
-            } else {
-                for (int i = 0; i < message.length(); i += 1500) {
-                    int next = i + 1500;
-                    if (next > message.length()) next = message.length();
-                    String mess = message.substring(i, next);
-                    response.setText(mess);
+            if(this.chatId != null){
+                SendMessage response = new SendMessage();
+                response.setChatId(this.chatId);
+                if (message.length() < 1500) {
+                    response.setText(message);
                     execute(response);
+                } else {
+                    for (int i = 0; i < message.length(); i += 1500) {
+                        int next = i + 1500;
+                        if (next > message.length()) next = message.length();
+                        String mess = message.substring(i, next);
+                        response.setText(mess);
+                        execute(response);
+                    }
                 }
             }
         } catch (TelegramApiException e) {

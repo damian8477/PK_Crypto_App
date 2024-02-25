@@ -14,6 +14,7 @@ import pl.coderslab.entity.user.User;
 import pl.coderslab.interfaces.*;
 import pl.coderslab.model.BinanceConfirmOrder;
 import pl.coderslab.model.CommonSignal;
+import pl.coderslab.service.telegram.TelegramInfoServiceImpl;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -27,6 +28,7 @@ public class BotService implements Common {
     private final UserService userService;
     private final SignalService signalService;
     private final OpenService openService;
+    private final TelegramInfoServiceImpl telegramInfoService;
 
     private static final Logger logger = LoggerFactory.getLogger(BotService.class);
 
@@ -90,6 +92,7 @@ public class BotService implements Common {
                                     .takeProfit(List.of(signal.getTakeProfit1()))
                                     .stopLoss(List.of(signal.getStopLoss()))
                             .build());
+                    telegramInfoService.sendMessage(null, getStringFormat("%s %s %s %s", sourceName, signal.getSymbol(), signal.getPositionSide().toString(), marketPrice));
                 }
             }
         } catch (Exception e) {
@@ -126,6 +129,10 @@ public class BotService implements Common {
                 .entryPrice(order.getEntry())
                 .lot(order.getLot())
                 .build();
+    }
+
+    public void sendInfoBotTelegram(String message){
+        telegramInfoService.sendMessage(null, message);
     }
 
 

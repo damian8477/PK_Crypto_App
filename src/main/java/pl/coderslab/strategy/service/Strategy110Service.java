@@ -11,6 +11,7 @@ import pl.coderslab.interfaces.*;
 import pl.coderslab.model.BinanceConfirmOrder;
 import pl.coderslab.repository.RsiStrategyRepository;
 import pl.coderslab.service.bot.BotService;
+import pl.coderslab.service.telegram.TelegramInfoServiceImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,16 +32,16 @@ public class Strategy110Service extends BotService implements StrategyService {
     public static List<String> symbolList = new ArrayList<>();
     private static final Logger logger = LoggerFactory.getLogger(Strategy110Service.class);
 
-
-    public Strategy110Service(BinanceBasicService binanceBasicService, IndicatorsService indicatorsService, OrderService orderService, UserService userService, RsiStrategyRepository rsiStrategyRepository, IndicatorsService indicatorsService1, BotService botService, SourceService sourceService, BinanceBasicService binanceBasicService1, OrderService orderService1, SignalService signalService, OpenService openService) {
-        super(binanceBasicService, orderService, userService, signalService, openService);
+    public Strategy110Service(BinanceBasicService binanceBasicService, OrderService orderService, UserService userService, SignalService signalService, OpenService openService, TelegramInfoServiceImpl telegramInfoService, RsiStrategyRepository rsiStrategyRepository, IndicatorsService indicatorsService, BotService botService, SourceService sourceService, BinanceBasicService binanceBasicService1, OrderService orderService1) {
+        super(binanceBasicService, orderService, userService, signalService, openService, telegramInfoService);
         this.rsiStrategyRepository = rsiStrategyRepository;
-        this.indicatorsService = indicatorsService1;
+        this.indicatorsService = indicatorsService;
         this.botService = botService;
         this.sourceService = sourceService;
         this.binanceBasicService = binanceBasicService1;
         this.orderService = orderService1;
     }
+
 
     public void downloadCryptoNameList() {
         cryptoNames.clear();
@@ -161,6 +162,7 @@ public class Strategy110Service extends BotService implements StrategyService {
             win = true;
         }
         orderService.saveHistoryOrderToDB(order.getUser(), order, binanceConfirmOrder, false, win);
+        sendInfoBotTelegram(getStringFormat("%s %s %s %s%", SOURCE_NAME, order.getSymbolName(), order.getPositionSide().toString(), totalPercentValue));
     }
 
     public void checkCoinInStrategy() {

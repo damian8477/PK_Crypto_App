@@ -9,6 +9,7 @@ import pl.coderslab.entity.strategy.Source;
 import pl.coderslab.interfaces.*;
 import pl.coderslab.model.BinanceConfirmOrder;
 import pl.coderslab.service.bot.BotService;
+import pl.coderslab.service.telegram.TelegramInfoServiceImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,22 +22,20 @@ public class Strategy112Service extends BotService implements StrategyService {
     private static final String SOURCE_NAME = "MACD";
     private final IndicatorsService indicatorsService;
     private static Source source;
-    private final BotService botService;
     private final SourceService sourceService;
     private final BinanceBasicService binanceBasicService;
     private final OrderService orderService;
     public static List<Symbol> symbolList = new ArrayList<>();
     private static final Logger logger = LoggerFactory.getLogger(Strategy112Service.class);
 
-
-    public Strategy112Service(BinanceBasicService binanceBasicService, OrderService orderService, UserService userService, IndicatorsService indicatorsService1, BotService botService, SourceService sourceService, BinanceBasicService binanceBasicService1, OrderService orderService1, SignalService signalService, OpenService openService) {
-        super(binanceBasicService, orderService, userService, signalService, openService);
-        this.indicatorsService = indicatorsService1;
-        this.botService = botService;
+    public Strategy112Service(BinanceBasicService binanceBasicService, OrderService orderService, UserService userService, SignalService signalService, OpenService openService, TelegramInfoServiceImpl telegramInfoService, IndicatorsService indicatorsService, BotService botService, SourceService sourceService, BinanceBasicService binanceBasicService1, TelegramInfoServiceImpl telegramInfoService1, OrderService orderService1) {
+        super(binanceBasicService, orderService, userService, signalService, openService, telegramInfoService);
+        this.indicatorsService = indicatorsService;
         this.sourceService = sourceService;
         this.binanceBasicService = binanceBasicService1;
         this.orderService = orderService1;
     }
+
 
     @Override
     public void searchNewOrder(List<Order> orders) {
@@ -65,21 +64,18 @@ public class Strategy112Service extends BotService implements StrategyService {
 
 
             if (ema501m < ema2001m && ema5015m < ema20015m) {
-                System.out.println("ema ok pod short");
                 if (macd15m > 0 && macdPrev15m > 0) {
                     double macdPrev = macdPrev15m * 0.96;
                     if (macd15m < macdPrev) {
-                        botService.newOrder(SOURCE_NAME, cryptoName, "SHORT", "0", "0", 2.4, 1.23, "", orders, source, candlestickList1m.get(0).toString());
+                        newOrder(SOURCE_NAME, cryptoName, "SHORT", "0", "0", 2.4, 1.23, "", orders, source, candlestickList1m.get(0).toString());
                     }
                 }
             }
             if (ema501m > ema2001m && ema5015m > ema20015m) {
-                System.out.println("ema ok pod long");
                 if (macd15m < 0 && macdPrev15m < 0) {
                     double macdPrev = macdPrev15m * 1.04;
                     if (macd15m > macdPrev) {
-                        System.out.println("Wystaw zlecenie LONG na: " + cryptoName);
-                        botService.newOrder(SOURCE_NAME, cryptoName, "LONG", "0", "0", 2.4, 1.23, "", orders, source, candlestickList1m.get(0).toString());
+                        newOrder(SOURCE_NAME, cryptoName, "LONG", "0", "0", 2.4, 1.23, "", orders, source, candlestickList1m.get(0).toString());
                     }
                 }
             }
@@ -122,6 +118,7 @@ public class Strategy112Service extends BotService implements StrategyService {
         BinanceConfirmOrder binanceConfirmOrder = getBinanceConfirmOrder(order, marketPrice, totalPercentValue);
         boolean win = totalPercentValue > 0;
         orderService.saveHistoryOrderToDB(order.getUser(), order, binanceConfirmOrder, false, win);
+        sendInfoBotTelegram(getStringFormat("%s %s %s %s%", SOURCE_NAME, order.getSymbolName(), order.getPositionSide().toString(), totalPercentValue));
     }
 
     @Override

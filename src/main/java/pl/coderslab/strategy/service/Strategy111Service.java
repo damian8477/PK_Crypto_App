@@ -11,6 +11,7 @@ import pl.coderslab.interfaces.*;
 import pl.coderslab.model.BinanceConfirmOrder;
 import pl.coderslab.repository.CCIOrderRepository;
 import pl.coderslab.service.bot.BotService;
+import pl.coderslab.service.telegram.TelegramInfoServiceImpl;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -34,16 +35,16 @@ public class Strategy111Service extends BotService implements StrategyService {
     private Map<String, Double> waitingSymbol = new HashMap<>();
     private static final Logger logger = LoggerFactory.getLogger(Strategy111Service.class);
 
-
-    public Strategy111Service(BinanceBasicService binanceBasicService, OrderService orderService, UserService userService, IndicatorsService indicatorsService1, BotService botService, SourceService sourceService, BinanceBasicService binanceBasicService1, OrderService orderService1, SignalService signalService, OpenService openService, CCIOrderRepository cciOrderRepository) {
-        super(binanceBasicService, orderService, userService, signalService, openService);
-        this.indicatorsService = indicatorsService1;
+    public Strategy111Service(BinanceBasicService binanceBasicService, OrderService orderService, UserService userService, SignalService signalService, OpenService openService, TelegramInfoServiceImpl telegramInfoService, IndicatorsService indicatorsService, CCIOrderRepository cciOrderRepository, BotService botService, SourceService sourceService, BinanceBasicService binanceBasicService1, OrderService orderService1) {
+        super(binanceBasicService, orderService, userService, signalService, openService, telegramInfoService);
+        this.indicatorsService = indicatorsService;
+        this.cciOrderRepository = cciOrderRepository;
         this.botService = botService;
         this.sourceService = sourceService;
         this.binanceBasicService = binanceBasicService1;
         this.orderService = orderService1;
-        this.cciOrderRepository = cciOrderRepository;
     }
+
 
     @Override
     public void searchNewOrder(List<Order> orders) {
@@ -136,6 +137,7 @@ public class Strategy111Service extends BotService implements StrategyService {
         }
         orderService.saveHistoryOrderToDB(order.getUser(), order, binanceConfirmOrder, false, win);
         cciOrderUpdateKill(order, marketPrice);
+        sendInfoBotTelegram(getStringFormat("%s %s %s %s%", SOURCE_NAME, order.getSymbolName(), order.getPositionSide().toString(), totalPercentValue));
     }
 
     private void cciOrderUpdateKill(Order order, double marketPrice) {
