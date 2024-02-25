@@ -16,6 +16,7 @@ import pl.coderslab.repository.UserTokenRepository;
 import pl.coderslab.strategy.indicators.cci.CCIStrategy;
 import pl.coderslab.strategy.service.Strategy110Service;
 import pl.coderslab.strategy.service.Strategy111Service;
+import pl.coderslab.strategy.service.Strategy112Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -31,6 +32,7 @@ public class ScheduledService {
     private final UserTokenRepository userTokenRepository;
     private final Strategy110Service strategy110Service;
     private final Strategy111Service strategy111Service;
+    private final Strategy112Service strategy112Service;
     private final CCIStrategy cciStrategy;
     private static final Logger logger = LoggerFactory.getLogger(ScheduledService.class);
     private int count = 1;
@@ -40,7 +42,7 @@ public class ScheduledService {
     //todo dla zlecen innych niż MARKET sprawdzanie czy sie otworzylo i dopisywanie zlecen TP i SL
 
 
-//    @Scheduled(fixedDelay = 60000, initialDelay = 1000)
+   @Scheduled(fixedDelay = 60000, initialDelay = 1000)
     public void check() {
         List<User> users = userService.getActiveUsers();
         if(count % 60 == 0){
@@ -52,11 +54,13 @@ public class ScheduledService {
             strategy110Service.checkCoinInStrategy();
             cciStrategy.searchCCI();
             strategy111Service.searchNewOrder(null);
+            strategy112Service.searchNewOrder(null);
         }
         if (count % 1 == 0) {
             checkUserOrderService.checkInActiveOrder(users);
             strategy110Service.checkOrderStatusBot(null);
             strategy111Service.checkOrderStatusBot(null);
+            strategy112Service.checkOrderStatusBot(null);
         }
         if (count % 2 == 0) {
             checkTokensExpirationTime();
@@ -70,6 +74,7 @@ public class ScheduledService {
         if (count % 15 == 0){
             cciStrategy.searchCCI();
             strategy111Service.searchNewOrder(null);
+            strategy112Service.searchNewOrder(null);
         }
         count++;
         if (count > 360) {
@@ -84,6 +89,7 @@ public class ScheduledService {
     }
 
     private void downloadSymbolsForStrategy(){
+        strategy112Service.downloadSymbols();
         strategy111Service.downloadSymbols();
         strategy110Service.downloadSymbols();
     }

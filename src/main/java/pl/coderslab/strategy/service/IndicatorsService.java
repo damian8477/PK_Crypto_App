@@ -36,7 +36,7 @@ public class IndicatorsService implements Common {
         return aroundValue(candlestickList.get(0).toString(), ema.get());
     }
 
-    public double getEMA(int candleTime, String cryptoName, int period, List<Double> candlestickList, SyncRequestClient syncRequestClient, double markPrice) {
+    public double getEMA(int candleTime, String cryptoName, int period, List<Double> candlestickList, double markPrice) {
         EMA ema = new EMA(candlestickList, period, true);
         ema.update(markPrice);
         return aroundValue(candlestickList.get(0).toString(), ema.get());
@@ -51,18 +51,18 @@ public class IndicatorsService implements Common {
         return aroundValue("0.123456", macd.get());
     }
 
-    public double getMacd(int candleTime, String cryptoName, int period, int param1, int param2, int param3, List<Double> candlestickList, SyncRequestClient syncRequestClient) {
+    public double getMacd(int candleTime, String cryptoName, int period, int param1, int param2, int param3, List<Double> candlestickList) {
         MACD macd = new MACD(candlestickList, param1, param2, param3);
         return aroundValue("0.12345678", macd.get());
     }
 
-    public double getMacdPrev(int candleTime, String cryptoName, int period, int param1, int param2, int param3, List<Double> candlestickList, SyncRequestClient syncRequestClient) {
+    public double getMacdPrev(int candleTime, String cryptoName, int period, int param1, int param2, int param3, List<Double> candlestickList) {
         candlestickList.remove(candlestickList.size() - 1);
         MACD macd = new MACD(candlestickList, param1, param2, param3);
         return aroundValue("0.12345678", macd.get());
     }
 
-    public double getMacdAct(int candleTime, String cryptoName, int period, int param1, int param2, int param3, List<Double> candlestickList, SyncRequestClient syncRequestClient, double markPrice) {
+    public double getMacdAct(int candleTime, String cryptoName, int period, int param1, int param2, int param3, List<Double> candlestickList, double markPrice) {
         MACD macd = new MACD(candlestickList, param1, param2, param3);
         macd.update(markPrice);
         return aroundValue("0.12345678", macd.get());

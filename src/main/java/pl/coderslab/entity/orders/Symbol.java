@@ -19,5 +19,6 @@ public class Symbol {
     @Pattern(regexp = ".*(usdt|USDT)$", message = "Nazwa powinna zawierać 'usdt'")
     @Column(name = "symbol")
     private String name;
+    private boolean active = true;
 
 }
