@@ -210,7 +210,7 @@ public class BinanceBasicServiceImpl implements BinanceBasicService {
         String symbol = positionRisk.getSymbol();
         double sumProfit = 0.0;
         double sumCommission = 0.0;
-        Long closeTime = 0l;
+        Long closeTime = 0L;
         try {
             Timestamp timestamp = new Timestamp(System.currentTimeMillis());
             long time = timestamp.getTime();
