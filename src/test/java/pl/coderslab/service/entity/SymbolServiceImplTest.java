@@ -8,8 +8,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import pl.coderslab.entity.orders.Symbol;
 import pl.coderslab.interfaces.BinanceBasicService;
 import pl.coderslab.interfaces.BinanceService;
+import pl.coderslab.model.AlertSetting;
+import pl.coderslab.model.CryptoName;
 import pl.coderslab.repository.SymbolRepository;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import static org.mockito.Mockito.*;
 
@@ -63,4 +69,58 @@ class SymbolServiceImplTest {
         verify(symbolRepositoryMock).findById(any());
     }
 
+    @Test
+    public void checkSymbol_symbolAlreadyExist(){
+        Symbol symbol = new Symbol();
+        symbol.setName("BTCUSDT");
+        CryptoName cryptoName = new CryptoName();
+        cryptoName.setSymbol("BTCUSDT");
+        when(binanceServiceMock.getSymbols()).thenReturn(List.of(cryptoName));
+
+        boolean result = symbolService.checkSymbol(symbol);
+
+        assertFalse(result);
+    }
+
+    @Test
+    public void checkSymbol_symbolNotFoundInvalidSymbol(){
+        Symbol symbol = new Symbol();
+        symbol.setName("ETHUSDT");
+        CryptoName cryptoName = new CryptoName();
+        cryptoName.setSymbol("BTCUSDT");
+        when(binanceServiceMock.getSymbols()).thenReturn(List.of(cryptoName));
+        when(binanceServiceMock.getSymbolNames()).thenReturn(new ArrayList<>());
+
+        assertThrows(IllegalArgumentException.class, () -> symbolService.checkSymbol(symbol));
+        verify(binanceServiceMock).getSymbolNames();
+    }
+
+    @Test
+    void checkSymbol_validSymbol(){
+        Symbol symbol = new Symbol();
+        symbol.setName("ethusdt");
+        CryptoName cryptoName = new CryptoName();
+        cryptoName.setSymbol("BTCUSDT");
+        when(binanceServiceMock.getSymbols()).thenReturn(List.of(cryptoName));
+        when(binanceServiceMock.getSymbolNames()).thenReturn(List.of("BTCUSDT", "ETHUSDT"));
+
+        boolean result = symbolService.checkSymbol(symbol);
+
+        assertTrue(result);
+        assertEquals("ETHUSDT", symbol.getName());
+        verify(binanceServiceMock).getSymbolNames();
+    }
+
+    @Test
+    void getBasicAlert_validResult(){
+        String symbolName = "BTCUSDT";
+        BigDecimal marketPrice = new BigDecimal("50000.00");
+        when(binanceBasicServiceMock.getMarketPriceBigDecimal(null, symbolName)).thenReturn(marketPrice);
+
+        AlertSetting result = symbolService.getBasicAlert(symbolName);
+
+        assertNotNull(result);
+        assertEquals(result.getSymbol(), symbolName);
+        assertEquals(result.getMarketPrice(), marketPrice);
+    }
 }
