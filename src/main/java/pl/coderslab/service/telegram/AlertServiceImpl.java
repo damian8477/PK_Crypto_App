@@ -70,6 +70,7 @@ public class AlertServiceImpl implements AlertService {
             return Direction.DOWN;
         }
     }
+
     @Override
     public void checkAlerts() {
         List<Alert> alerts = alertRepository.findAll();
@@ -111,7 +112,7 @@ public class AlertServiceImpl implements AlertService {
             }
         }
     }
-    public BigDecimal getAlertPrice(AlertSetting alert, int index) {
+    private BigDecimal getAlertPrice(AlertSetting alert, int index) {
         return switch (index) {
             case 1 -> alert.getAlertPrice1();
             case 2 -> alert.getAlertPrice2();
@@ -122,7 +123,7 @@ public class AlertServiceImpl implements AlertService {
         };
     }
 
-    public PositionSide getPositionSide(AlertSetting alert, int index) {
+    private PositionSide getPositionSide(AlertSetting alert, int index) {
         return switch (index) {
             case 1 -> alert.getPositionSide1();
             case 2 -> alert.getPositionSide2();

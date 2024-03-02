@@ -9,6 +9,7 @@ import pl.coderslab.TestFixtures;
 import pl.coderslab.binance.client.model.enums.PositionSide;
 import pl.coderslab.entity.alert.Alert;
 import pl.coderslab.entity.user.User;
+import pl.coderslab.entity.user.UserSetting;
 import pl.coderslab.enums.Direction;
 import pl.coderslab.interfaces.SyncService;
 import pl.coderslab.interfaces.TelegramBotService;
@@ -86,9 +87,9 @@ class AlertServiceImplTest {
     }
 
     @Test
-    public void addAlert_saveAlertFiveTimes(){
-        User user = TestFixtures.user();
-        AlertSetting alert = AlertSetting.builder()
+    public void addAlert_CallsSaveAlertWhenAlertPriceAndPositionSideNotNull() {
+        User user = new User();
+        AlertSetting alertSetting = AlertSetting.builder()
                 .alertPrice1(BigDecimal.valueOf(50000.0))
                 .alertPrice2(BigDecimal.valueOf(51000.0))
                 .alertPrice3(BigDecimal.valueOf(52000.0))
@@ -102,23 +103,24 @@ class AlertServiceImplTest {
                 .positionSide5(PositionSide.LONG)
                 .build();
 
-        when(alertService.getDirection(BigDecimal.valueOf(49000.0), BigDecimal.valueOf(50000.0))).thenReturn(Direction.UP);
-        when(alertService.getAlertPrice(alert, 1)).thenReturn(alert.getAlertPrice1());
-        when(alertService.getAlertPrice(alert, 2)).thenReturn(alert.getAlertPrice1());
-        when(alertService.getAlertPrice(alert, 3)).thenReturn(alert.getAlertPrice1());
-        when(alertService.getAlertPrice(alert, 4)).thenReturn(alert.getAlertPrice1());
-        when(alertService.getAlertPrice(alert, 5)).thenReturn(alert.getAlertPrice1());
-        when(alertService.getPositionSide(alert, 1)).thenReturn(alert.getPositionSide1());
-        when(alertService.getPositionSide(alert, 2)).thenReturn(alert.getPositionSide2());
-        when(alertService.getPositionSide(alert, 3)).thenReturn(alert.getPositionSide3());
-        when(alertService.getPositionSide(alert, 4)).thenReturn(alert.getPositionSide4());
-        when(alertService.getPositionSide(alert, 5)).thenReturn(alert.getPositionSide5());
+        alertService.addAlert(user, alertSetting);
 
-        verify(alertService, times(5)).saveAlert(any(User.class), eq("BTCUSDT"), any(BigDecimal.class), eq(PositionSide.LONG), eq(Direction.DOWN));
-
+        verify(alertRepositoryMock, times(5)).save(any(Alert.class));
     }
+
     @Test
-    public void getDirection_priceLessThanMarketPrice(){
+    public void addAlert_DoesNotCallSaveAlertWhenAlertPriceIsNull() {
+        User user = new User();
+        AlertSetting alertSetting = AlertSetting.builder()
+                .build();
+
+        alertService.addAlert(user, alertSetting);
+
+        verify(alertRepositoryMock, never()).save(any(Alert.class));
+    }
+
+    @Test
+    public void getDirection_priceLessThanMarketPrice() {
         BigDecimal price = new BigDecimal("1000.0");
         BigDecimal marketPrice = new BigDecimal("2000.0");
 
@@ -128,7 +130,7 @@ class AlertServiceImplTest {
     }
 
     @Test
-    public void getDirection_priceGreaterThanMarketPrice(){
+    public void getDirection_priceGreaterThanMarketPrice() {
         BigDecimal price = new BigDecimal("2000.0");
         BigDecimal marketPrice = new BigDecimal("1000.0");
 
@@ -137,6 +139,65 @@ class AlertServiceImplTest {
         assertEquals(result, Direction.UP);
     }
 
+    @Test
+    public void checkAlert_UpDirectionPriceAboveAlertPrice_SendsTelegramMessageAndDeletesAlert() {
+        Alert alert = new Alert();
+        alert.setId(1L);
+        alert.setSymbolName("BTCUSDT");
+        alert.setPrice(BigDecimal.valueOf(50000.0));
+        alert.setDirection(Direction.UP);
+        User user = TestFixtures.user();
+        alert.setUser(user);
+        UserSetting userSetting = TestFixtures.userSetting(user);
+        BigDecimal price = BigDecimal.valueOf(55000.0);
+        when(userSettingServiceMock.getUserSettingByUserId(user.getId())).thenReturn(List.of(userSetting));
+
+        alertService.checkAlert(price, alert);
+
+        verify(telegramBotServiceMock).sendMessage(userSetting.getTelegramChatId(), "Alert! \uD83D\uDCC8 BTCUSDT $50000.0");
+        verify(alertRepositoryMock).deleteById(anyLong());
+    }
 
 
+    @Test
+    public void checkAlert_DownDirectionPriceBelowAlertPrice_SendsTelegramMessageAndDeletesAlert() {
+        Alert alert = new Alert();
+        alert.setId(1L);
+        alert.setSymbolName("BTCUSDT");
+        alert.setPrice(BigDecimal.valueOf(50000.0));
+        alert.setDirection(Direction.DOWN);
+        User user = TestFixtures.user();
+        alert.setUser(user);
+        UserSetting userSetting = TestFixtures.userSetting(user);
+        BigDecimal price = BigDecimal.valueOf(45000.0);
+        when(userSettingServiceMock.getUserSettingByUserId(user.getId())).thenReturn(List.of(userSetting));
+
+        alertService.checkAlert(price, alert);
+
+        verify(telegramBotServiceMock).sendMessage(userSetting.getTelegramChatId(), "Alert! \uD83D\uDCC8 BTCUSDT $50000.0");
+        verify(alertRepositoryMock).deleteById(anyLong());
+
+    }
+
+    @Test
+    public void checkAlert_NoEmoticon_NotifiesNoUserSettings() {
+        Alert alert = new Alert();
+        alert.setId(1L);
+        alert.setSymbolName("BTCUSDT");
+        alert.setPrice(BigDecimal.valueOf(50000.0));
+        alert.setDirection(Direction.UP);
+        User user = TestFixtures.user();
+        alert.setUser(user);
+        UserSetting userSetting = TestFixtures.userSetting(user);
+        BigDecimal price = BigDecimal.valueOf(45000.0);
+        when(userSettingServiceMock.getUserSettingByUserId(user.getId())).thenReturn(List.of(userSetting));
+
+        alertService.checkAlert(price, alert);
+
+        verify(telegramBotServiceMock, never()).sendMessage(anyString(), anyString());
+        verify(alertRepositoryMock, never()).deleteById(anyLong());
+
+    }
+
+    //todo test for checkAlert()
 }
