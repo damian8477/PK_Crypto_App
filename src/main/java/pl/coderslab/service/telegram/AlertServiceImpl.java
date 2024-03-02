@@ -111,7 +111,7 @@ public class AlertServiceImpl implements AlertService {
             }
         }
     }
-    private BigDecimal getAlertPrice(AlertSetting alert, int index) {
+    public BigDecimal getAlertPrice(AlertSetting alert, int index) {
         return switch (index) {
             case 1 -> alert.getAlertPrice1();
             case 2 -> alert.getAlertPrice2();
@@ -122,7 +122,7 @@ public class AlertServiceImpl implements AlertService {
         };
     }
 
-    private PositionSide getPositionSide(AlertSetting alert, int index) {
+    public PositionSide getPositionSide(AlertSetting alert, int index) {
         return switch (index) {
             case 1 -> alert.getPositionSide1();
             case 2 -> alert.getPositionSide2();
@@ -133,7 +133,7 @@ public class AlertServiceImpl implements AlertService {
         };
     }
 
-    private void saveAlert(User user, String symbol, BigDecimal price, PositionSide positionSide, Direction direction) {
+    void saveAlert(User user, String symbol, BigDecimal price, PositionSide positionSide, Direction direction) {
         alertRepository.save(Alert.builder()
                 .symbolName(symbol)
                 .user(user)
