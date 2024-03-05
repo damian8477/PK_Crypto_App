@@ -118,7 +118,7 @@ public class Strategy112Service extends BotService implements StrategyService {
         BinanceConfirmOrder binanceConfirmOrder = getBinanceConfirmOrder(order, marketPrice, totalPercentValue);
         boolean win = totalPercentValue > 0;
         orderService.saveHistoryOrderToDB(order.getUser(), order, binanceConfirmOrder, false, win);
-        sendInfoBotTelegram(getStringFormat("%s %s %s %s%", SOURCE_NAME, order.getSymbolName(), order.getPositionSide().toString(), totalPercentValue));
+        sendInfoBotTelegram(getStringFormat("%s %s %s %s", SOURCE_NAME, order.getSymbolName(), order.getPositionSide().toString(), totalPercentValue));
     }
 
     @Override

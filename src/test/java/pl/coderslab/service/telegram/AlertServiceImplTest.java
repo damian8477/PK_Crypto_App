@@ -174,7 +174,7 @@ class AlertServiceImplTest {
 
         alertService.checkAlert(price, alert);
 
-        verify(telegramBotServiceMock).sendMessage(userSetting.getTelegramChatId(), "Alert! \uD83D\uDCC8 BTCUSDT $50000.0");
+        verify(telegramBotServiceMock).sendMessage(userSetting.getTelegramChatId(), "Alert! \uD83D\uDCC9 BTCUSDT $50000.0");
         verify(alertRepositoryMock).deleteById(anyLong());
 
     }
