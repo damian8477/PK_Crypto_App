@@ -162,7 +162,7 @@ public class Strategy110Service extends BotService implements StrategyService {
             win = true;
         }
         orderService.saveHistoryOrderToDB(order.getUser(), order, binanceConfirmOrder, false, win);
-        sendInfoBotTelegram(getStringFormat("%s %s %s %s%", SOURCE_NAME, order.getSymbolName(), order.getPositionSide().toString(), totalPercentValue));
+        sendInfoBotTelegram(getStringFormat("%s %s %s %s", SOURCE_NAME, order.getSymbolName(), order.getPositionSide().toString(), totalPercentValue));
     }
 
     public void checkCoinInStrategy() {

@@ -137,7 +137,7 @@ public class Strategy111Service extends BotService implements StrategyService {
         }
         orderService.saveHistoryOrderToDB(order.getUser(), order, binanceConfirmOrder, false, win);
         cciOrderUpdateKill(order, marketPrice);
-        sendInfoBotTelegram(getStringFormat("%s %s %s %s%", SOURCE_NAME, order.getSymbolName(), order.getPositionSide().toString(), totalPercentValue));
+        sendInfoBotTelegram(getStringFormat("%s %s %s %s", SOURCE_NAME, order.getSymbolName(), order.getPositionSide().toString(), totalPercentValue));
     }
 
     private void cciOrderUpdateKill(Order order, double marketPrice) {

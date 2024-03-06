@@ -110,7 +110,7 @@ public class OpenServiceImpl implements OpenService, Common {
         }
         if (signal.getOrderType().equals(OrderType.MARKET)) isOpen = true;
         if (binanceService.sendOrderToBinance(sync, signal.getSymbol(), orderSide, marginLot.getLot(), String.valueOf(marketPrice), positionSide, signal.getOrderType(), signal.getEntryPrice().get(0).toString())) {
-            sendOtherEntryOrder(isOpen, sync, signal, orderSide, marginLot.getLot(), marketPrice, positionSide);
+            //sendOtherEntryOrder(isOpen, sync, signal, orderSide, marginLot.getLot(), marketPrice, positionSide);
             binanceService.sendSlAndTpToAccountMultipleTp(sync, signal.getSymbol(), positionSide, signal.getStopLoss().get(0).toString(),
                     signal.getTakeProfit(), minQty, lever, marketPrice, signal.getOrderType(), lengthPrice, marginLot.getLot());
             orderService.save(user, signal, String.valueOf(marketPrice), marginLot.getLot(), "", "", lever, strategy, isOpen, source, true);
