@@ -42,13 +42,14 @@ public class ScheduledService {
     //todo dla zlecen innych niż MARKET sprawdzanie czy sie otworzylo i dopisywanie zlecen TP i SL
 
 
-   @Scheduled(fixedDelay = 60000, initialDelay = 1000)
+    @Scheduled(fixedDelay = 60000, initialDelay = 1000)
     public void check() {
         List<User> users = userService.getActiveUsers();
         if(count % 60 == 0){
             logger.info("Scheduled counter: " + count + " " + LocalDateTime.now());
         }
         if (count == 1) {
+            logger.info("Count 1" + LocalDateTime.now());
             downloadSymbolsForStrategy();
             strategy110Service.downloadCryptoNameList();
             strategy110Service.checkCoinInStrategy();

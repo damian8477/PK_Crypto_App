@@ -8,9 +8,10 @@
         <version>2.7.16</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
+    <packaging>war</packaging>
     <groupId>pl.coderslba</groupId>
     <artifactId>PK_Crypto_App</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.2-SNAPSHOT</version>
     <name>PK_Crypto_App</name>
     <description>PK_Crypto_App</description>
     <properties>
@@ -120,6 +121,14 @@
     </dependencies>
 
     <build>
+<!--        <resources>-->
+<!--            <resource>-->
+<!--                <directory>src/main/</directory>-->
+<!--                <includes>-->
+<!--                    <include>**/*</include>-->
+<!--                </includes>-->
+<!--            </resource>-->
+<!--        </resources>-->
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
@@ -156,6 +165,7 @@
                     </execution>
                 </executions>
             </plugin>
+
         </plugins>
     </build>
 
