@@ -42,6 +42,7 @@ public class TelegramConfiguration {
         telegramBotsApi.registerBot(new TelegramVipServiceImpl(requestSignalVipService, vipSignalConfigProperties));
         logger.info("telegramVip()");
     }
+
     @Bean
     public void telegramInfo() throws TelegramApiException {
         TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);

@@ -17,7 +17,7 @@ import pl.coderslab.interfaces.TelegramBotService;
 public class TelegramInfoServiceImpl extends TelegramLongPollingBot implements TelegramBotService {
     private final RequestTelegramService requestTelegramService;
     private final InfoBotConfigProperties tokenConfigProperties;
-    private String chatId = null;
+    private static String chatId;
     private static final Logger logger = LoggerFactory.getLogger(TelegramInfoServiceImpl.class);
 
     @Override
@@ -51,7 +51,10 @@ public class TelegramInfoServiceImpl extends TelegramLongPollingBot implements T
     @Override
     public void sendMessage(String chatId, String message) {
         try {
-            if(this.chatId != null){
+            logger.error("sendMessageInfo");
+            if(this.chatId == null){
+                this.chatId = "2048963965";
+            }
                 SendMessage response = new SendMessage();
                 response.setChatId(this.chatId);
                 if (message.length() < 1500) {
@@ -66,7 +69,7 @@ public class TelegramInfoServiceImpl extends TelegramLongPollingBot implements T
                         execute(response);
                     }
                 }
-            }
+                logger.error("sendMessageInfo2");
         } catch (TelegramApiException e) {
             logger.error(e.toString());
         }

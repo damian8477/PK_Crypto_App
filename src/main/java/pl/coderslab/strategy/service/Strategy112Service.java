@@ -52,8 +52,8 @@ public class Strategy112Service extends BotService implements StrategyService {
         String cryptoName = symbol.getName();
 
         if(orders.stream().filter(s -> s.getSymbolName().equals(symbol.getName())).toList().isEmpty() && symbol.isActive()){
-            List<Double> candlestickList15m = indicatorsService.candleReturn(15, cryptoName, 300);
-            List<Double> candlestickList1m = indicatorsService.candleReturn(1, cryptoName, 300);
+            List<Double> candlestickList15m = indicatorsService.candleReturn(15, cryptoName, 200);
+            List<Double> candlestickList1m = indicatorsService.candleReturn(1, cryptoName, 200);
             double markPrice = binanceBasicService.getMarketPriceDouble(null, cryptoName);
             double macd15m = indicatorsService.getMacd(15, cryptoName, 0, 12, 26, 9, candlestickList15m);
             double macdPrev15m = indicatorsService.getMacdPrev(15, cryptoName, 0, 12, 26, 9, candlestickList15m);
@@ -67,15 +67,15 @@ public class Strategy112Service extends BotService implements StrategyService {
                 if (macd15m > 0 && macdPrev15m > 0) {
                     double macdPrev = macdPrev15m * 0.96;
                     if (macd15m < macdPrev) {
-                        newOrder(SOURCE_NAME, cryptoName, "SHORT", "0", "0", 2.4, 1.23, "", orders, source, candlestickList1m.get(0).toString());
+                        //newOrder(SOURCE_NAME, cryptoName, "SHORT", "0", "0", 2.4, 1.23, "", orders, source, candlestickList1m.get(0).toString());
                     }
                 }
             }
             if (ema501m > ema2001m && ema5015m > ema20015m) {
                 if (macd15m < 0 && macdPrev15m < 0) {
-                    double macdPrev = macdPrev15m * 1.04;
+                    double macdPrev = macdPrev15m * 1.05;
                     if (macd15m > macdPrev) {
-                        newOrder(SOURCE_NAME, cryptoName, "LONG", "0", "0", 2.4, 1.23, "", orders, source, candlestickList1m.get(0).toString());
+                        newOrder(SOURCE_NAME, cryptoName, "LONG", "0", "0", 2.2, 1.00, "", orders, source, candlestickList1m.get(0).toString());
                     }
                 }
             }

@@ -7,16 +7,19 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import pl.coderslab.service.telegram.TelegramInfoServiceImpl;
 import pl.coderslab.strategy.service.Strategy111Service;
 
 @RestController
 @RequestMapping("/test")
 @RequiredArgsConstructor
 public class TestController {
+    private final TelegramInfoServiceImpl telegramInfoService;
     private static final Logger logger = LoggerFactory.getLogger(TestController.class);
     @GetMapping
     public String getTest(){
         logger.info("Test work");
+        telegramInfoService.sendMessage(null, "pzida");
         return "Test work";
     }
 }
