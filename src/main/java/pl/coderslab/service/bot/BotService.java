@@ -11,6 +11,7 @@ import pl.coderslab.entity.orders.Order;
 import pl.coderslab.entity.orders.Signal;
 import pl.coderslab.entity.strategy.Source;
 import pl.coderslab.entity.user.User;
+import pl.coderslab.enums.Emoticon;
 import pl.coderslab.interfaces.*;
 import pl.coderslab.model.BinanceConfirmOrder;
 import pl.coderslab.model.CommonSignal;
@@ -92,7 +93,7 @@ public class BotService implements Common {
                                     .takeProfit(List.of(signal.getTakeProfit1()))
                                     .stopLoss(List.of(signal.getStopLoss()))
                             .build());
-                    telegramInfoService.sendMessage(null, getStringFormat("%s %s %s %s", sourceName, signal.getSymbol(), signal.getPositionSide().toString(), marketPrice));
+                    telegramInfoService.sendMessage(null, getStringFormat("%s %s %s %s %s", Emoticon.OPEN.getLabel(), sourceName, signal.getSymbol(), signal.getPositionSide().toString(), marketPrice));
                 }
             }
         } catch (Exception e) {

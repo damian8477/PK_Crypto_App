@@ -7,6 +7,7 @@ import pl.coderslab.entity.orders.Order;
 import pl.coderslab.entity.orders.Symbol;
 import pl.coderslab.entity.strategy.Source;
 import pl.coderslab.entity.strategy.rsi.RsiStrategy;
+import pl.coderslab.enums.Emoticon;
 import pl.coderslab.interfaces.*;
 import pl.coderslab.model.BinanceConfirmOrder;
 import pl.coderslab.repository.RsiStrategyRepository;
@@ -162,7 +163,8 @@ public class Strategy110Service extends BotService implements StrategyService {
             win = true;
         }
         orderService.saveHistoryOrderToDB(order.getUser(), order, binanceConfirmOrder, false, win);
-        sendInfoBotTelegram(getStringFormat("%s %s %s %s", SOURCE_NAME, order.getSymbolName(), order.getPositionSide().toString(), totalPercentValue));
+        String emoticon = totalPercentValue > 0 ? Emoticon.WIN.getLabel() : Emoticon.LOSS.getLabel();
+        sendInfoBotTelegram(getStringFormat("%s %s %s %s %s", emoticon, SOURCE_NAME, order.getSymbolName(), order.getPositionSide().toString(), totalPercentValue));
     }
 
     public void checkCoinInStrategy() {
