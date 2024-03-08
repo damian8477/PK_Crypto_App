@@ -51,7 +51,6 @@ public class TelegramInfoServiceImpl extends TelegramLongPollingBot implements T
     @Override
     public void sendMessage(String chatId, String message) {
         try {
-            logger.error("sendMessageInfo");
             if(this.chatId == null){
                 this.chatId = "2048963965";
             }
@@ -69,7 +68,6 @@ public class TelegramInfoServiceImpl extends TelegramLongPollingBot implements T
                         execute(response);
                     }
                 }
-                logger.error("sendMessageInfo2");
         } catch (TelegramApiException e) {
             logger.error(e.toString());
         }
