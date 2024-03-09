@@ -15,4 +15,5 @@ public class SourceStat implements CommonStatInterface{
     private List<SymbolStat> symbolStat;
     private List<ShiftTrade> shiftTrades;
     private List<ShiftTrade> hourTrades;
+    private List<ShiftTrade> dayOfWeekTrades;
 }

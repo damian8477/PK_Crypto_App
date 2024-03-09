@@ -161,6 +161,35 @@
                     </c:forEach>
                     </tbody>
                 </table>
+
+                <br>
+                <table class="table">
+                    <thead>
+                    <tr class="d-flex">
+                        <th class="col-1">Dzień tygodnia</th>
+                        <th class="col-1">Accuracy</th>
+                        <th class="col-1">Win pcs</th>
+                        <th class="col-1">Trade pcs</th>
+                    </tr>
+                    </thead>
+                    <tbody class="text-color-lighter">
+                    <c:forEach var="shift" items="${sourceStat.dayOfWeekTrades}">
+                        <tr class="d-flex">
+                            <td class="col-1">${shift.shift}</td>
+                            <c:if test="${shift.accuracy >= 75}">
+                                <td class="col-1 color-price-increase"><c:out
+                                        value="${shift.accuracy}"/></td>
+                            </c:if>
+                            <c:if test="${shift.accuracy < 75}">
+                                <td class="col-1 color-price-degrease"><c:out
+                                        value="${shift.accuracy}"/></td>
+                            </c:if>
+                            <td class="col-1">${shift.countWin}</td>
+                            <td class="col-1">${shift.countTrade}</td>
+                        </tr>
+                    </c:forEach>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
