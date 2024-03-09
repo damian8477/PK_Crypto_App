@@ -7,6 +7,7 @@ import pl.coderslab.entity.orders.Order;
 import pl.coderslab.entity.orders.Symbol;
 import pl.coderslab.entity.strategy.CCIOrder;
 import pl.coderslab.entity.strategy.Source;
+import pl.coderslab.enums.Emoticon;
 import pl.coderslab.interfaces.*;
 import pl.coderslab.model.BinanceConfirmOrder;
 import pl.coderslab.repository.CCIOrderRepository;
@@ -137,7 +138,8 @@ public class Strategy111Service extends BotService implements StrategyService {
         }
         orderService.saveHistoryOrderToDB(order.getUser(), order, binanceConfirmOrder, false, win);
         cciOrderUpdateKill(order, marketPrice);
-        sendInfoBotTelegram(getStringFormat("%s %s %s %s", SOURCE_NAME, order.getSymbolName(), order.getPositionSide().toString(), totalPercentValue));
+        String emoticon = totalPercentValue > 0 ? Emoticon.WIN.getLabel() : Emoticon.LOSS.getLabel();
+        sendInfoBotTelegram(getStringFormat("%s %s %s %s %s", emoticon, SOURCE_NAME, order.getSymbolName(), order.getPositionSide().toString(), totalPercentValue));
     }
 
     private void cciOrderUpdateKill(Order order, double marketPrice) {

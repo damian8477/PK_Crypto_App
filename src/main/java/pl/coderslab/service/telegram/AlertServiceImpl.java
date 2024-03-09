@@ -56,7 +56,6 @@ public class AlertServiceImpl implements AlertService {
         for (int i = 1; i <= 5; i++) {
             BigDecimal alertPrice = getAlertPrice(alert, i);
             PositionSide positionSide = getPositionSide(alert, i);
-
             if (!isNull(alertPrice) && !isNull(positionSide)) {
                 saveAlert(user, alert.getSymbol(), alertPrice, positionSide, getDirection(alertPrice, alert.getMarketPrice()));
             }

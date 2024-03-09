@@ -39,54 +39,68 @@ public class ScheduledService {
 
     //todo  czasy kiedy co ma być sprawdzane można trzymać w bazie
     //todo pobranie tych czasów np. raz na godzine lub wymuszenie z telegrama
-    //todo dla zlecen innych niż MARKET sprawdzanie czy sie otworzylo i dopisywanie zlecen TP i SL
 
 
     @Scheduled(fixedDelay = 60000, initialDelay = 1000)
     public void check() {
         List<User> users = userService.getActiveUsers();
-        if(count % 60 == 0){
-            logger.info("Scheduled counter: " + count + " " + LocalDateTime.now());
-        }
-        if (count == 1) {
-            logger.info("Count 1" + LocalDateTime.now());
-            downloadSymbolsForStrategy();
-            strategy110Service.downloadCryptoNameList();
-            strategy110Service.checkCoinInStrategy();
-            cciStrategy.searchCCI();
-            strategy111Service.searchNewOrder(null);
-            strategy112Service.searchNewOrder(null);
-        }
-        if (count % 1 == 0) {
-            checkUserOrderService.checkInActiveOrder(users);
-            strategy110Service.checkOrderStatusBot(null);
-            strategy111Service.checkOrderStatusBot(null);
-            strategy112Service.checkOrderStatusBot(null);
-        }
-        if (count % 2 == 0) {
-            checkTokensExpirationTime();
-        }
-        if (count % 4 == 0) {
-            strategy110Service.searchNewOrder(null);
-        }
-        if (count % 5 == 0){
-            alertService.checkAlerts();
-        }
-        if (count % 15 == 0){
-            cciStrategy.searchCCI();
-            strategy111Service.searchNewOrder(null);
-            strategy112Service.searchNewOrder(null);
-        }
+        logScheduledCounter();
+        executeOnFirstCount();
+        checkUserOrderService.checkInActiveOrder(users);
+        checkOrderStatusBot();
+        checkOrderStatusBot();
+        checkTokensExpirationTime();
+        checkAlerts();
+        searchNewOrder();
         count++;
         if (count > 360) {
             count = 1;
         }
     }
 
+    private void logScheduledCounter(){
+        if(count % 60 == 0){
+            logger.info("Scheduled counter: " + count + " " + LocalDateTime.now());
+        }
+    }
+    private void executeOnFirstCount(){
+        if (count == 1) {
+            logger.info("Count 1" + LocalDateTime.now());
+            downloadSymbolsForStrategy();
+            strategy110Service.downloadCryptoNameList();
+            strategy110Service.checkCoinInStrategy();
+            cciStrategy.searchCCI();
+            searchNewOrder();
+        }
+    }
+
+    private void checkOrderStatusBot(){
+        strategy110Service.checkOrderStatusBot(null);
+        strategy111Service.checkOrderStatusBot(null);
+        strategy112Service.checkOrderStatusBot(null);
+    }
+
+    private void checkAlerts(){
+        if (count % 5 == 0){
+            alertService.checkAlerts();
+        }
+    }
+
+    private void searchNewOrder(){
+        if (count % 15 == 0){
+            cciStrategy.searchCCI();
+            strategy111Service.searchNewOrder(null);
+            strategy112Service.searchNewOrder(null);
+            strategy110Service.searchNewOrder(null);
+        }
+    }
+
     private void checkTokensExpirationTime() {
-        List<TelegramCode> telegramCodes = telegramCodeRepository.findAllByExpiredCode(LocalDateTime.now().minusMinutes(15L));
-        telegramCodeRepository.deleteAll(telegramCodes);
-        userTokenRepository.deleteAllByExpiredCode(LocalDateTime.now().minusMinutes(15L));
+        if(count % 2 == 0){
+            List<TelegramCode> telegramCodes = telegramCodeRepository.findAllByExpiredCode(LocalDateTime.now().minusMinutes(15L));
+            telegramCodeRepository.deleteAll(telegramCodes);
+            userTokenRepository.deleteAllByExpiredCode(LocalDateTime.now().minusMinutes(15L));
+        }
     }
 
     private void downloadSymbolsForStrategy(){
