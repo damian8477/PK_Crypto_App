@@ -18,13 +18,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Service
 public class StatisticService {
 
-    public SourceStat getSourceStatistic(List<HistoryOrder> historyOrderList, Source source) {
+    public SourceStat getSourceStatistic(List<HistoryOrder> historyOrderList, Source source, boolean openTime) {
         historyOrderList = historyOrderList.stream().filter(s->source.getSymbols().stream().map(Symbol::getName).toList().contains(s.getSymbol())).toList();
         SourceStat sourceStat = new SourceStat();
         getAccuracy(historyOrderList, sourceStat);
         sourceStat.setSymbolStat(getSymbolStat(historyOrderList));
-        sourceStat.setShiftTrades(getShiftTrades(historyOrderList));
-        sourceStat.setHourTrades(getHourTrades(historyOrderList));
+        sourceStat.setShiftTrades(getShiftTrades(historyOrderList, openTime));
+        sourceStat.setHourTrades(getHourTrades(historyOrderList, openTime));
         return sourceStat;
     }
 
@@ -71,23 +71,23 @@ public class StatisticService {
         return symbolStats;
     }
 
-    private List<ShiftTrade> getShiftTrades(List<HistoryOrder> historyOrderList){
+    private List<ShiftTrade> getShiftTrades(List<HistoryOrder> historyOrderList, boolean openTime){
         List<ShiftTrade> shiftTrades = new ArrayList<>();
-        shiftTrades.add(getShiftTrade(1, historyOrderList, false));
-        shiftTrades.add(getShiftTrade(2, historyOrderList, false));
-        shiftTrades.add(getShiftTrade(3, historyOrderList, false));
+        shiftTrades.add(getShiftTrade(1, historyOrderList, false, openTime));
+        shiftTrades.add(getShiftTrade(2, historyOrderList, false, openTime));
+        shiftTrades.add(getShiftTrade(3, historyOrderList, false, openTime));
         return shiftTrades;
     }
-    private List<ShiftTrade> getHourTrades(List<HistoryOrder> historyOrderList){
+    private List<ShiftTrade> getHourTrades(List<HistoryOrder> historyOrderList, boolean openTime){
         List<ShiftTrade> hourTrades = new ArrayList<>();
         for (int i = 0; i < 24; i++) {
-            hourTrades.add(getShiftTrade(i, historyOrderList, true));
+            hourTrades.add(getShiftTrade(i, historyOrderList, true, openTime));
         }
         return hourTrades;
     }
 
-    private ShiftTrade getShiftTrade(int shift, List<HistoryOrder> historyOrderList, boolean hour){
-        List<HistoryOrder> historyOrders = getHistoryForShift(shift, historyOrderList, hour);
+    private ShiftTrade getShiftTrade(int shift, List<HistoryOrder> historyOrderList, boolean hour, boolean openTime){
+        List<HistoryOrder> historyOrders = getHistoryForShift(shift, historyOrderList, hour, openTime);
         SourceStat sourceStat = new SourceStat();
         getAccuracy(historyOrders, sourceStat);
         ShiftTrade shiftTrade = new ShiftTrade();
@@ -98,7 +98,7 @@ public class StatisticService {
         return shiftTrade;
     }
 
-    private List<HistoryOrder> getHistoryForShift(int shift, List<HistoryOrder> historyOrderList, boolean shiftHour){
+    private List<HistoryOrder> getHistoryForShift(int shift, List<HistoryOrder> historyOrderList, boolean shiftHour, boolean openTime){
         int startH;
         int stopH;
         if(!shiftHour){
@@ -114,10 +114,19 @@ public class StatisticService {
 
         int finalStopH = stopH;
         int finalStopH1 = stopH;
-        return historyOrderList.stream()
-                .filter(s->((s.getCreated().getHour() >= startH && s.getCreated().getHour() < finalStopH) || startH > finalStopH))
-                .filter(s->((s.getCreated().getHour() >= startH || s.getCreated().getHour() < finalStopH1) || startH < finalStopH1))
-                .toList();
+        if(openTime){
+            return historyOrderList.stream()
+                    .filter(s->s.getOpenTime() != null)
+                    .filter(s->((s.getOpenTime().getHour() >= startH && s.getOpenTime().getHour() < finalStopH) || startH > finalStopH))
+                    .filter(s->((s.getOpenTime().getHour() >= startH || s.getOpenTime().getHour() < finalStopH1) || startH < finalStopH1))
+                    .toList();
+        } else {
+            return historyOrderList.stream()
+                    .filter(s->((s.getCreated().getHour() >= startH && s.getCreated().getHour() < finalStopH) || startH > finalStopH))
+                    .filter(s->((s.getCreated().getHour() >= startH || s.getCreated().getHour() < finalStopH1) || startH < finalStopH1))
+                    .toList();
+        }
+
     }
 
     private int getStartHour(int shift){

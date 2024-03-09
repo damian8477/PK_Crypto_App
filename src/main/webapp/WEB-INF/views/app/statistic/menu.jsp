@@ -29,6 +29,7 @@
                         </select>
                         <label>Statystyki bota</label>
                         <input type="checkbox" name="userBot">
+                        <input type="checkbox" name="openTime">
                         <input type="submit" value="Wybierz" class="btn btn-success rounded-0 pt-0 pb-0 pr-4 pl-4">
                         <sec:csrfInput/>
                     </form>

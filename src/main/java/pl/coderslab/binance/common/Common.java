@@ -214,6 +214,10 @@ public interface Common {
         return zonedIST.format(formatter);
     }
 
+    default LocalDateTime getLocalDateTime() {
+        return LocalDateTime.now(ZoneId.of("Europe/Warsaw"));
+    }
+
     default String convertTimestampToDate(Long timestamp) {
         Date date = new Date(timestamp);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

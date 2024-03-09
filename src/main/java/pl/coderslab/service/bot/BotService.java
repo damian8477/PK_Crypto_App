@@ -92,7 +92,7 @@ public class BotService implements Common {
                                     .takeProfit(List.of(signal.getTakeProfit1()))
                                     .stopLoss(List.of(signal.getStopLoss()))
                             .build());
-                    telegramInfoService.sendMessage(null, getStringFormat("%s %s %s %s", sourceName, signal.getSymbol(), signal.getPositionSide().toString(), marketPrice));
+                    telegramInfoService.sendMessage(null, getStringFormat("Open %s %s %s %s", sourceName, signal.getSymbol(), signal.getPositionSide().toString(), marketPrice));
                 }
             }
         } catch (Exception e) {

@@ -41,14 +41,14 @@ public class StatisticController {
     }
 
     @GetMapping("/source")
-    public String getSource(@RequestParam int sourceId, boolean userBot, Model model, @AuthenticationPrincipal UserDetails authenticatedUser, HttpSession session) {
+    public String getSource(@RequestParam int sourceId, boolean userBot, boolean openTime, Model model, @AuthenticationPrincipal UserDetails authenticatedUser, HttpSession session) {
         long userId = 1000L;
         if(!userBot) {
             userId = userService.getUserBasic(authenticatedUser.getUsername()).getId();
         }
         List<HistoryOrder> historyOrderList = historyOrderRepository.findAllBySourceAndUserId(sourceId, userId);
         Source source = sourceService.findById(sourceId);
-        SourceStat sourceStat = statisticService.getSourceStatistic(historyOrderList, source);
+        SourceStat sourceStat = statisticService.getSourceStatistic(historyOrderList, source, openTime);
         model.addAttribute("sourceStat", sourceStat);
         model.addAttribute("source", source);
         session.setAttribute("userBot", userBot);
@@ -67,9 +67,26 @@ public class StatisticController {
         LocalDateTime stopDateTime = convertToLocalDateTimeEndOfDay(stopDate);
         List<HistoryOrder> historyOrderList = historyOrderRepository.findAllBySourceAndUserIdDate(sourceId, userId, startDateTime, stopDateTime);
         Source source = sourceService.findById(sourceId);
-        SourceStat sourceStat = statisticService.getSourceStatistic(historyOrderList, source);
+        SourceStat sourceStat = statisticService.getSourceStatistic(historyOrderList, source, false);
         model.addAttribute("sourceStat", sourceStat);
         model.addAttribute("source", source);
+        return "/app/statistic/source";
+    }
+
+    @GetMapping("/source-open-time")
+    public String getSourceOpenTime(@RequestParam int sourceId, boolean userBot, Model model, @AuthenticationPrincipal UserDetails authenticatedUser, HttpSession session) {
+        long userId = 1000L;
+        if(!userBot) {
+            userId = userService.getUserBasic(authenticatedUser.getUsername()).getId();
+        }
+        List<HistoryOrder> historyOrderList = historyOrderRepository.findAllBySourceAndUserId(sourceId, userId);
+        Source source = sourceService.findById(sourceId);
+        SourceStat sourceStat = statisticService.getSourceStatistic(historyOrderList, source, true);
+        model.addAttribute("sourceStat", sourceStat);
+        model.addAttribute("source", source);
+        session.setAttribute("userBot", userBot);
+        session.setAttribute("sourceId", sourceId);
+        session.setAttribute("userId", userId);
         return "/app/statistic/source";
     }
 
