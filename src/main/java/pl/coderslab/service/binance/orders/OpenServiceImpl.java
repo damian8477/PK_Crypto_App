@@ -48,7 +48,7 @@ public class OpenServiceImpl implements OpenService, Common {
         Source source = sourceService.findByName(signal.getSourceName());
         double marketPrice = binanceBasicService.getMarketPriceDouble(null, signal.getSymbol());
         source.getStrategies().forEach(s -> {
-            if (isActive(s.getUser(), s) && maxCountOrderIsOk(s)) {
+            if (isActive(s.getUser(), s) && maxCountOrderIsOk(s) && hourIsOk()) {
                 Strategy strategy = s.getUser().getStrategies().stream().filter(k -> k.getSource().getId().equals(source.getId())).findFirst().orElse(null);
                 ExchangeInfoEntry exchangeInfoEntry1 = SymbolExchangeService.exchangeInfoEntries.stream().filter(exchangeInfoEntry -> exchangeInfoEntry.getSymbol().equals(signal.getSymbol())).findFirst().orElse(null);
                 newOrder(signal, s.getUser().getOrders(), source, s.getUser(), marketPrice, exchangeInfoEntry1, strategy);
@@ -57,6 +57,12 @@ public class OpenServiceImpl implements OpenService, Common {
                         String.format("%s nie otwarto zlecenia dla %s", s.getSource().getName(), signal.getSymbol()));
             }
         });
+    }
+
+    private boolean hourIsOk(){
+        int hourNow = getLocalDateTime().getHour();
+        List<Integer> canTradeHour = List.of(0, 1, 4, 5, 6, 7, 8, 17, 18, 19, 20, 21, 22, 23);
+        return canTradeHour.contains(hourNow);
     }
 
     private boolean isActive(User user, Strategy strategy) {

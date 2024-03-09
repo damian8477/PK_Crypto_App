@@ -26,6 +26,7 @@
                     <input type="date" id="stopDate" name="stopDate">
                     <input type="submit" value="Odśwież">
                 </form>
+
                 <div class="schedules-content">
                     <div class="schedules-content">
                         <div class="schedules-content-header">
