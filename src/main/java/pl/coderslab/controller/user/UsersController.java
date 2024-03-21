@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import pl.coderslab.entity.strategy.Source;
 import pl.coderslab.entity.user.User;
 import pl.coderslab.entity.user.UserSetting;
 import pl.coderslab.enums.TokenType;
@@ -25,6 +26,7 @@ import pl.coderslab.repository.UserSettingRepository;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.time.DayOfWeek;
 
 @Controller
 @RequestMapping("/app/user")
@@ -105,7 +107,16 @@ public class UsersController {
     @GetMapping("/settings")
     public String getSettings(Model model) {
         String userName = SecurityContextHolder.getContext().getAuthentication().getName();
-        model.addAttribute("user", userService.getUserWithUserSettingsByUserName(userName));
+        User user = userService.getUserWithUserSettingsByUserName(userName);
+        model.addAttribute("user", user);
+        return "/app/settings/user-setting";
+    }
+
+    @PostMapping("/add-hours")
+    public String addHour(@RequestParam Integer hour, Model model) {
+        String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userService.getUserWithUserSettingsByUserName(userName);
+        model.addAttribute("user", user);
         return "/app/settings/user-setting";
     }
 
@@ -159,6 +170,19 @@ public class UsersController {
     public String deleteUserSetting(@RequestParam int settingId) {
         userSettingRepository.deleteById(settingId);
         return REDIRECT;
+    }
+
+    @ModelAttribute("day")
+    public DayOfWeek[] dayOfWeeks() {
+        return new DayOfWeek[]{
+                DayOfWeek.MONDAY,
+                DayOfWeek.TUESDAY,
+                DayOfWeek.WEDNESDAY,
+                DayOfWeek.THURSDAY,
+                DayOfWeek.FRIDAY,
+                DayOfWeek.SATURDAY,
+                DayOfWeek.SUNDAY
+        };
     }
 
 

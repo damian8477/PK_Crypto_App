@@ -88,6 +88,7 @@ public class UserServiceImpl implements UserService {
             Hibernate.initialize(user.getStrategies());
             Hibernate.initialize(user.getOrders());
             Hibernate.initialize(user.getAlerts());
+            Hibernate.initialize(user.getUserTradeSetting());
         }
     }
 

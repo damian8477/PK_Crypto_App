@@ -50,4 +50,6 @@ public class User {
     private List<Order> orders = new ArrayList<>();
     @OneToMany(mappedBy = "user")
     private List<Alert> alerts = new ArrayList<>();
+    @OneToOne
+    private UserTradeSetting userTradeSetting;
 }
