@@ -21,10 +21,9 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 public class RegistrationController {
 
-    private static final Logger logger = LoggerFactory.getLogger(RegistrationController.class);
-
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private static final Logger logger = LoggerFactory.getLogger(RegistrationController.class);
 
     @GetMapping
     public String prepareRegistrationPage(Model model) {

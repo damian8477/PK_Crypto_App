@@ -1,6 +1,5 @@
 package pl.coderslab.service.binance;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import pl.coderslab.binance.client.model.market.ExchangeInfoEntry;

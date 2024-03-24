@@ -15,5 +15,6 @@ public interface UserTokenService {
     boolean checkUserToken(User user, String token);
 
     boolean existsByToken(String token);
+
     UserToken getUserToken(String token);
 }

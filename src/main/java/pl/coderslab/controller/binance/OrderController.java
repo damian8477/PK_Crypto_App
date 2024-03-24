@@ -18,6 +18,7 @@ import pl.coderslab.interfaces.UserService;
 import pl.coderslab.repository.OrderRepository;
 
 import java.util.List;
+import java.util.Objects;
 
 import static java.util.Objects.isNull;
 
@@ -49,7 +50,7 @@ public class OrderController {
         User user = userService.getUserWithUserSettingsByUserName(authenticatedUser.getUsername());
         if (!isNull(orderId)) {
             Order order = orderRepository.findByUserId(user.getId()).stream()
-                    .filter(s -> s.getId() == orderId).findFirst().orElse(null);
+                    .filter(s -> Objects.equals(s.getId(), orderId)).findFirst().orElse(null);
             if (!isNull(order)) {
                 closeService.closeOrderByUser(order, user, null);//todo
             }

@@ -10,7 +10,9 @@ public interface SourceService {
     Source findByNameWithSymbols(String name);
 
     Source findById(int id);
+
     List<Source> findAll();
+
     Source save(Source source);
 
     void deleteById(int id);

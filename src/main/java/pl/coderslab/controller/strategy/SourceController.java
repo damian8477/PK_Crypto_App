@@ -8,15 +8,11 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import pl.coderslab.entity.strategy.Source;
-import pl.coderslab.enums.MarginType;
 import pl.coderslab.interfaces.SourceService;
 import pl.coderslab.interfaces.SymbolService;
-import pl.coderslab.repository.SourceRepository;
 import pl.coderslab.entity.orders.Symbol;
-import pl.coderslab.repository.SymbolRepository;
 
 import javax.validation.Valid;
-import java.util.List;
 
 import static java.util.Objects.isNull;
 

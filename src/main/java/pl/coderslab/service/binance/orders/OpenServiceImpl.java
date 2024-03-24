@@ -12,7 +12,6 @@ import pl.coderslab.binance.client.model.market.ExchangeInfoEntry;
 import pl.coderslab.binance.client.model.trade.MarginLot;
 import pl.coderslab.binance.client.model.trade.PositionRisk;
 import pl.coderslab.binance.common.Common;
-import pl.coderslab.entity.orders.HistoryOrder;
 import pl.coderslab.entity.orders.Order;
 import pl.coderslab.entity.strategy.Source;
 import pl.coderslab.entity.strategy.Strategy;
@@ -26,6 +25,7 @@ import pl.coderslab.service.binance.SymbolExchangeService;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import static java.util.Objects.isNull;
 
@@ -53,28 +53,34 @@ public class OpenServiceImpl implements OpenService, Common {
                 ExchangeInfoEntry exchangeInfoEntry1 = SymbolExchangeService.exchangeInfoEntries.stream().filter(exchangeInfoEntry -> exchangeInfoEntry.getSymbol().equals(signal.getSymbol())).findFirst().orElse(null);
                 newOrder(signal, s.getUser().getOrders(), source, s.getUser(), marketPrice, exchangeInfoEntry1, strategy);
             } else {
-                telegramBotService.sendMessage(s.getUser().getUserSetting().stream().findFirst().get().getTelegramChatId(),
-                        String.format("%s nie otwarto zlecenia dla %s", s.getSource().getName(), signal.getSymbol()));
+                s.getUser().getUserSetting().stream()
+                        .findFirst()
+                        .ifPresent(userSetting -> telegramBotService.sendMessage(userSetting.getTelegramChatId(), String.format("%s nie otwarto zlecenia dla %s", s.getSource().getName(), signal.getSymbol())));
             }
         });
     }
 
-    private boolean hourIsOk(){
+    private boolean hourIsOk() {
         int hourNow = getLocalDateTime().getHour();
         List<Integer> canTradeHour = List.of(0, 1, 4, 5, 6, 7, 8, 17, 18, 19, 20, 21, 22, 23);
         return canTradeHour.contains(hourNow);
     }
 
     private boolean isActive(User user, Strategy strategy) {
-        return user.isActive() && strategy.isActive() && user.getUserSetting().stream().findFirst().get().isActive() && user.getUserSetting().stream().findFirst().get().isActiveSignal();
+        Optional<UserSetting> userSettingOptional = user.getUserSetting().stream().findFirst();
+        return user.isActive() && strategy.isActive() &&
+                userSettingOptional.map(UserSetting::isActive).orElse(false) &&
+                userSettingOptional.map(UserSetting::isActiveSignal).orElse(false);
     }
 
     private boolean maxCountOrderIsOk(Strategy strategy) {
-        UserSetting userSetting = strategy.getUser().getUserSetting().stream().findFirst().get();
-        List<Order> orders = strategy.getUser().getOrders();
-        int sizeSource = orders.stream().filter(s -> Objects.equals(s.getSource().getId(), strategy.getSource().getId())).toList().size();
-        int sizeAll = orders.size();
-        return userSetting.getMaxCountOrder() > sizeAll && strategy.getMaxCountOrders() > sizeSource;
+        Optional<UserSetting> userSettingOptional = strategy.getUser().getUserSetting().stream().findFirst();
+        return userSettingOptional.map(userSetting -> {
+            List<Order> orders = strategy.getUser().getOrders();
+            int sizeSource = orders.stream().filter(s -> Objects.equals(s.getSource().getId(), strategy.getSource().getId())).toList().size();
+            int sizeAll = orders.size();
+            return (userSetting.getMaxCountOrder() > sizeAll && strategy.getMaxCountOrders() > sizeSource);
+        }).orElse(false);
     }
 
     private void newOrder(CommonSignal signal, List<Order> orderList, Source source, User user, Double marketPrice, ExchangeInfoEntry exchangeInfoEntry, Strategy strategy) {
@@ -84,7 +90,7 @@ public class OpenServiceImpl implements OpenService, Common {
                 .filter(s -> s.getPositionSide().equals(signal.getPositionSide().toString()))
                 .filter(s -> s.getPositionAmt().doubleValue() != 0.0)
                 .findFirst().orElse(null);
-        if (isNull(positionRisk) && !orderList.stream().anyMatch(s -> s.getSymbolName().equals(signal.getSymbol()))) {
+        if (isNull(positionRisk) && orderList.stream().noneMatch(s -> s.getSymbolName().equals(signal.getSymbol()))) {
             openSignal(signal, syncRequestClient, exchangeInfoEntry, user, marketPrice, source, strategy);
         }
     }
@@ -138,7 +144,7 @@ public class OpenServiceImpl implements OpenService, Common {
                 }
             }
         } catch (Exception e) {
-
+            logger.info("sendOtherEntryOrder " + e);
         }
     }
 }

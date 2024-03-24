@@ -16,37 +16,44 @@ public class MessageServiceImpl implements MessageService {
     public String getOrderCloseOwn(Locale locale) {
         return messageSource.getMessage("order.close.app.telegram", null, locale);
     }
+
     @Override
-    public String getOrderOpenSignal(Locale locale){
+    public String getOrderOpenSignal(Locale locale) {
         return messageSource.getMessage("order.open.signal.telegram", null, locale);
     }
+
     @Override
-    public String getTelegramUserAuthError(Locale locale){
+    public String getTelegramUserAuthError(Locale locale) {
         return messageSource.getMessage("telegram.user.authorized.error", null, locale);
     }
+
     @Override
-    public String getTelegramUserAuthConfirm(Locale locale){
+    public String getTelegramUserAuthConfirm(Locale locale) {
         return messageSource.getMessage("telegram.user.authorized.confirm", null, locale);
     }
+
     @Override
-    public String getTelegramUserLogout(Locale locale){
+    public String getTelegramUserLogout(Locale locale) {
         return messageSource.getMessage("telegram.user.logout", null, locale);
     }
+
     @Override
-    public String getTelegramUserWait(Locale locale){
+    public String getTelegramUserWait(Locale locale) {
         return messageSource.getMessage("telegram.user.wait", null, locale);
     }
+
     @Override
-    public String getTelegramUserError(Locale locale){
+    public String getTelegramUserError(Locale locale) {
         return messageSource.getMessage("telegram.user.error", null, locale);
     }
+
     @Override
-    public String getTelegramUserNotAuthorized(Locale locale){
+    public String getTelegramUserNotAuthorized(Locale locale) {
         return messageSource.getMessage("telegram.user.not.authorized", null, locale);
     }
 
     @Override
-    public String getEmailRemindPasswordSubject(Locale locale){
+    public String getEmailRemindPasswordSubject(Locale locale) {
         return messageSource.getMessage("email.remind.password.subject", null, locale);
     }
 }

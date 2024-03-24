@@ -76,7 +76,7 @@ public class Strategy112Service extends BotService implements StrategyService {
                 if (macd15m < 0 && macdPrev15m < 0) {
                     double macdPrev = macdPrev15m * 1.05;
                     if (macd15m > macdPrev) {
-                        newOrder(SOURCE_NAME, cryptoName, "LONG", "0", "0", 2.2, 1.00, "", orders, source, candlestickList1m.get(0).toString());
+                        newOrder(SOURCE_NAME, cryptoName, "LONG", "0", "0", 2.2, 1.00, orders, source, candlestickList1m.get(0).toString());
                     }
                 }
             }

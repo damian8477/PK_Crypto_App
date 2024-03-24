@@ -94,7 +94,7 @@ public class Strategy110Service extends BotService implements StrategyService {
             if (avRsi < coin.getLongRsiTrigger() + 2.0) {
                 if (coin.isDown()) {
                     Source source = sourceService.findByName(SOURCE_NAME);
-                    botService.newOrder(SOURCE_NAME, coin.getSymbol(), "LONG", "0", "0", 3.0, 0.9, String.valueOf(avRsi), orders, source, candleStick);
+                    botService.newOrder(SOURCE_NAME, coin.getSymbol(), "LONG", "0", "0", 3.0, 0.9, orders, source, candleStick);
                 }
                 rsiStrategyRepository.updateActive(coin.getId(), false);
                 rsiStrategyRepository.updateDown(coin.getId(), false);
@@ -112,7 +112,7 @@ public class Strategy110Service extends BotService implements StrategyService {
             if (avRsi > coin.getSellRsiTrigger() - 2.0) {
                 if (coin.isUp()) {
                     Source source = sourceService.findByName(SOURCE_NAME);
-                    botService.newOrder(SOURCE_NAME, coin.getSymbol(), "SHORT", "0", "0", 3.0, 0.9, String.valueOf(avRsi), orders, source, candleStick);
+                    botService.newOrder(SOURCE_NAME, coin.getSymbol(), "SHORT", "0", "0", 3.0, 0.9, orders, source, candleStick);
                 }
                 rsiStrategyRepository.updateActive(coin.getId(), false);
                 rsiStrategyRepository.updateUp(coin.getId(), false);

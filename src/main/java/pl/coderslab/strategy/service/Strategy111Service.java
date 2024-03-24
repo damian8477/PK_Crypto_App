@@ -91,9 +91,7 @@ public class Strategy111Service extends BotService implements StrategyService {
         String candleStick = indicatorsService.getCandleStick(order.getSymbol());
         order.setOpen(true);
         cciOrderRepository.save(order);
-        botService.newOrder(SOURCE_NAME, order.getSymbol(), "LONG", "0", "0", 2.4, 1.23, "", orders, source, candleStick);
-//        botService.newOrder(SOURCE_NAME, order.getSymbol(), "LONG", "0", "0", 3.0, 0.83, "", orders, source, candleStick);
-//        botService.newOrder(SOURCE_NAME, order.getSymbol(), "SHORT", "0", "0", 1.5, 2.5, "", orders, source, candleStick);
+        botService.newOrder(SOURCE_NAME, order.getSymbol(), "LONG", "0", "0", 2.4, 1.23, orders, source, candleStick);
     }
 
     @Override

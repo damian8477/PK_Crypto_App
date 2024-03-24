@@ -17,6 +17,7 @@ public interface UserService {
     List<User> getActiveUsers();
 
     User getUserBasic(String username);
+
     User getUserByEmail(String email);
 
     void fillUser(User user);

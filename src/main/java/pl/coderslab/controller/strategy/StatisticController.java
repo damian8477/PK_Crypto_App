@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import pl.coderslab.entity.orders.HistoryOrder;
-import pl.coderslab.entity.orders.Symbol;
 import pl.coderslab.entity.strategy.Source;
 import pl.coderslab.interfaces.SourceService;
 import pl.coderslab.interfaces.UserService;
@@ -23,7 +22,6 @@ import javax.servlet.http.HttpSession;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -43,7 +41,7 @@ public class StatisticController {
     @GetMapping("/source")
     public String getSource(@RequestParam int sourceId, boolean userBot, boolean openTime, Model model, @AuthenticationPrincipal UserDetails authenticatedUser, HttpSession session) {
         long userId = 1000L;
-        if(!userBot) {
+        if (!userBot) {
             userId = userService.getUserBasic(authenticatedUser.getUsername()).getId();
         }
         List<HistoryOrder> historyOrderList = historyOrderRepository.findAllBySourceAndUserId(sourceId, userId);
@@ -76,7 +74,7 @@ public class StatisticController {
     @GetMapping("/source-open-time")
     public String getSourceOpenTime(@RequestParam int sourceId, boolean userBot, Model model, @AuthenticationPrincipal UserDetails authenticatedUser, HttpSession session) {
         long userId = 1000L;
-        if(!userBot) {
+        if (!userBot) {
             userId = userService.getUserBasic(authenticatedUser.getUsername()).getId();
         }
         List<HistoryOrder> historyOrderList = historyOrderRepository.findAllBySourceAndUserId(sourceId, userId);
@@ -91,12 +89,10 @@ public class StatisticController {
     }
 
 
-
     @ModelAttribute("sourceList")
     public Source[] sourceList() {
         return sourceService.findAll().toArray(new Source[0]);
     }
-
 
 
     public static LocalDateTime convertToLocalDateTimeStartOfDay(LocalDate localDate) {

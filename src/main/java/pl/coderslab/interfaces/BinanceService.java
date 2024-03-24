@@ -17,6 +17,7 @@ import java.util.List;
 
 public interface BinanceService {
     List<CryptoName> getSymbols();
+
     List<String> getAllSymbol();
 
     CryptoName getSymbols(int symbolId);

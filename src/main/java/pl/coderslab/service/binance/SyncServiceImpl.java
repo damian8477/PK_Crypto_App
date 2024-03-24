@@ -18,6 +18,7 @@ public class SyncServiceImpl implements SyncService {
     private final BinanceConfigProperties binanceConfigProperties;
     private SyncRequestClient syncRequestClient;
     private final Logger logger = LoggerFactory.getLogger(SyncServiceImpl.class);
+
     @Override
     public SyncRequestClient sync(UserSetting userSetting) {
         try {

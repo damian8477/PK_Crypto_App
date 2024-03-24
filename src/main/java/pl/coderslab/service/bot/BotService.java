@@ -33,7 +33,7 @@ public class BotService implements Common {
 
     private static final Logger logger = LoggerFactory.getLogger(BotService.class);
 
-    public void newOrder(String sourceName, String symbol, String side, String tp, String sl, double percentSl, double percentTp, String rsi, List<Order> orders, Source source, String candleStick) {
+    public void newOrder(String sourceName, String symbol, String side, String tp, String sl, double percentSl, double percentTp, List<Order> orders, Source source, String candleStick) {
         try {
             User bot = userService.getUserBasic("bot");
             List<Order> activeOrdersList = orders.stream()
@@ -82,16 +82,16 @@ public class BotService implements Common {
                     signalService.save(signal);
                     orderService.save(bot, signal, "", "10.0", null, 10, null, true, source, true);
                     openService.newSignal(CommonSignal.builder()
-                                    .orderType(OrderType.MARKET)
-                                    .isStrategy(true)
-                                    .positionSide(signal.getPositionSide())
-                                    .lever(10)
-                                    .signal(signal)
-                                    .symbol(signal.getSymbol())
-                                    .sourceName(signal.getSource().getName())
-                                    .entryPrice(List.of(BigDecimal.valueOf(marketPrice), BigDecimal.valueOf(entryPriceSecond), BigDecimal.valueOf(entryPriceThird)))
-                                    .takeProfit(List.of(signal.getTakeProfit1()))
-                                    .stopLoss(List.of(signal.getStopLoss()))
+                            .orderType(OrderType.MARKET)
+                            .isStrategy(true)
+                            .positionSide(signal.getPositionSide())
+                            .lever(10)
+                            .signal(signal)
+                            .symbol(signal.getSymbol())
+                            .sourceName(signal.getSource().getName())
+                            .entryPrice(List.of(BigDecimal.valueOf(marketPrice), BigDecimal.valueOf(entryPriceSecond), BigDecimal.valueOf(entryPriceThird)))
+                            .takeProfit(List.of(signal.getTakeProfit1()))
+                            .stopLoss(List.of(signal.getStopLoss()))
                             .build());
                     telegramInfoService.sendMessage(null, getStringFormat("%s %s %s %s %s", Emoticon.OPEN.getLabel(), sourceName, signal.getSymbol(), signal.getPositionSide().toString(), marketPrice));
                 }
@@ -114,7 +114,7 @@ public class BotService implements Common {
         if (order.getPositionSide().equals(PositionSide.LONG)) {
             return (markPrice - entryPrice) / entryPrice * 100.0 * leverange;
         } else {
-            return (entryPrice - markPrice) / entryPrice * 100.0 *  leverange;
+            return (entryPrice - markPrice) / entryPrice * 100.0 * leverange;
         }
     }
 
@@ -132,7 +132,7 @@ public class BotService implements Common {
                 .build();
     }
 
-    public void sendInfoBotTelegram(String message){
+    public void sendInfoBotTelegram(String message) {
         telegramInfoService.sendMessage(null, message);
     }
 

@@ -11,7 +11,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import pl.coderslab.entity.strategy.Source;
 import pl.coderslab.entity.user.User;
 import pl.coderslab.entity.user.UserSetting;
 import pl.coderslab.enums.TokenType;

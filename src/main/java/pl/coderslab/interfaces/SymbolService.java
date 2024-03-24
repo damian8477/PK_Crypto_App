@@ -11,5 +11,6 @@ public interface SymbolService {
     boolean checkSymbol(Symbol symbol);
 
     AlertSetting getBasicAlert(String symbol);
+
     List<Symbol> findAll();
 }

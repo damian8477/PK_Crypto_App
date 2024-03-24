@@ -6,13 +6,8 @@ import pl.coderslab.binance.client.SyncRequestClient;
 import pl.coderslab.binance.client.model.trade.PositionRisk;
 import pl.coderslab.entity.orders.Order;
 import pl.coderslab.entity.strategy.Source;
-import pl.coderslab.entity.strategy.Strategy;
-import pl.coderslab.entity.user.User;
 import pl.coderslab.interfaces.BinanceService;
 import pl.coderslab.interfaces.OrderService;
-import pl.coderslab.interfaces.SyncService;
-
-import java.util.List;
 
 import static java.util.Objects.isNull;
 

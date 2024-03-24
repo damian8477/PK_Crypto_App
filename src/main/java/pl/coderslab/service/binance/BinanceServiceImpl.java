@@ -109,8 +109,7 @@ public class BinanceServiceImpl implements BinanceService, Common {
         int lever = binanceSupport.setLeverage(syncRequestClient, signal.getLever(), signal.getSymbol());
         String marketPrice = binanceSupport.getMarketPriceString(syncRequestClient, signal.getSymbol());
         String lot = signal.getLot();
-        boolean isOpen = false;
-        if (signal.getOrderType().equals(OrderType.MARKET)) isOpen = true;
+        boolean isOpen = signal.getOrderType().equals(OrderType.MARKET);
         if (sendOrderToBinance(syncRequestClient, signal.getSymbol(), orderSide, lot, marketPrice, positionSide, signal.getOrderType(), null)) {
             if (isOpen) {
                 sendSlAndTpToAccount(syncRequestClient, signal.getSymbol(), orderSide, positionSide, signal.getStopLoss().get(0).toString(), signal.getTakeProfit().get(0).toString());
@@ -272,7 +271,6 @@ public class BinanceServiceImpl implements BinanceService, Common {
         binanceSupport.cancelOpenOrder(syncRequestClient, order.getSymbolName(), getOrderSideClose(order.getPositionSide()), OrderType.STOP_MARKET);
         sendSlToAccount(syncRequestClient, order.getSymbolName(), order.getPositionSide(), String.valueOf(slPrice), lot);
     }
-
 
 
 }

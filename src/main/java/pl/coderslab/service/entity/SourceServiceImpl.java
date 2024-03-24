@@ -1,7 +1,6 @@
 package pl.coderslab.service.entity;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.ObjectUtils;
 import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
 import pl.coderslab.entity.strategy.Source;
@@ -27,7 +26,7 @@ public class SourceServiceImpl implements SourceService {
     @Transactional
     public Source findByNameWithSymbols(String name) {
         Source source = sourceRepository.findByName(name);
-        if(!isNull(source)){
+        if (!isNull(source)) {
             Hibernate.initialize(source.getSymbols());
         }
         return source;
@@ -35,9 +34,9 @@ public class SourceServiceImpl implements SourceService {
 
     @Override
     @Transactional
-    public Source findById(int id){
+    public Source findById(int id) {
         Source source = sourceRepository.findById(id);
-        if(!isNull(source)){
+        if (!isNull(source)) {
             Hibernate.initialize(source.getSymbols());
         }
         return source;
@@ -49,12 +48,12 @@ public class SourceServiceImpl implements SourceService {
     }
 
     @Override
-    public Source save(Source source){
+    public Source save(Source source) {
         return sourceRepository.save(source);
     }
 
     @Override
-    public void deleteById(int id){
+    public void deleteById(int id) {
         sourceRepository.deleteById(id);
     }
 

@@ -133,8 +133,8 @@ public class BinanceBasicServiceImpl implements BinanceBasicService {
             List<Order> listOrder = syncRequestClient.getOpenOrders(symbol).stream()
                     .filter(s -> s.getSide().equals(side))
                     .toList();
-            if(!isNull(orderType)){
-                listOrder = listOrder.stream().filter(s->s.getType().equals(orderType.toString())).toList();
+            if (!isNull(orderType)) {
+                listOrder = listOrder.stream().filter(s -> s.getType().equals(orderType.toString())).toList();
             }
             for (Order order : listOrder) {
                 syncRequestClient.cancelOrder(symbol, order.getOrderId(), order.getClientOrderId());
@@ -186,26 +186,6 @@ public class BinanceBasicServiceImpl implements BinanceBasicService {
     }
 
     @Override
-    public double getUserBalance(SyncRequestClient syncRequestClient, String cryptoName) {
-        String curr = getCurrency(cryptoName);
-        List<AccountBalance> balanceUserList = syncRequestClient.getBalance();
-        List<BigDecimal> balanceList = balanceUserList.stream()
-                .filter((s -> s.getAsset().equals(curr)))
-                .map(AccountBalance::getBalance).toList();
-        return Math.round(balanceList.get(0).doubleValue() * 100.0) / 100.0;
-    }
-
-    @Override
-    public String getCurrency(String cryptoName) {
-        if (cryptoName.contains("USDT")) {
-            return "USDT";
-        } else if (cryptoName.contains("BUSD")) {
-            return "BUSD";
-        }
-        return "USDT";
-    }
-
-    @Override
     public BinanceConfirmOrder getBinanceConfirmOrder(SyncRequestClient syncRequestClient, PositionRisk positionRisk) {
         String symbol = positionRisk.getSymbol();
         double sumProfit = 0.0;
@@ -246,7 +226,7 @@ public class BinanceBasicServiceImpl implements BinanceBasicService {
     }
 
     @Override
-    public List<String> getSymbolList(){
+    public List<String> getSymbolList() {
         SyncRequestClient syncRequestClient = syncService.sync(null);
         return syncRequestClient.getPositionRisk().stream().map(PositionRisk::getSymbol).toList();
     }

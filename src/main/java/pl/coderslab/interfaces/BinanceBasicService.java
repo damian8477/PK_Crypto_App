@@ -41,11 +41,9 @@ public interface BinanceBasicService {
     double calculateLot(double lotSize, double minLotSize);
 
 
-    double getUserBalance(SyncRequestClient syncRequestClient, String cryptoName);
+    String convertTimestampToDate(Long timestamp);
 
-    String getCurrency(String cryptoName);
     BinanceConfirmOrder getBinanceConfirmOrder(SyncRequestClient syncRequestClient, PositionRisk positionRisk);
 
-    String convertTimestampToDate(Long timestamp);
     List<String> getSymbolList();
 }

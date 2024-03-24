@@ -15,7 +15,7 @@ public class EmailServiceImpl implements EmailService {
 
     @Override
     public void sendEmail(String to, String subject, String body) {
-        if(isNull(to) || isNull(subject) || isNull(body) || to.isEmpty() || subject.isEmpty() || body.isEmpty()){
+        if (isNull(to) || isNull(subject) || isNull(body) || to.isEmpty() || subject.isEmpty() || body.isEmpty()) {
             throw new IllegalArgumentException("sendEmail", new Throwable("Arguments cannot be null"));
         }
         SimpleMailMessage message = new SimpleMailMessage();

@@ -62,10 +62,7 @@ public class CloseServiceImpl implements CloseService, Common {
                 if (order.isAppOrder()) {
                     orderRepository.deleteById(order.getId());
                     BinanceConfirmOrder binanceConfirmOrder = binanceService.getBinanceConfirmOrder(syncRequestClient, order, marketPrice);
-                    boolean win = false;
-                    if(binanceConfirmOrder.getRealizedPln().compareTo(new BigDecimal("0.0")) > 0){
-                        win = true;
-                    }
+                    boolean win = binanceConfirmOrder.getRealizedPln().compareTo(new BigDecimal("0.0")) > 0;
                     orderService.saveHistoryOrderToDB(user, order, binanceConfirmOrder, false, win);
                     telegramBotService.sendMessage(user.getUserSetting().get(0).getTelegramChatId(), String.format(messageService.getOrderCloseOwn(null), Emoticon.CLOSE.getLabel(), order.getSymbolName(), order.getPositionSide(), position.getMarkPrice(), Emoticon.getWinLoss(binanceConfirmOrder.getRealizedPln()), binanceConfirmOrder.getRealizedPln()));
                     logger.info(getStringFormat(messageService.getOrderCloseOwn(null), Emoticon.CLOSE.getLabel(), order.getSymbolName(), order.getPositionSide(), position.getMarkPrice(), Emoticon.getWinLoss(binanceConfirmOrder.getRealizedPln()), binanceConfirmOrder.getRealizedPln()));
@@ -75,18 +72,19 @@ public class CloseServiceImpl implements CloseService, Common {
         }
         return false;
     }
+
     @Override
     public void killSymbol(SyncRequestClient syncRequestClient, PositionRisk position, String lotSize) {
         String lot = String.valueOf(Math.abs(position.getPositionAmt().doubleValue()));
-        if (lotSize != null && (Double.parseDouble(lotSize) <= Double.parseDouble(lot)))
-                {lot = lotSize;
+        if (lotSize != null && (Double.parseDouble(lotSize) <= Double.parseDouble(lot))) {
+            lot = lotSize;
         }
         PositionSide positionSide = PositionSide.valueOf(position.getPositionSide());
         OrderSide orderSide = binanceSupport.getOrderSideForClose(positionSide);
         try {
             if (!binanceService.sendOrderToBinance(syncRequestClient, position.getSymbol(), orderSide, lot, position.getMarkPrice().toString(), positionSide, OrderType.MARKET, null)) {
-                    syncRequestClient.postOrder(position.getSymbol(), orderSide, positionSide, OrderType.MARKET, null,
-                            lot, null, lot, null, null, null, NewOrderRespType.ACK);
+                syncRequestClient.postOrder(position.getSymbol(), orderSide, positionSide, OrderType.MARKET, null,
+                        lot, null, lot, null, null, null, NewOrderRespType.ACK);
             }
             binanceSupport.cancelOpenOrder(syncRequestClient, position.getSymbol(), orderSide, null);
         } catch (Exception e) {

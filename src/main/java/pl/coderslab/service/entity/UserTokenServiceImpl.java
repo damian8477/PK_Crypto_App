@@ -29,7 +29,7 @@ public class UserTokenServiceImpl implements UserTokenService {
     @Transactional
     public boolean generateUserToken(User user, TokenType tokenType) {
         if (!isNull(user.getEmail())) {
-            String token = generateRandomCode(6);
+            String token = generateRandomCode();
             userTokenRepository.deleteAllByUserId(user.getId());
             userTokenRepository.save(UserToken.builder()
                     .tokenType(tokenType)
@@ -45,9 +45,9 @@ public class UserTokenServiceImpl implements UserTokenService {
 
     @Override
     @Transactional
-    public String generateUserTokenRemindPassword(User user){
-        if(!isNull(user.getEmail())){
-            String token = generateRandomCode();
+    public String generateUserTokenRemindPassword(User user) {
+        if (!isNull(user.getEmail())) {
+            String token = generateRandomCodeUUID();
             userTokenRepository.deleteAllByUserId(user.getId());
             userTokenRepository.save(UserToken.builder()
                     .tokenType(TokenType.PASSWORD_REMIND)
@@ -79,15 +79,15 @@ public class UserTokenServiceImpl implements UserTokenService {
         return userTokenRepository.findByToken(token);
     }
 
-    private String generateRandomCode() {
+    private String generateRandomCodeUUID() {
         return UUID.randomUUID().toString();
     }
 
-    private String generateRandomCode(int length) {
+    private String generateRandomCode() {
         Random random = new Random();
         StringBuilder code = new StringBuilder();
 
-        for (int i = 0; i < length; i++) {
+        for (int i = 0; i < 6; i++) {
             int digit = random.nextInt(10);
             code.append(digit);
         }

@@ -17,6 +17,7 @@ public class AdminController {
     private final UserService userService;
 
     private static final String REDIRECT = "redirect:/admin/user-list";
+
     @GetMapping("/user-list")
     public String getUserList(Model model) {
         model.addAttribute("users", userRepository.findAll());

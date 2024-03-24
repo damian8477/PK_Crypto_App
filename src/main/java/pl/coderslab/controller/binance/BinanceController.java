@@ -51,7 +51,7 @@ public class BinanceController {
         for (String name : symbols) {
             Symbol symbol = new Symbol();
             symbol.setName(name);
-            if(symbolService.checkSymbol(symbol)) {
+            if (symbolService.checkSymbol(symbol)) {
                 symbolRepository.save(symbol);
             }
         }
