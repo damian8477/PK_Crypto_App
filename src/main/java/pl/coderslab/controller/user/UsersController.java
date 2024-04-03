@@ -98,8 +98,8 @@ public class UsersController {
 
 
     @PostMapping("/delete")
-    public String getAdd(@RequestParam Long id) {
-        userRepository.deleteById(id);
+    public String delete(@RequestParam Long id) {
+        userService.deleteById(id);
         return "redirect:/admin/user-list";
     }
 

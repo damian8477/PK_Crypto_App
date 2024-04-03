@@ -17,6 +17,7 @@ import pl.coderslab.strategy.indicators.cci.CCIStrategy;
 import pl.coderslab.strategy.service.Strategy110Service;
 import pl.coderslab.strategy.service.Strategy111Service;
 import pl.coderslab.strategy.service.Strategy112Service;
+import pl.coderslab.strategy.service.Strategy113Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -33,6 +34,7 @@ public class ScheduledService {
     private final Strategy110Service strategy110Service;
     private final Strategy111Service strategy111Service;
     private final Strategy112Service strategy112Service;
+    private final Strategy113Service strategy113Service;
     private final CCIStrategy cciStrategy;
     private static final Logger logger = LoggerFactory.getLogger(ScheduledService.class);
     private int count = 1;
@@ -78,6 +80,7 @@ public class ScheduledService {
         strategy110Service.checkOrderStatusBot(null);
         strategy111Service.checkOrderStatusBot(null);
         strategy112Service.checkOrderStatusBot(null);
+        strategy113Service.checkOrderStatusBot(null);
     }
 
     private void checkAlerts(){
@@ -91,6 +94,7 @@ public class ScheduledService {
             cciStrategy.searchCCI();
             strategy111Service.searchNewOrder(null);
             strategy112Service.searchNewOrder(null);
+            strategy113Service.searchNewOrder(null);
             strategy110Service.searchNewOrder(null);
         }
     }
