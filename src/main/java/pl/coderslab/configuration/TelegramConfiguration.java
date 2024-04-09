@@ -29,25 +29,25 @@ public class TelegramConfiguration {
     private final InfoBotConfigProperties infoBotConfigProperties;
 
     private static final Logger logger = LoggerFactory.getLogger(TelegramConfiguration.class);
-    @Bean
-    public void telegramBotsApi() throws TelegramApiException {
-        TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
-        telegramBotsApi.registerBot(new TelegramBotServiceImpl(requestTelegramService, tokenConfigProperties));
-        logger.info("telegramBotApi()");
-    }
-
-    @Bean
-    public void telegramVip() throws TelegramApiException {
-        TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
-        telegramBotsApi.registerBot(new TelegramVipServiceImpl(requestSignalVipService, vipSignalConfigProperties));
-        logger.info("telegramVip()");
-    }
-
-    @Bean
-    public void telegramInfo() throws TelegramApiException {
-        TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
-        telegramBotsApi.registerBot(new TelegramInfoServiceImpl(requestTelegramService, infoBotConfigProperties));
-        logger.info("telegramInfo()");
-    }
+//    @Bean
+//    public void telegramBotsApi() throws TelegramApiException {
+//        TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
+//        telegramBotsApi.registerBot(new TelegramBotServiceImpl(requestTelegramService, tokenConfigProperties));
+//        logger.info("telegramBotApi()");
+//    }
+//
+//    @Bean
+//    public void telegramVip() throws TelegramApiException {
+//        TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
+//        telegramBotsApi.registerBot(new TelegramVipServiceImpl(requestSignalVipService, vipSignalConfigProperties));
+//        logger.info("telegramVip()");
+//    }
+//
+//    @Bean
+//    public void telegramInfo() throws TelegramApiException {
+//        TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
+//        telegramBotsApi.registerBot(new TelegramInfoServiceImpl(requestTelegramService, infoBotConfigProperties));
+//        logger.info("telegramInfo()");
+//    }
 
 }
