@@ -41,7 +41,7 @@ public class Strategy112Service extends BotService implements StrategyService {
     @Override
     public void searchNewOrder(List<Order> orders) {
         if (isNull(orders)) {
-            orders = orderService.findByUserId(1000L).stream().filter(s->s.getSource().getName().equals(SOURCE_NAME)).toList();
+            orders = orderService.findByUserId(1000L).stream().filter(s -> s.getSource().getName().equals(SOURCE_NAME)).toList();
         }
         List<Order> finalOrders = orders;
         symbolList.forEach(symbol -> {
@@ -52,7 +52,7 @@ public class Strategy112Service extends BotService implements StrategyService {
     private void calculate(Symbol symbol, List<Order> orders) {
         String cryptoName = symbol.getName();
 
-        if(orders.stream().filter(s -> s.getSymbolName().equals(symbol.getName())).toList().isEmpty() && symbol.isActive()){
+        if (orders.stream().filter(s -> s.getSymbolName().equals(symbol.getName())).toList().isEmpty() && symbol.isActive()) {
             List<Double> candlestickList15m = indicatorsService.candleReturn(15, cryptoName, 200);
             List<Double> candlestickList1m = indicatorsService.candleReturn(1, cryptoName, 200);
             double markPrice = binanceBasicService.getMarketPriceDouble(null, cryptoName);
@@ -124,9 +124,9 @@ public class Strategy112Service extends BotService implements StrategyService {
     }
 
     @Override
-    public void downloadSymbols(){
+    public void downloadSymbols() {
         source = sourceService.findByNameWithSymbols(SOURCE_NAME);
-        if(!isNull(source)){
+        if (!isNull(source)) {
             symbolList = source.getSymbols();
         }
     }

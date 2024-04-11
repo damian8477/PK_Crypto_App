@@ -68,10 +68,10 @@ public class Strategy113Service extends BotService implements StrategyService {
                 logger.error(LocalDateTime.now() + " delete order " + order.getSymbol() + " " + order.toString() + " " + avRsi);
                 waitingSymbol.remove(order.getSymbol());
             } else {
-                if(!waitingSymbol.containsKey(order.getSymbol())){
+                if (!waitingSymbol.containsKey(order.getSymbol())) {
                     waitingSymbol.put(order.getSymbol(), avRsi);
                 }
-                if(waitingSymbol.get(order.getSymbol()) - 5.0 > avRsi){
+                if (waitingSymbol.get(order.getSymbol()) - 5.0 > avRsi) {
                     openProcess(order, finalOrders, avRsi);
                 }
                 logger.error(LocalDateTime.now() + " " + order.getSymbol() + " waiting " + avRsi);
@@ -79,13 +79,14 @@ public class Strategy113Service extends BotService implements StrategyService {
         });
     }
 
-    public void openProcess(CCIOrder order, List<Order> orders, double rsi){
+    public void openProcess(CCIOrder order, List<Order> orders, double rsi) {
         openOrder(order, orders);
         order.setOpen(true);
         cciOrderRepository.save(order);
         logger.error(String.format("%s OPEN %s %s", LocalDateTime.now(), order.getSymbol(), rsi));
         waitingSymbol.remove(order.getSymbol());
     }
+
     public void openOrder(CCIOrder order, List<Order> orders) {
         Source source = sourceService.findByName(SOURCE_NAME);
         String candleStick = indicatorsService.getCandleStick(order.getSymbol());
@@ -155,9 +156,9 @@ public class Strategy113Service extends BotService implements StrategyService {
     }
 
     @Override
-    public void downloadSymbols(){
+    public void downloadSymbols() {
         Source source = sourceService.findByNameWithSymbols(SOURCE_NAME);
-        if(!isNull(source)){
+        if (!isNull(source)) {
             symbolList = source.getSymbols().stream().map(Symbol::getName).toList();
         }
     }
