@@ -59,7 +59,7 @@ public class Strategy113Service extends BotService implements StrategyService {
         }
         List<Order> finalOrders = orders;
         cciOrders.forEach(order -> {
-            double avRsi;// = indicatorsService.getAvrRsi(order.getSymbol(), 14);
+            double avRsi;
             avRsi = indicatorsService.getRSI(15, order.getSymbol(), 20);
             if (avRsi < 65.0) {
                 openProcess(order, finalOrders, avRsi);

@@ -80,7 +80,6 @@ public class LoginController {
         User user = userToken.getUser();
         user.setPassword(encodedPassword);
         userRepository.save(user);
-
         logger.info("Password has changed!");
         logger.info(String.format("%s %s %s %s", user.getUsername(), user.getFirstName(), user.getLastName(), user.getEmail()));
 
