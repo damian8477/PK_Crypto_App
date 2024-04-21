@@ -26,7 +26,7 @@ import static java.util.Objects.isNull;
 public interface Common {
 
     default List<String> getLotsTp(int size, double minQty, double lot, int lever, double marketPrice) {
-        int[] partList = new int[]{15, 10, 5,1,1};
+        int[] partList = new int[]{15, 10, 5, 1, 1};
         int sum = Arrays.stream(partList).sum();
         int partLastAdd = partList[0];
         List<String> lots = new ArrayList<>();
@@ -44,6 +44,7 @@ public interface Common {
         Collections.reverse(lots);
         return lots;
     }
+
     default double getAmountValue(String symbol, SyncRequestClient syncRequestClient, Strategy strategy) {
         double balance = getUserBalanceDouble(syncRequestClient, symbol);
         if (strategy.getPercentOfMoney() > 0 && strategy.isPercentMoney()) {
@@ -52,6 +53,7 @@ public interface Common {
             return strategy.getPercentOfMoney();
         }
     }
+
     default double getUserBalanceDouble(SyncRequestClient syncRequestClient, String cryptoName) {
         String curr = getCurrency(cryptoName);
         List<AccountBalance> balanceUserList = syncRequestClient.getBalance();
@@ -231,7 +233,6 @@ public interface Common {
             return OrderSide.BUY;
         }
     }
-
 
 
 }
