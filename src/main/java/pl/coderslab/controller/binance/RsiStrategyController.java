@@ -16,6 +16,7 @@ import javax.validation.Valid;
 @RequestMapping("/app/rsi")
 @RequiredArgsConstructor
 public class RsiStrategyController {
+
     private final RsiStrategyRepository rsiStrategyRepository;
 
     @PostMapping("/add")
